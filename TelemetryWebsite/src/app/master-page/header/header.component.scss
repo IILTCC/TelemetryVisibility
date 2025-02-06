@@ -1,0 +1,34 @@
+@import "../../../styles.scss";
+
+#header {
+  font-size: 23px;
+  color: $amethyst;
+  margin: 0;
+}
+#header-div {
+  background-color: $dark-green;
+  padding: 10px;
+}
+#table-div {
+  // background: linear-gradient(to bottom, $midnight-green, $purssian-blue);
+  background-color: $dark-green;
+  padding: 10px;
+  padding-bottom: 40px;
+  // width: ;
+}
+.horizontal-bar {
+  width: 100%;
+  margin: auto;
+}
+.horizontal-bar > * {
+  font-size: 18px;
+  // color: $mint;
+}
+::ng-deep .header-button > * {
+  font-size: 18px;
+  color: $thistle !important;
+}
+::ng-deep .header-button:hover {
+  // font-size: 18px;
+  color: $dark-green !important;
+}

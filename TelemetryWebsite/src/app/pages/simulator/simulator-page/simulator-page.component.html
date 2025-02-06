@@ -1,0 +1,59 @@
+<link
+  href="https://fonts.googleapis.com/icon?family=Material+Icons"
+  rel="stylesheet"
+/>
+<div id="main-container">
+  <div class="secondary-container" *ngFor="let channelName of channelNames">
+    <div class="margin-div">
+      <mat-card appearance="outlined" class="channel-card">
+        <mat-card-header>
+          <mat-card-title class="channel-card-title">{{
+            channelName[0]
+          }}</mat-card-title>
+          <mat-card-subtitle class="channel-caord-status"> </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <table class="channel-form-table">
+            <tr class="channel-form-row">
+              <th class="channel-data-name">
+                packet delay
+                <input
+                  type="number"
+                  placeholder="enter packet delay"
+                  class="channel-data-input"
+                  [(ngModel)]="channelDelayInput[channelName[0]]"
+                />
+              </th>
+              <th class="channel-data-name">
+                packet errors
+                <input
+                  type="number"
+                  placeholder="enter packet erros"
+                  class="channel-data-input"
+                  [(ngModel)]="channelErrorsInput[channelName[0]]"
+                />
+              </th>
+            </tr>
+          </table>
+        </mat-card-content>
+
+        <mat-card-actions>
+          <button
+            mat-flat-button
+            (click)="clickOnStart(channelName[0])"
+            class="card-button-start"
+          >
+            start
+            <mat-icon class="icon-start">play_arrow</mat-icon>
+          </button>
+          <button mat-flat-button mat-button class="card-button-pause">
+            pause
+            <mat-icon fontIcon="pause_miss_spell" class="icon-pause"
+              >pause</mat-icon
+            >
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</div>
