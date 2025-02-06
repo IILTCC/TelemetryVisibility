@@ -46,7 +46,12 @@
             start
             <mat-icon class="icon-start">play_arrow</mat-icon>
           </button>
-          <button mat-flat-button mat-button class="card-button-pause">
+          <button
+            mat-flat-button
+            mat-button
+            (click)="clickOnPause(channelName[0])"
+            class="card-button-pause"
+          >
             pause
             <mat-icon fontIcon="pause_miss_spell" class="icon-pause"
               >pause</mat-icon

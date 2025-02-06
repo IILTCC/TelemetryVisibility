@@ -6,6 +6,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon'
+import { StartSimulatorDto } from '../../../dtos/startSimulatorDto';
+import { HttpClient } from '@angular/common/http';
+import { SimulatorPage } from '../../../services/simulatorPage.Service';
+import { StopSimulatorDto } from '../../../dtos/stopSimulatorDto';
 
 
 @Component({
@@ -16,13 +20,21 @@ import { MatIconModule } from '@angular/material/icon'
   styleUrl: './simulator-page.component.scss'
 })
 export class SimulatorPageComponent {
-  channelNames: [string, boolean][] = [["FiberBoxUp", true], ["FiberBoxDown", false], ["FlightBoxDown", true], ["FlightBoxUp", false]]
+  constructor(private simulatorPageService: SimulatorPage) { }
+  channelNames: [string, boolean, number][] = [["FiberBoxUp", true, 3], ["FiberBoxDown", false, 2], ["FlightBoxDown", true, 0], ["FlightBoxUp", false, 1]]
   channelDelayInput: { [key: string]: string } = { FiberBoxUp: "0", FiberBoxDown: "0", FlightBoxDown: "0", FlightBoxUp: "0" };
   channelErrorsInput: { [key: string]: string } = { FiberBoxUp: "0", FiberBoxDown: "0", FlightBoxDown: "0", FlightBoxUp: "0" };
-
+  channelNameId: { [key: string]: number } = { FiberBoxUp: 3, FiberBoxDown: 2, FlightBoxDown: 0, FlightBoxUp: 1 };
 
   clickOnStart(channelName: string): void {
-    console.log("Start clicked on channel " + channelName + " " + this.channelDelayInput[channelName] + " with delay " + this.channelErrorsInput[channelName]);
+    console.log("Start clicked on channel " + channelName + " delay " + this.channelDelayInput[channelName] + " with errors " + this.channelErrorsInput[channelName]);
+    let startSimulatorDto: StartSimulatorDto = new StartSimulatorDto(this.channelNameId[channelName], Number(this.channelErrorsInput[channelName]), Number(this.channelDelayInput[channelName]));
+    this.simulatorPageService.startSimulator(startSimulatorDto).subscribe((res) => { console.log(res) });
+  }
+  clickOnPause(channelName: string): void {
+    console.log("Start clicked on channel " + channelName + " delay " + this.channelDelayInput[channelName] + " with errors " + this.channelErrorsInput[channelName]);
+    let stopSimulatorDto: StopSimulatorDto = new StopSimulatorDto(this.channelNameId[channelName]);
+    this.simulatorPageService.stopSimulator(stopSimulatorDto).subscribe((res) => { console.log(res) });
   }
 }
 

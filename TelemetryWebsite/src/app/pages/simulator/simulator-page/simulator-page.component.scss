@@ -3,11 +3,10 @@
 #main-container {
   margin: 40px;
   display: flex;
-  //   flex-direction: column;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: flex-start; /* Centers the content horizontally */
-  align-items: flex-start; /* Aligns the content vertically */
+  justify-content: flex-start;
+  align-items: flex-start;
 }
 .secondary-container {
   //   display: flex;
