@@ -27,12 +27,10 @@ export class SimulatorPageComponent {
   channelNameId: { [key: string]: number } = { FiberBoxUp: 3, FiberBoxDown: 2, FlightBoxDown: 0, FlightBoxUp: 1 };
 
   clickOnStart(channelName: string): void {
-    console.log("Start clicked on channel " + channelName + " delay " + this.channelDelayInput[channelName] + " with errors " + this.channelErrorsInput[channelName]);
     let startSimulatorDto: StartSimulatorDto = new StartSimulatorDto(this.channelNameId[channelName], Number(this.channelErrorsInput[channelName]), Number(this.channelDelayInput[channelName]));
     this.simulatorPageService.startSimulator(startSimulatorDto).subscribe((res) => { console.log(res) });
   }
   clickOnPause(channelName: string): void {
-    console.log("Start clicked on channel " + channelName + " delay " + this.channelDelayInput[channelName] + " with errors " + this.channelErrorsInput[channelName]);
     let stopSimulatorDto: StopSimulatorDto = new StopSimulatorDto(this.channelNameId[channelName]);
     this.simulatorPageService.stopSimulator(stopSimulatorDto).subscribe((res) => { console.log(res) });
   }

@@ -10,11 +10,9 @@
   padding: 10px;
 }
 #table-div {
-  // background: linear-gradient(to bottom, $midnight-green, $purssian-blue);
   background-color: $dark-green;
   padding: 10px;
   padding-bottom: 40px;
-  // width: ;
 }
 .horizontal-bar {
   width: 100%;
@@ -22,13 +20,11 @@
 }
 .horizontal-bar > * {
   font-size: 18px;
-  // color: $mint;
 }
 ::ng-deep .header-button > * {
   font-size: 18px;
   color: $thistle !important;
 }
 ::ng-deep .header-button:hover {
-  // font-size: 18px;
   color: $dark-green !important;
 }
