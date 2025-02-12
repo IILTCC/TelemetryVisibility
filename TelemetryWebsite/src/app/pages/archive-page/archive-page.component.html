@@ -1,0 +1,54 @@
+<div class = "selector-top">
+  <div class="selector">
+    <mat-form-field class="date-range-picker">
+      <mat-label>Enter a date range</mat-label>
+      <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+        <input
+          matStartDate
+          formControlName="start"
+          placeholder="Start date"
+          (dateChange)="onStartDateChange($event)"
+        />
+        <input
+          matEndDate
+          formControlName="end"
+          placeholder="End date"
+          (dateChange)="onEndDateChange($event)"
+        />
+      </mat-date-range-input>
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="picker"
+      ></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+    <mat-form-field class = "packet-type-selector">
+      <mat-label>Packet Type</mat-label>
+      <mat-select
+        [(value)]="packetTypeSelected"
+        (selectionChange)="onPacketTypeChange()"
+      >
+        @for(packet of packetTypes; track packet) {
+
+        <mat-option [value]="packet">{{ packet }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <div class="selector-paginator">
+    <mat-paginator
+      [length]="currentPacketCount"
+      [pageSize]="10"
+      [pageSizeOptions]="[5, 10, 25, 100, 250, 500]"
+      aria-label="Select page"
+      (page)="onPageChange($event)"
+    >
+    </mat-paginator>
+  </div>
+</div>
+<div *ngFor="let graphKey of frameKeys()">
+  <app-graph style="width: 100%;"
+    [graphName]="graphKey"
+    [graphData]="graphsRequest.framesList[graphKey]"
+  ></app-graph>
+</div>

@@ -1,0 +1,77 @@
+@import "../../../styles.scss";
+
+.selector {
+  display: flex; /* Use flexbox for layout */
+  justify-content: space-between; /* Evenly space items horizontally */
+  align-items: center; /* Align items vertically */
+  padding: 10px; /* Add spacing around the container */
+//   background-color: #333232; /* Background color for visibility */
+//   border-radius: 5px; /* Optional: Rounded corners */
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.selector-paginator{
+    width:80%;
+    // display: flex; /* Use flexbox for layout */
+    // justify-content: space-between; /* Evenly space items horizontally */
+    // align-items: center; /* Align items vertically */
+    padding: 10px; /* Add spacing around the container */
+  //   background-color: #333232; /* Background color for visibility */
+  //   border-radius: 5px; /* Optional: Rounded corners */
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+.selector-top{
+    // display: flex; /* Use flexbox for layout */
+    // justify-content: space-between; /* Evenly space items horizontally */
+    // align-items: center; /* Align items vertically */
+    padding: 10px; /* Add spacing around the container */
+    background-color: #333232; /* Background color for visibility */
+    border-radius: 5px; /* Optional: Rounded corners */
+    width: 40%;
+    margin-left: auto;
+    margin-right: auto;}
+.mat-mdc-paginator {
+  background-color: #7862b3 !important;
+  border-radius: 8px;
+}
+.date-range-picker {
+  //   background-color: aqua !important;
+}
+::ng-deep .date-range-picker > .mat-mdc-text-field-wrapper {
+  background-color: #7862b3 !important;
+  transform: translateY(10px);
+  color:white;
+}
+::ng-deep .date-range-picker .mat-mdc-text-field-wrapper> *{
+  
+    color:white !important;
+}
+
+// ::ng-deep .date-range-picker .mat-mdc-form-field-wrapper {
+//     color: white !important; /* Text color for input text */
+//   }
+  
+//   ::ng-deep .date-range-picker .mat-mdc-form-field-label {
+//     color: white !important; /* Label text color */
+//   }
+  
+  ::ng-deep .date-range-picker * {
+    color: $thistle !important; /* Input text color */
+  }
+::ng-deep .packet-type-selector *{
+  color:$thistle
+}
+::ng-deep .selector-paginator *{
+  color:$thistle !important;
+}
+::ng-deep .packet-type-selector > .mat-mdc-text-field-wrapper
+{
+    transform: translateY(10px);
+    background-color: #7862b3 !important;
+}
+::ng-deep .date-range-picker > .mat-mdc-form-field-subscript-wrapper {
+  //   background-color: aqua !important;
+}
