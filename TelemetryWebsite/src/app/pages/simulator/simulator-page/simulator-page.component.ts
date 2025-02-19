@@ -10,6 +10,9 @@ import { StartSimulatorDto } from '../../../dtos/startSimulatorDto';
 import { HttpClient } from '@angular/common/http';
 import { SimulatorPage } from '../../../services/simulatorPage.Service';
 import { StopSimulatorDto } from '../../../dtos/stopSimulatorDto';
+import { SimulatorPageService } from '../../../services/simulatorPage.Service';
+import { Channel } from './channel';
+import Swal from "sweetalert2";
 
 
 @Component({
@@ -20,19 +23,35 @@ import { StopSimulatorDto } from '../../../dtos/stopSimulatorDto';
   styleUrl: './simulator-page.component.scss'
 })
 export class SimulatorPageComponent {
-  constructor(private simulatorPageService: SimulatorPage) { }
-  channelNames: [string, boolean, number][] = [["FiberBoxUp", true, 3], ["FiberBoxDown", false, 2], ["FlightBoxDown", true, 0], ["FlightBoxUp", false, 1]]
-  channelDelayInput: { [key: string]: string } = { FiberBoxUp: "0", FiberBoxDown: "0", FlightBoxDown: "0", FlightBoxUp: "0" };
-  channelErrorsInput: { [key: string]: string } = { FiberBoxUp: "0", FiberBoxDown: "0", FlightBoxDown: "0", FlightBoxUp: "0" };
-  channelNameId: { [key: string]: number } = { FiberBoxUp: 3, FiberBoxDown: 2, FlightBoxDown: 0, FlightBoxUp: 1 };
+  constructor(private simulatorPageService: SimulatorPageService) { }
+  channels: Channel[] = [new Channel("FiberBoxUp", "0", "0", 3), new Channel("FiberBoxDown", "0", "0", 2), new Channel("FlightBoxDown", "0", "0", 0), new Channel("FlightBoxUp", "0", "0", 1)];
 
-  clickOnStart(channelName: string): void {
-    let startSimulatorDto: StartSimulatorDto = new StartSimulatorDto(this.channelNameId[channelName], Number(this.channelErrorsInput[channelName]), Number(this.channelDelayInput[channelName]));
-    this.simulatorPageService.startSimulator(startSimulatorDto).subscribe((res) => { console.log(res) });
+  clickOnStart(channelNumber: number): void {
+    let startSimulatorDto: StartSimulatorDto = new StartSimulatorDto(this.channels[channelNumber].id, Number(this.channels[channelNumber].errorInput), Number(this.channels[channelNumber].delayInput));
+    this.simulatorPageService.startSimulator(startSimulatorDto).subscribe((res) => {
+       if(res != 0)
+       {
+        Swal.fire({
+          title: 'simulator request',
+          text: 'reuqest failed',
+          showCancelButton: false,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'confirm',
+          allowEscapeKey: true,
+          allowEnterKey: true,
+          allowOutsideClick: true
+        })
+       }
+      });
   }
-  clickOnPause(channelName: string): void {
-    let stopSimulatorDto: StopSimulatorDto = new StopSimulatorDto(this.channelNameId[channelName]);
-    this.simulatorPageService.stopSimulator(stopSimulatorDto).subscribe((res) => { console.log(res) });
+  clickOnPause(channelNumber: number): void {
+    let stopSimulatorDto: StopSimulatorDto = new StopSimulatorDto(this.channels[channelNumber].id);
+    this.simulatorPageService.stopSimulator(stopSimulatorDto).subscribe((res) => {        
+      if(res != 0)
+       {
+        
+       } });
   }
 }
 

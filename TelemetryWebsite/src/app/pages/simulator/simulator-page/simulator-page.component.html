@@ -3,12 +3,12 @@
   rel="stylesheet"
 />
 <div id="main-container">
-  <div class="secondary-container" *ngFor="let channelName of channelNames">
+  <div class="secondary-container" *ngFor="let channelName of channels; let currentChannel = index">
     <div class="margin-div">
       <mat-card appearance="outlined" class="channel-card">
         <mat-card-header>
           <mat-card-title class="channel-card-title">{{
-            channelName[0]
+            channelName.name
           }}</mat-card-title>
           <mat-card-subtitle class="channel-caord-status"> </mat-card-subtitle>
         </mat-card-header>
@@ -21,7 +21,7 @@
                   type="number"
                   placeholder="enter packet delay"
                   class="channel-data-input"
-                  [(ngModel)]="channelDelayInput[channelName[0]]"
+                  [(ngModel)]="channelName.delayInput"
                 />
               </th>
               <th class="channel-data-name">
@@ -30,7 +30,7 @@
                   type="number"
                   placeholder="enter packet erros"
                   class="channel-data-input"
-                  [(ngModel)]="channelErrorsInput[channelName[0]]"
+                  [(ngModel)]="channelName.errorInput"
                 />
               </th>
             </tr>
@@ -40,7 +40,7 @@
         <mat-card-actions>
           <button
             mat-flat-button
-            (click)="clickOnStart(channelName[0])"
+            (click)="clickOnStart(currentChannel)"
             class="card-button-start"
           >
             start
@@ -49,7 +49,7 @@
           <button
             mat-flat-button
             mat-button
-            (click)="clickOnPause(channelName[0])"
+            (click)="clickOnPause(currentChannel)"
             class="card-button-pause"
           >
             pause

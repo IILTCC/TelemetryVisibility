@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core";
 import { StartSimulatorDto } from "../dtos/startSimulatorDto";
 import { Observable } from "rxjs";
 import { StopSimulatorDto } from "../dtos/stopSimulatorDto";
+import { Consts } from "./consts";
 
 @Injectable({
     providedIn: 'root'
@@ -10,10 +11,10 @@ import { StopSimulatorDto } from "../dtos/stopSimulatorDto";
 export class SimulatorPage {
     constructor(private http: HttpClient) { }
     public startSimulator(startSimulatorDto: StartSimulatorDto): Observable<any> {
-        return this.http.post('http://localhost:5000/api/Bitstream/startErrorSimulation', startSimulatorDto);
+        return this.http.post(Consts.SIMULATOR_URL+Consts.SIMULATOR_START, startSimulatorDto);
     }
     public stopSimulator(stopSimulatorDto: StopSimulatorDto): Observable<any> {
-        return this.http.post('http://localhost:5000/api/Bitstream/stopSimulator', stopSimulatorDto);
+        return this.http.post(Consts.SIMULATOR_URL+Consts.SIMULATOR_STOP, stopSimulatorDto);
     }
 
 }
