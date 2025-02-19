@@ -15,6 +15,7 @@
         <mat-card-content>
           <table class="channel-form-table">
             <tr class="channel-form-row">
+              <th class="channel-data-name"></th>
               <th class="channel-data-name">
                 packet delay
                 <input
@@ -24,6 +25,8 @@
                   [(ngModel)]="channelName.delayInput"
                 />
               </th>
+            </tr>
+            <tr class="channel-form-row">
               <th class="channel-data-name">
                 packet errors
                 <input

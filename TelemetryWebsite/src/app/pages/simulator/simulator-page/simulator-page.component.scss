@@ -1,7 +1,7 @@
 @import "../../../../styles.scss";
 
 #main-container {
-  margin: 40px;
+  margin: 2rem;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -10,19 +10,18 @@
 }
 .secondary-container {
   justify-content: center;
-  flex-grow: 0;
-  flex-basis: auto;
-  margin-bottom: 30px;
+  margin-bottom: 2rem;
   margin-left: auto;
   margin-right: auto;
-  flex-grow: 1;
-  width: 50%;
-  max-width: 600px;
+  width: 20vw;
+  min-width: 10rem;
+  max-width: 20vw;
 }
 .margin-div {
   margin-left: auto;
   margin-right: auto;
 }
+
 ::ng-deep .channel-card {
   border-radius: 10px !important;
   background-color: $amethyst !important;
@@ -33,7 +32,6 @@
     $dark-green 75%
   ) !important;
   box-shadow: 12px 12px 25px #000000c7 !important;
-  width: 100%;
 }
 .channel-card-status {
   color: $thistle;
@@ -43,33 +41,36 @@
 }
 .stopped-channel {
   color: #e63131;
-  font-size: 17px;
+  font-size: 1em;
 }
 .running-channel {
   color: #14d33f;
-  font-size: 17px;
-}
-.channel-form-row {
-  width: 100%;
+  font-size: 1em;
 }
 
-.channel-form-table {
-  width: 70%;
-}
-::ng-deep .channel-packet-data {
-  height: 50px !important;
-}
+
 .channel-data-name {
+  display: flex;
   color: $thistle;
   font-weight: 300;
+  align-items: end;
+  padding-bottom: 1em;
+
 }
+
 .channel-data-input {
+  text-align: center;
   border-radius: 3px;
+  margin-left: 1rem;
   border: none;
-  background-color: $thistle;
-  height: 20px;
-  color: $purssian-blue;
+  background-color: rgba($thistle,0);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  height: 1.1rem;
+  width : 4rem;
+  text-indent: 12px;
+  color: $thistle
 }
+     
 .icon-start {
   color: lighten($amethyst, 10%) !important;
 }
@@ -78,7 +79,7 @@
 }
 .card-button-start {
   color: lighten($amethyst, 15%) !important;
-  margin-right: 10px;
+  margin-right: 0.5rem;
   border-radius: 20px;
 
   background: rgba(255, 255, 255, 0.15) !important;

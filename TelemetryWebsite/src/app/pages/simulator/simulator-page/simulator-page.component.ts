@@ -8,9 +8,8 @@ import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon'
 import { StartSimulatorDto } from '../../../dtos/startSimulatorDto';
 import { HttpClient } from '@angular/common/http';
-import { SimulatorPage } from '../../../services/simulatorPage.Service';
-import { StopSimulatorDto } from '../../../dtos/stopSimulatorDto';
 import { SimulatorPageService } from '../../../services/simulatorPage.Service';
+import { StopSimulatorDto } from '../../../dtos/stopSimulatorDto';
 import { Channel } from './channel';
 import Swal from "sweetalert2";
 
@@ -50,7 +49,17 @@ export class SimulatorPageComponent {
     this.simulatorPageService.stopSimulator(stopSimulatorDto).subscribe((res) => {        
       if(res != 0)
        {
-        
+        Swal.fire({
+          title: 'simulator request',
+          text: 'reuqest failed',
+          showCancelButton: false,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'confirm',
+          allowEscapeKey: true,
+          allowEnterKey: true,
+          allowOutsideClick: true
+        })
        } });
   }
 }

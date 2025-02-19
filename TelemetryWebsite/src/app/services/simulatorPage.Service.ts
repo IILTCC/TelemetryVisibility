@@ -8,7 +8,7 @@ import { Consts } from "./consts";
 @Injectable({
     providedIn: 'root'
 })
-export class SimulatorPage {
+export class SimulatorPageService {
     constructor(private http: HttpClient) { }
     public startSimulator(startSimulatorDto: StartSimulatorDto): Observable<any> {
         return this.http.post(Consts.SIMULATOR_URL+Consts.SIMULATOR_START, startSimulatorDto);
