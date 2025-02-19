@@ -1,0 +1,32 @@
+@import "../../../styles.scss";
+
+#header {
+  font-size: 1.6rem;
+  color: $amethyst;
+  margin: 0;
+}
+#header-div {
+  background-color: $dark-green;
+  padding: 0.3rem;
+}
+#table-div {
+  background-color: $dark-green;
+  padding-top: 0.3rem;
+  padding-bottom: 1rem;
+}
+.horizontal-bar {
+  width: 100vw;
+  padding-left: 0;
+  padding-right:0 ;
+}
+.horizontal-bar > * {
+  font-size: 1.1rem;
+}
+::ng-deep .header-button > * {
+  font-size: 1.1rem;
+  color: $thistle !important;
+}
+::ng-deep .header-button:hover {
+  color: $dark-green !important;
+}
+

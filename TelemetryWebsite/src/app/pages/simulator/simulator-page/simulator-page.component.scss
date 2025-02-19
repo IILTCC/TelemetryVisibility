@@ -1,0 +1,116 @@
+@import "../../../../styles.scss";
+
+#main-container {
+  margin: 2rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.secondary-container {
+  justify-content: center;
+  margin-bottom: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 20vw;
+  min-width: 10rem;
+  max-width: 20vw;
+}
+.margin-div {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+::ng-deep .channel-card {
+  border-radius: 10px !important;
+  background-color: $amethyst !important;
+  background: radial-gradient(
+    at top left,
+
+    desaturate(darken($amethyst, 30%), 20%) 20%,
+    $dark-green 75%
+  ) !important;
+  box-shadow: 12px 12px 25px #000000c7 !important;
+}
+.channel-card-status {
+  color: $thistle;
+}
+.channel-card-title {
+  color: $thistle;
+}
+.stopped-channel {
+  color: #e63131;
+  font-size: 1em;
+}
+.running-channel {
+  color: #14d33f;
+  font-size: 1em;
+}
+
+
+.channel-data-name {
+  display: flex;
+  color: $thistle;
+  font-weight: 300;
+  align-items: end;
+  padding-bottom: 1em;
+
+}
+
+.channel-data-input {
+  text-align: center;
+  border-radius: 3px;
+  margin-left: 1rem;
+  border: none;
+  background-color: rgba($thistle,0);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  height: 1.1rem;
+  width : 4rem;
+  text-indent: 12px;
+  color: $thistle
+}
+     
+.icon-start {
+  color: lighten($amethyst, 10%) !important;
+}
+.icon-pause {
+  color: lighten($amethyst, 15%);
+}
+.card-button-start {
+  color: lighten($amethyst, 15%) !important;
+  margin-right: 0.5rem;
+  border-radius: 20px;
+
+  background: rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: blur(5px) !important;
+  -webkit-backdrop-filter: blur(5px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.17) !important;
+
+  transition: all 0.3s ease !important;
+  &:hover {
+    background: linear-gradient(135deg, #4caf50, #388e3c) !important;
+    color: white !important;
+    transform: scale(1.05) !important;
+    filter: brightness(1.2) !important;
+  }
+}
+.card-button-pause {
+  border-radius: 20px;
+  color: lighten($amethyst, 15%) !important;
+
+  background: rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: blur(5px) !important;
+  -webkit-backdrop-filter: blur(5px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.17) !important;
+
+  transition: all 0.3s ease !important;
+  &:hover {
+    background: linear-gradient(135deg, #b04343, #8e3838) !important;
+    color: white !important;
+    transform: scale(1.05) !important;
+    filter: brightness(1.2) !important;
+  }
+}
