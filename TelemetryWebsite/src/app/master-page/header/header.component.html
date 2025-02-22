@@ -12,8 +12,30 @@
           Archive
         </button>
       </th>
-      <th><button mat-button class="header-button">System info</button></th>
+      <th>
+
+          <button
+          mat-button
+          class="header-button"
+          #menuTrigger="matMenuTrigger"
+          [matMenuTriggerFor]="myMenu"
+          (mouseenter)="menuTrigger.openMenu()"
+          
+          >
+          System info
+        </button>
+      </th>
       <th><button mat-button class="header-button">Kafka</button></th>
     </tr>
   </table>
 </div>
+  <mat-menu #myMenu="matMenu">
+    <div class="menu-content" (mouseleave)="menuTrigger.closeMenu()">
+      <button mat-menu-item (click)="goToSystemInfo('telemetry')">Telemetry Dashboard</button>
+      <button mat-menu-item (click)="goToSystemInfo('mongoConsumer')">MongoConsumer Dashboard</button>
+      <button mat-menu-item (click)="goToSystemInfo('archive')">Archive Dashboard</button>
+      <button mat-menu-item (click)="goToSystemInfo('kafka')">Kafka</button>
+      <button mat-menu-item (click)="goToSystemInfo('all')">All Dashboards</button>
+      
+    </div>
+  </mat-menu>

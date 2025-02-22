@@ -11,7 +11,6 @@ import {
   ApexTooltip,
   NgApexchartsModule
 } from "ng-apexcharts";
-import { dataSeries } from "./data-series";
 import { RetFramesDto } from '../../../dtos/retFrameDto';
 import { DataPoint } from '../../../dtos/dataPoint';
 

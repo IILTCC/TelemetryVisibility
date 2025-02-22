@@ -4,6 +4,7 @@ import { Observable } from "rxjs";
 import { GetFrameDto } from "../dtos/getFramesDto";
 import { RetFramesDto } from "../dtos/retFrameDto";
 import { GetPacketCountDto } from "../dtos/getPacketCountDto";
+import { Consts } from "./consts";
 
 @Injectable({
     providedIn: 'root'
@@ -11,10 +12,9 @@ import { GetPacketCountDto } from "../dtos/getPacketCountDto";
 export class ArchivePageService {
     constructor(private http: HttpClient) { }
     public getPackets(getFramesDto: GetFrameDto): Observable<any> {
-        return this.http.post<any>('http://localhost:5000/api/FrameRequest/frameByIcd', getFramesDto);
+        return this.http.post<any>(Consts.ARCHIVE_URL + Consts.ARCHIVE_GET_FRAMES, getFramesDto);
     }
-    public getPacketCount(getPacketCountDto:GetPacketCountDto):Observable<any>
-    {
-        return this.http.post<any>("http://localhost:5000/api/FrameRequest/getFrameCount",getPacketCountDto);
+    public getPacketCount(getPacketCountDto: GetPacketCountDto): Observable<any> {
+        return this.http.post<any>(Consts.ARCHIVE_URL + Consts.ARCHIVE_GET_FRAME_COUNT, getPacketCountDto);
     }
 }
