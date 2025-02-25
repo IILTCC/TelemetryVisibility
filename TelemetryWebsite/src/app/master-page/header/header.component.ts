@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterModule } from '@angular/router';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [MatButtonModule, RouterModule],
+  imports: [MatButtonModule, RouterModule,MatMenuModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
@@ -19,5 +20,8 @@ export class HeaderComponent {
   }
   public goToArchive(): void {
     this.router.navigate(['archive']);
+  }
+  public goToSystemInfo(dahsboardName:string): void {
+    this.router.navigate(['/system-info',dahsboardName]);
   }
 }

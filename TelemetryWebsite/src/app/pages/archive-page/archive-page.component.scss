@@ -1,0 +1,87 @@
+@import "../../../styles.scss";
+
+#main-container {
+  display: flex;
+}
+::ng-deep body,
+html {
+  overflow-y: hidden !important;
+  overflow-x: hidden !important;
+}
+.selector {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.selector-paginator {
+  width: 90%;
+}
+.selector-top {
+  height: 52vh;
+  padding: 10px;
+  background-color: #333232;
+  border-radius: 5px;
+  width: 15vw;
+  margin-right: auto;
+}
+.mat-mdc-paginator {
+  background-color: #7862b3 !important;
+  border-radius: 8px;
+}
+.date-range-picker {
+  width: 90%;
+  margin-bottom: 2rem;
+  margin-top: 1rem;
+}
+.graphs-space {
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 80vw;
+  max-height: 90vh;
+}
+::ng-deep .date-range-picker > .mat-mdc-text-field-wrapper {
+  background-color: #7862b3 !important;
+  color: white;
+}
+::ng-deep .date-range-picker .mat-mdc-text-field-wrapper > * {
+  color: white !important;
+}
+::ng-deep .date-range-picker * {
+  color: $thistle !important;
+}
+.packet-type-selector{
+  width: 90%;
+}
+::ng-deep .packet-type-selector * {
+  color: $thistle;
+}
+::ng-deep .selector-paginator * {
+  color: $thistle !important;
+}
+::ng-deep .packet-type-selector > .mat-mdc-text-field-wrapper {
+  background-color: #7862b3 !important;
+  margin-bottom: 2rem;
+}
+
+::ng-deep .mat-expansion-panel {
+  background-color: #333232 !important;
+  color: $thistle !important;
+}
+
+::ng-deep .mat-expansion-panel-header {
+  background-color: #333232 !important;
+  color: $thistle !important;
+}
+
+::ng-deep .mat-expansion-panel-body {
+  background-color: #333232 !important;
+  color: $thistle !important;
+}
+
+::ng-deep .mat-expansion-indicator::after {
+  color: $thistle !important;
+}

@@ -6,6 +6,7 @@ import { ArchivePageComponent } from './pages/archive-page/archive-page.componen
 export const routes: Routes = [
     { path: 'simulator', component: SimulatorPageComponent },
     { path: 'archive', component: ArchivePageComponent },
+
 ];
 
 @NgModule({
