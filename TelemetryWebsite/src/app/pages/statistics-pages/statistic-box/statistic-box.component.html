@@ -1,0 +1,24 @@
+<div class="statistic-box">
+  <table>
+    <tr>
+      <th class="one-cell">
+        {{ statisticName }}
+      </th>
+    </tr>
+    <tr>
+      <th class="one-cell">
+        {{ statisticValue }}
+        -
+        <span>
+          @if (statisticSevirity == Sevirity.good) {
+          <span style = 'color: green'>{{ Sevirity[statisticSevirity] }}</span >
+          } @if (statisticSevirity == Sevirity.warn) {
+            <span style = 'color:yellow'>{{ Sevirity[statisticSevirity] }}</span>
+          } @if (statisticSevirity == Sevirity.bad) {
+            <span style = 'color: red'>{{ Sevirity[statisticSevirity] }}</span>
+          }
+        </span>
+      </th>
+    </tr>
+  </table>
+</div>

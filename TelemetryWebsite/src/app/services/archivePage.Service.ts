@@ -2,7 +2,6 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { GetFrameDto } from "../dtos/getFramesDto";
-import { archiveFramesRo } from "../dtos/archiveFramesRo";
 import { GetPacketCountDto } from "../dtos/getPacketCountDto";
 import { Consts } from "./consts";
 
