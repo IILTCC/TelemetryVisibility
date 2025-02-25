@@ -1,0 +1,17 @@
+.kibana-iframe {
+  /* Fill the screen entirely: */
+  width: 100vw;    /* or 100% if your layout requires */
+  height: 90vh;  
+  border: none;    
+  display: block;  
+  overflow: hidden;
+}
+::ng-deep body , html{
+    overflow-y: hidden !important;
+    overflow-x: hidden !important;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    height: 100%;
+
+}

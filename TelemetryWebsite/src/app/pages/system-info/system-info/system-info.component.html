@@ -1,0 +1,26 @@
+@if (dashboardName == "telemetry") {
+<iframe
+  class="kibana-iframe"
+  src="http://localhost:5601/app/dashboards#/view/06190058-6b90-4708-a69d-a098ed7c4021?embed=true&_g=(refreshInterval%3A(pause%3A!t%2Cvalue%3A60000)%2Ctime%3A(from%3Anow-15m%2Cto%3Anow))&show-query-input=true&show-time-filter=true"
+></iframe>
+} @if (dashboardName == "mongoConsumer") {
+<iframe
+  class="kibana-iframe"
+  src="http://localhost:5601/app/dashboards#/view/2d82353b-d00f-4026-b0c7-fc5c87fe1db8?embed=true&_g=(refreshInterval%3A(pause%3A!t%2Cvalue%3A60000)%2Ctime%3A(from%3Anow-15m%2Cto%3Anow))&show-query-input=true&show-time-filter=true"
+></iframe>
+} @if (dashboardName == "archive") {
+<iframe
+  class="kibana-iframe"
+  src="http://localhost:5601/app/dashboards#/view/0afefa92-03bf-4869-b06c-baa71876ce96?embed=true&_g=(refreshInterval%3A(pause%3A!t%2Cvalue%3A60000)%2Ctime%3A(from%3Anow-15m%2Cto%3Anow))&show-query-input=true&show-time-filter=true"
+></iframe>
+} @if (dashboardName == "kafka") {
+<iframe
+  class="kibana-iframe"
+  src="http://localhost:5601/app/dashboards#/view/ea488d90-8e63-11e8-8fa2-3d5f811fbd0f-ecs?embed=true&_g=(refreshInterval%3A(pause%3A!t%2Cvalue%3A60000)%2Ctime%3A(from%3Anow-15m%2Cto%3Anow))&show-query-input=true&show-time-filter=true"
+></iframe>
+} @if (dashboardName == "all") {
+<iframe
+  class="kibana-iframe"
+  src="http://localhost:5601/app/dashboards#/view/4bea371c-6605-4d2c-85e5-e24f90b58c70?embed=true&_g=(refreshInterval%3A(pause%3A!t%2Cvalue%3A60000)%2Ctime%3A(from%3Anow-15m%2Cto%3Anow))&show-query-input=true&show-time-filter=true"
+></iframe>
+}
