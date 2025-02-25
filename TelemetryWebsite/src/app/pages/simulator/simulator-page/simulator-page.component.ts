@@ -12,6 +12,7 @@ import { SimulatorPageService } from '../../../services/simulatorPage.Service';
 import { StopSimulatorDto } from '../../../dtos/stopSimulatorDto';
 import { Channel } from './channel';
 import Swal from "sweetalert2";
+import { ChannelName } from '../../../common/channelName';
 
 
 @Component({
@@ -23,7 +24,7 @@ import Swal from "sweetalert2";
 })
 export class SimulatorPageComponent {
   constructor(private simulatorPageService: SimulatorPageService) { }
-  channels: Channel[] = [new Channel("FiberBoxUp", "0", "0", 3), new Channel("FiberBoxDown", "0", "0", 2), new Channel("FlightBoxDown", "0", "0", 0), new Channel("FlightBoxUp", "0", "0", 1)];
+  channels: Channel[] = [new Channel(ChannelName.fiberBoxUp, "0", "0", 3), new Channel(ChannelName.fiberBoxDown, "0", "0", 2), new Channel(ChannelName.flightBoxDown, "0", "0", 0), new Channel(ChannelName.flightBoxUp, "0", "0", 1)];
 
   clickOnStart(channelNumber: number): void {
     let startSimulatorDto: StartSimulatorDto = new StartSimulatorDto(this.channels[channelNumber].id, Number(this.channels[channelNumber].errorInput), Number(this.channels[channelNumber].delayInput));

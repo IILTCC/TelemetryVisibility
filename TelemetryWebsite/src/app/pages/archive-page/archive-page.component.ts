@@ -4,7 +4,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { MatNativeDateModule } from '@angular/material/core';
 import { DataPoint } from '../../dtos/dataPoint';
 import { GetFrameDto } from '../../dtos/getFramesDto';
-import { RetFramesDto } from '../../dtos/retFrameDto';
+import { archiveFramesRo } from '../../dtos/archiveFramesRo';
 import { ArchivePageService } from '../../services/archivePage.Service';
 import { GraphComponent } from "./graph/graph.component";
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -14,6 +14,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { GetPacketCountDto } from '../../dtos/getPacketCountDto';
+import { ChannelName } from '../../common/channelName';
 
 
 @Component({
@@ -25,7 +26,7 @@ import { GetPacketCountDto } from '../../dtos/getPacketCountDto';
 })
 export class ArchivePageComponent {
   public currentPacketCount = 0;
-  public packetTypes: string[] = ["FlightBoxDown", "FlightBoxUp", "FiberBoxDown", "FiberBoxUp"];
+  public packetTypes: string[] = [ChannelName.flightBoxDown, ChannelName.flightBoxUp, ChannelName.fiberBoxDown, ChannelName.fiberBoxUp];
   public packetTypeSelected: string = this.packetTypes[0];
   private pageStart: number = 0;
   private pageEnd: number = 10;
@@ -33,11 +34,15 @@ export class ArchivePageComponent {
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),
   });
-  public graphsRequest: RetFramesDto = new RetFramesDto({});
+  public graphsRequest: archiveFramesRo = new archiveFramesRo({});
   public framesList: DataPoint[] = [];
   constructor(private archiveService: ArchivePageService) { }
-
-  sendArchiveRequest(): void {
+  onPageChange(event: any) {
+    this.pageStart = event.pageIndex * event.pageSize
+    this.pageEnd = event.pageIndex * event.pageSize + event.pageSize
+    this.sendArchiveRequest()
+  }
+  private sendArchiveRequest(): void {
 
     if (this.range.get('start')?.value == null || this.range.get('end')?.value == null)
       return
@@ -48,37 +53,29 @@ export class ArchivePageComponent {
 
     let request: GetFrameDto = new GetFrameDto(this.pageStart, this.pageEnd - this.pageStart, this.packetTypeToNumber(this.packetTypeSelected), startDate, endDate);
     this.archiveService.getPackets(request).subscribe((result: any) => {
-      this.graphsRequest = new RetFramesDto(result)
-      console.log(this.graphsRequest)
+      this.graphsRequest = new archiveFramesRo(result)
     })
   }
-  packetTypeToNumber(wantedPacket: string): number {
+  private packetTypeToNumber(wantedPacket: string): number {
     for (let packetIndex = 0; packetIndex < this.packetTypes.length; packetIndex++)
       if (this.packetTypes[packetIndex] == wantedPacket)
         return packetIndex
     return 0
   }
-  onPacketTypeChange(): void {
+  public onPacketTypeChange(): void {
     this.sendArchiveRequest()
   }
-  frameKeys(): string[] {
+  public frameKeys(): string[] {
     return Object.keys(this.graphsRequest.framesList);
   }
-  onStartDateChange(event: any) {
+  public onStartDateChange(event: any) {
     if (event.value == null)
       return
-
-
   }
   onEndDateChange(event: any) {
     if (event.value == null)
       return
+    this.sendArchiveRequest()
+  }
 
-    this.sendArchiveRequest()
-  }
-  onPageChange(event: any) {
-    this.pageStart = event.pageIndex * event.pageSize
-    this.pageEnd = event.pageIndex * event.pageSize + event.pageSize
-    this.sendArchiveRequest()
-  }
 } 

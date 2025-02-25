@@ -11,7 +11,6 @@ import {
   ApexTooltip,
   NgApexchartsModule
 } from "ng-apexcharts";
-import { RetFramesDto } from '../../../dtos/retFrameDto';
 import { DataPoint } from '../../../dtos/dataPoint';
 
 @Component({
@@ -35,20 +34,28 @@ export class GraphComponent {
   public yaxis!: ApexYAxis;
   public xaxis!: ApexXAxis;
   public tooltip!: ApexTooltip;
-  constructor() {
-  }
   public annotations: ApexAnnotations = {
     points: [
 
     ]
   };
+  constructor() {
+  }
+
+  ngOnInit(): void {
+    if (this.graphData != undefined && this.graphData.length != 0)
+      this.initChartData();
+  }
+  ngOnChanges(): void {
+    this.initChartData()
+  }
+
   public initChartData(): void {
     let prevPacketTime = new Date(this.graphData[0].packetTime).getTime();
     let runnignPacketTime = prevPacketTime;
     this.annotations.points = [];
     let dates = [];
     for (let i = 0; i < this.graphData.length; i++) {
-      console.log(new Date(this.graphData[i].packetTime).getTime() - prevPacketTime)
       runnignPacketTime = runnignPacketTime + new Date(this.graphData[i].packetTime).getTime() - prevPacketTime;
       prevPacketTime = runnignPacketTime;
       dates.push([runnignPacketTime, this.graphData[i].value]);
@@ -147,18 +154,6 @@ export class GraphComponent {
       }
     };
   }
-  ngOnInit(): void {
-    console.log(this.graphData)
-    console.log(this.graphData[0])
-    if (this.graphData != undefined && this.graphData.length != 0)
-      this.initChartData();
-  }
-  ngOnChanges(): void {
-    // if(this.graphData != undefined &&  this.graphData.length != 0)
-    // this.initChartData();  }
-    console.log(this.graphData)
 
-    this.initChartData()
-  }
 }
 
