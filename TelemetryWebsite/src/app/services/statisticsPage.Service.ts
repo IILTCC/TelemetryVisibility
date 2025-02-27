@@ -6,6 +6,7 @@ import { GetPacketCountDto } from "../dtos/getPacketCountDto";
 import { Consts } from "./consts";
 import { GetStatisticsDto } from "../dtos/getStatisticsDto";
 import { StatisticsRet } from "../dtos/statisticsRet";
+import { GetStatisticsCount } from "../dtos/getStatisticsCount";
 
 @Injectable({
     providedIn: 'root'
@@ -14,5 +15,8 @@ export class StatisticsPagesService {
     constructor(private http: HttpClient) { }
     public getStatistics(getStatisticsDto: GetStatisticsDto): Observable<StatisticsRet> {
         return this.http.post<StatisticsRet>(Consts.STATISTICS_URL + Consts.STATISTICS_GET_STATISTICS, getStatisticsDto);
+    }
+    public getStatisticsCount(getStatisticsCount:GetStatisticsCount):Observable<any>{
+        return this.http.post<GetStatisticsCount>(Consts.STATISTICS_URL + Consts.STATISTICS_GET_STATISTICS_COUNT, getStatisticsCount);
     }
 }

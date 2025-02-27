@@ -4,6 +4,7 @@ import { Observable } from "rxjs";
 import { GetFrameDto } from "../dtos/getFramesDto";
 import { GetPacketCountDto } from "../dtos/getPacketCountDto";
 import { Consts } from "./consts";
+import { archiveFramesRo } from "../dtos/archiveFramesRo";
 
 @Injectable({
     providedIn: 'root'

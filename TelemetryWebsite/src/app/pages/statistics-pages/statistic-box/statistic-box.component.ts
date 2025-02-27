@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Sevirity } from '../../../dtos/SevirityEnum';
+import { Sevirity } from '../../../dtos/sevirityEnum';
 
 @Component({
   selector: 'app-statistic-box',

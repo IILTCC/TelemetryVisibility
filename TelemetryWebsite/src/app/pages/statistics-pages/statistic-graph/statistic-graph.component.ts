@@ -11,10 +11,7 @@ import {
   ApexTooltip,
   NgApexchartsModule
 } from "ng-apexcharts";
-import { RetFramesDto } from '../../../dtos/retFrameDto';
-import { DataPoint } from '../../../dtos/dataPoint';
 import { StatisticsPoint } from '../../../dtos/statisticsPoint';
-
 @Component({
   selector: 'app-statistic-graph',
   standalone: true,
@@ -32,36 +29,34 @@ export class StatisticGraphComponent {
   public yaxis!: ApexYAxis;
   public xaxis!: ApexXAxis;
   public tooltip!: ApexTooltip;
-
+  public legend!: ApexLegend;
+  constructor() {
+    console.log(this.graphName)
+  }
   public colors: string[] = ["#9478de"]; // Custom color for the series
   @Input() public graphName = "testing";
-  @Input() public graphData:  { [key: string]: StatisticsPoint[] } = {};
-  private graphDataPoints :{ [key: string]: number[][] } = {};
+  @Input() public graphData: { [key: string]: StatisticsPoint[] } = {};
+  @Input() public lineColor: string[] = [];
   public initChartData(): void {
-    // let prevPacketTime = new Date(this.graphData[0].packetTime).getTime();
-    Object.keys(this.graphData).forEach((graph) => {
-      this.graphData[graph].forEach((point) => { 
-        this.graphDataPoints[graph].push([point.x,point.y])
-        
-      }); 
-      this.series.push({name: graph, data: this.graphDataPoints[graph]})  
-    });
-
-    // let runnignPacketTime = prevPacketTime;
-    // let dates = [];
-    // for (let i = 0; i < this.graphData.length; i++) {
-    //   console.log(new Date(this.graphData[i].packetTime).getTime() - prevPacketTime)
-    //   runnignPacketTime = runnignPacketTime + new Date(this.graphData[i].packetTime).getTime() - prevPacketTime;
-    //   prevPacketTime = runnignPacketTime;
-    //   dates.push([runnignPacketTime, this.graphData[i].value]);
-    // }
+    let graphDataPoints: { [key: string]: number[][] } = {};
 
     this.series = [
-      // {
-        // name: this.graphName,
-        // data: dates
-      // }
     ];
+
+    let colorIndex: number = 0
+    Object.keys(this.graphData).forEach((graph) => {
+
+      this.graphData[graph].forEach((point) => {
+        if (!graphDataPoints.hasOwnProperty(graph))
+          graphDataPoints[graph] = [];        
+        graphDataPoints[graph].push([point.x, point.y])
+
+      });
+
+      this.series.push({ name: graph, data: graphDataPoints[graph], color: this.lineColor[colorIndex] });
+      colorIndex++;
+    });
+
     this.chart = {
       type: "area",
       stacked: false,
@@ -81,6 +76,12 @@ export class StatisticGraphComponent {
     this.markers = {
       size: 0
     };
+    this.legend ={
+      show: true,
+      labels:{
+        colors: ["#e2cfea","#e2cfea","#e2cfea","#e2cfea"]
+      }
+    }
     this.title = {
       text: this.graphName,
       align: "left",
@@ -125,29 +126,22 @@ export class StatisticGraphComponent {
       x: {
         formatter: function (value: number) {
           const date = new Date(value);
-          return date.toISOString(); // ISO format includes milliseconds
+          return date.toISOString(); 
         }
       },
-      shared: false,
+      shared: true,
       y: {
         formatter: function (val) {
-          return (val).toFixed(0);
+          return (val).toFixed(2);
         }
-      }
+      },
     };
   }
-  ngOnInit(): void {
-    console.log(this.graphData)
-    console.log(this.graphData[0])
-    // if (this.graphData != undefined && this.graphData.length != 0)
-    if (this.graphData != undefined )
+  ngOnInit(): void {  
+    if (this.graphData != undefined  &&  Object.keys(this.graphData).length != 0)    
       this.initChartData();
   }
   ngOnChanges(): void {
-    // if(this.graphData != undefined &&  this.graphData.length != 0)
-    // this.initChartData();  }
-    console.log(this.graphData)
-
     this.initChartData()
   }
 }

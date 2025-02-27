@@ -7,16 +7,14 @@
     </tr>
     <tr>
       <th class="one-cell">
-        {{ statisticValue }}
-        -
-        <span>
-          @if (statisticSevirity == Sevirity.good) {
-          <span style = 'color: green'>{{ Sevirity[statisticSevirity] }}</span >
-          } @if (statisticSevirity == Sevirity.warn) {
-            <span style = 'color:yellow'>{{ Sevirity[statisticSevirity] }}</span>
-          } @if (statisticSevirity == Sevirity.bad) {
-            <span style = 'color: red'>{{ Sevirity[statisticSevirity] }}</span>
-          }
+        <span class="statistic-value">
+          @switch (statisticSevirity) { @case(Sevirity.good){
+          <span id = "good">{{ statisticValue }}</span>
+          } @case(Sevirity.warn){
+          <span id = "warn">{{ statisticValue }}</span>
+          } @case(Sevirity.bad){
+          <span id = "bad">{{ statisticValue}}</span>
+          } }
         </span>
       </th>
     </tr>
