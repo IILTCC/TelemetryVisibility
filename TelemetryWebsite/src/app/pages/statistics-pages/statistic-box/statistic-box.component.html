@@ -1,0 +1,22 @@
+<div class="statistic-box">
+  <table>
+    <tr>
+      <th class="one-cell">
+        {{ statisticName }}
+      </th>
+    </tr>
+    <tr>
+      <th class="one-cell">
+        <span class="statistic-value">
+          @switch (statisticSevirity) { @case(Sevirity.good){
+          <span id = "good">{{ statisticValue }}</span>
+          } @case(Sevirity.warn){
+          <span id = "warn">{{ statisticValue }}</span>
+          } @case(Sevirity.bad){
+          <span id = "bad">{{ statisticValue}}</span>
+          } }
+        </span>
+      </th>
+    </tr>
+  </table>
+</div>
