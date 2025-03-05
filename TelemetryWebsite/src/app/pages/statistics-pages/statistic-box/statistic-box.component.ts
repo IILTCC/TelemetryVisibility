@@ -9,11 +9,14 @@ import { Sevirity } from '../../../dtos/sevirityEnum';
   styleUrl: './statistic-box.component.scss'
 })
 export class StatisticBoxComponent {
-  constructor(){
+  constructor() {
   }
   public Sevirity = Sevirity;
-  @Input() public statisticName:string = "";
-  @Input() public statisticValue:number = 0;
-  @Input() public statisticSevirity:Sevirity = 0;
-
+  @Input() public statisticName: string = "";
+  @Input() public statisticValue: number = 0;
+  @Input() public statisticSevirity: Sevirity = 0;
+  @Input() public statisticUnit: string = "";
+  get formattedStatisticValue(): string {
+    return parseFloat(this.statisticValue.toFixed(3)).toString();
+  }
 }

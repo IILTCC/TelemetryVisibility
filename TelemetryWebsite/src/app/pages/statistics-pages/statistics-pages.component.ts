@@ -13,34 +13,39 @@ import { CommonModule } from '@angular/common';
 import { StatisticsPoint } from '../../dtos/statisticsPoint';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { GetStatisticsCount } from '../../dtos/getStatisticsCount';
-
+import { MAT_DATE_FORMATS, DateAdapter } from '@angular/material/core';
+import { CUSTOM_DATE_FORMATS, DateFormatter } from '../../common/dateFormatter';
 @Component({
   selector: 'app-statistics-pages',
   standalone: true,
   imports: [MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, MatNativeDateModule, StatisticBoxComponent, StatisticGraphComponent, CommonModule, MatPaginatorModule],
   templateUrl: './statistics-pages.component.html',
-  styleUrl: './statistics-pages.component.scss'
+  styleUrl: './statistics-pages.component.scss',
+  providers: [
+    { provide: DateAdapter, useClass: DateFormatter },
+    { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS }
+  ]
 })
 export class StatisticsPagesComponent {
   public Object: any;
   public currentStatisticsCount: number = 0;
   private pageStart: number = 0;
   private pageEnd: number = 10;
-  constructor(private statisticsPageService: StatisticsPagesService) {
-    this.sendStatisticsPage();
-  }
   public statisticsType: { [key: string]: StatisticsRo } = {};
-  public chartColors = ['#7862b3', '#33b2df', '#f48024', '#2ecc71'];
-
+  public chartColors: string[] = ['#7862b3', '#33b2df', '#f48024', '#2ecc71'];
   public statistics: StatisticsRo = new StatisticsRo({}, {}, {});
-  public range = new FormGroup({
+  public range: FormGroup = new FormGroup({
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),
   });
-
-  public onEndDateChange(event: any): void {
-    this.sendStatisticsPage()
+  public statisticsUnits: string[] = ["%", "ms", "ms", "ms", "%"]
+  private graphsToFormat: string[] = ["CorruptedPacket"];
+  constructor(private statisticsPageService: StatisticsPagesService) {
+    this.sendStatisticsPage();
   }
+  // public onEndDateChange(event: any): void {
+  //   this.sendStatisticsPage()
+  // }
   public statisticsTypeKeys(): string[] {
     return Object.keys(this.statisticsType);
   }
@@ -73,21 +78,37 @@ export class StatisticsPagesComponent {
         delete this.statistics.values[key];
       }
     });
+    this.formatGraphsUnits();
   }
 
+  private formatGraphsUnits(): void {
+    this.graphsToFormat.forEach(key => {
+      if (this.statisticsType.hasOwnProperty(key)) {
+        Object.keys(this.statisticsType[key].graphs).forEach((graphName: string) => {
+          for (let pointIndex = 0; pointIndex < this.statisticsType[key].graphs[graphName].length; pointIndex++) {
+            let newY: number = this.statisticsType[key].graphs[graphName][pointIndex].y * 100;
+            let oldX: number = this.statisticsType[key].graphs[graphName][pointIndex].x;
+            this.statisticsType[key].graphs[graphName][pointIndex] = new StatisticsPoint(oldX, newY)
+          }
+        });
+        Object.keys(this.statisticsType[key].values).forEach((valueName: string) => {
+          this.statisticsType[key].values[valueName] = this.statisticsType[key].values[valueName] * 100;
+        });
+      }
+    })
+  }
   public sendStatisticsPage(): void {
 
     if (this.range.get('start')?.value == null || this.range.get('end')?.value == null)
       return
 
+    let startDate: Date = this.range.get('start')?.value ?? new Date();
+    let endDate: Date = this.range.get('end')?.value ?? new Date();
 
-    let startDate : Date = this.range.get('start')?.value ?? new Date();
-    let endDate : Date= this.range.get('end')?.value ?? new Date();
-
-    let statisticsCountRequest : GetStatisticsCount= new GetStatisticsCount(startDate, endDate);
+    let statisticsCountRequest: GetStatisticsCount = new GetStatisticsCount(startDate, endDate);
     this.statisticsPageService.getStatisticsCount(statisticsCountRequest).subscribe((result) => this.currentStatisticsCount = result)
 
-    let getStatisticsDto : GetStatisticsDto = new GetStatisticsDto(startDate, endDate, this.pageStart, this.pageEnd);
+    let getStatisticsDto: GetStatisticsDto = new GetStatisticsDto(startDate, endDate, this.pageStart, this.pageEnd);
     this.statisticsPageService.getStatistics(getStatisticsDto).subscribe((result) => { this.statistics = result; this.loadGraphs(); })
   }
   public onPageChange(event: any): void {
