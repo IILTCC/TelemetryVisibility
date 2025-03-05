@@ -3,12 +3,7 @@
     <mat-label>Enter a date range</mat-label>
     <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
       <input matStartDate formControlName="start" placeholder="Start date" />
-      <input
-        matEndDate
-        formControlName="end"
-        placeholder="End date"
-        (dateChange)="onEndDateChange($event)"
-      />
+      <input matEndDate formControlName="end" placeholder="End date" />
     </mat-date-range-input>
     <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-date-range-picker #picker></mat-date-range-picker>
@@ -22,9 +17,17 @@
     (page)="onPageChange($event)"
   >
   </mat-paginator>
+  <button mat-flat-button (click)="sendStatisticsPage()" class="submit-button">
+    submit
+  </button>
 </div>
 <div class="statistic-main-container">
-  <div *ngFor="let statisticTypeKey of statisticsTypeKeys()">
+  <div
+    *ngFor="
+      let statisticTypeKey of statisticsTypeKeys();
+      let mainGraphIndex = index
+    "
+  >
     <div class="statistic-title">{{ statisticTypeKey }}</div>
     <table class="statistic-type-tr">
       <tr>
@@ -38,6 +41,7 @@
             [statisticSevirity]="
               this.statisticsType[statisticTypeKey].sevirityValues[sevirity]
             "
+            [statisticUnit]="this.statisticsUnits[mainGraphIndex]"
           ></app-statistic-box>
         </th>
         }
@@ -47,11 +51,12 @@
       <app-statistic-graph
         [graphData]="this.statisticsType[statisticTypeKey].graphs"
         [lineColor]="chartColors"
+        [graphUnits]="this.statisticsUnits[mainGraphIndex]"
         graphName=""
       />
     </div>
   </div>
-  <div *ngFor="let statisticKey of statisticsKeys()">
+  <div *ngFor="let statisticKey of statisticsKeys(); let graphIndex = index">
     <div class="statistic-title">{{ statisticKey }}</div>
 
     <app-statistic-graph
@@ -59,6 +64,9 @@
         formatStatisticDict(this.statistics.graphs[statisticKey], statisticKey)
       "
       [lineColor]="chartColors"
+      [graphUnits]="
+        this.statisticsUnits[graphIndex + statisticsTypeKeys().length]
+      "
       graphName=""
     />
   </div>

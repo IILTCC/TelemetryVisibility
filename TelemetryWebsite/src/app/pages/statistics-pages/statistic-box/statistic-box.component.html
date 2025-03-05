@@ -9,11 +9,11 @@
       <th class="one-cell">
         <span class="statistic-value">
           @switch (statisticSevirity) { @case(Sevirity.GOOD){
-          <span id = "good">{{ statisticValue }}</span>
+          <span id = "good">{{ formattedStatisticValue +statisticUnit}}</span>
           } @case(Sevirity.WARN){
-          <span id = "warn">{{ statisticValue }}</span>
+          <span id = "warn">{{ formattedStatisticValue+statisticUnit }}</span>
           } @case(Sevirity.BAD){
-          <span id = "bad">{{ statisticValue}}</span>
+          <span id = "bad">{{ formattedStatisticValue+statisticUnit }}</span>
           } }
         </span>
       </th>

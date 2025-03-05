@@ -12,6 +12,9 @@ import {
   NgApexchartsModule
 } from "ng-apexcharts";
 import { StatisticsPoint } from '../../../dtos/statisticsPoint';
+import { CommonConsts } from '../../../common/commonConsts';
+
+
 @Component({
   selector: 'app-statistic-graph',
   standalone: true,
@@ -35,6 +38,7 @@ export class StatisticGraphComponent {
   @Input() public graphName = "testing";
   @Input() public graphData: { [key: string]: StatisticsPoint[] } = {};
   @Input() public lineColor: string[] = [];
+  @Input() public graphUnits: string = "";
 
   constructor() { }
 
@@ -72,7 +76,8 @@ export class StatisticGraphComponent {
       zoom: {
         type: "x",
         enabled: true,
-        autoScaleYaxis: true
+        autoScaleYaxis: true,
+        allowMouseWheelZoom: false
       },
       toolbar: {
         autoSelected: "zoom"
@@ -139,8 +144,8 @@ export class StatisticGraphComponent {
       },
       shared: true,
       y: {
-        formatter: function (val) {
-          return (val).toFixed(2);
+        formatter: (val) => {
+          return (val).toFixed(CommonConsts.DECIMAL_PRECISION) + this.graphUnits;
         }
       },
     };
