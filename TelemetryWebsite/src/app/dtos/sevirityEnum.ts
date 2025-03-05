@@ -1,5 +1,5 @@
-export enum Sevirity{
-    good = 0,
-    warn = 1,
-    bad = 2
+export enum Sevirity {
+    GOOD = 0,
+    WARN = 1,
+    BAD = 2
 }

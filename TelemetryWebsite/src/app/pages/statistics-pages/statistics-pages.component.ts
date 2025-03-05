@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material/core';
 import { StatisticsPagesService } from '../../services/statisticsPage.Service';
 import { GetStatisticsDto } from '../../dtos/getStatisticsDto';
-import { StatisticsRet } from '../../dtos/statisticsRet';
+import { StatisticsRo } from '../../dtos/statisticsRo';
 import { StatisticBoxComponent } from "./statistic-box/statistic-box.component";
 import { StatisticGraphComponent } from "./statistic-graph/statistic-graph.component";
 import { CommonModule } from '@angular/common';
@@ -17,22 +17,22 @@ import { GetStatisticsCount } from '../../dtos/getStatisticsCount';
 @Component({
   selector: 'app-statistics-pages',
   standalone: true,
-  imports: [MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, MatNativeDateModule, StatisticBoxComponent, StatisticGraphComponent, CommonModule,MatPaginatorModule],
+  imports: [MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, MatNativeDateModule, StatisticBoxComponent, StatisticGraphComponent, CommonModule, MatPaginatorModule],
   templateUrl: './statistics-pages.component.html',
   styleUrl: './statistics-pages.component.scss'
 })
 export class StatisticsPagesComponent {
   public Object: any;
-  public currentStatisticsCount:number = 0;
+  public currentStatisticsCount: number = 0;
   private pageStart: number = 0;
   private pageEnd: number = 10;
   constructor(private statisticsPageService: StatisticsPagesService) {
     this.sendStatisticsPage();
   }
-  public statisticsType: { [key: string]: StatisticsRet } = {};
+  public statisticsType: { [key: string]: StatisticsRo } = {};
   public chartColors = ['#7862b3', '#33b2df', '#f48024', '#2ecc71'];
 
-  public statistics: StatisticsRet = new StatisticsRet({}, {}, {});
+  public statistics: StatisticsRo = new StatisticsRo({}, {}, {});
   public range = new FormGroup({
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),
@@ -62,7 +62,7 @@ export class StatisticsPagesComponent {
       if (keySplit.length != 1) {
         let newKey = keySplit[1]
         if (!this.statisticsType.hasOwnProperty(newKey))
-          this.statisticsType[newKey] = new StatisticsRet({}, {}, {});
+          this.statisticsType[newKey] = new StatisticsRo({}, {}, {});
 
         this.statisticsType[newKey].graphs[keySplit[0]] = this.statistics.graphs[key]
         this.statisticsType[newKey].sevirityValues[keySplit[0]] = this.statistics.sevirityValues[key]
@@ -79,18 +79,18 @@ export class StatisticsPagesComponent {
 
     if (this.range.get('start')?.value == null || this.range.get('end')?.value == null)
       return
-    
-    
-    let startDate = this.range.get('start')?.value ?? new Date();
-    let endDate = this.range.get('end')?.value ?? new Date();
 
-    let statisticsCountRequest = new GetStatisticsCount( startDate, endDate);
+
+    let startDate : Date = this.range.get('start')?.value ?? new Date();
+    let endDate : Date= this.range.get('end')?.value ?? new Date();
+
+    let statisticsCountRequest : GetStatisticsCount= new GetStatisticsCount(startDate, endDate);
     this.statisticsPageService.getStatisticsCount(statisticsCountRequest).subscribe((result) => this.currentStatisticsCount = result)
 
-    let getStatisticsDto = new GetStatisticsDto(startDate, endDate,this.pageStart,this.pageEnd);
+    let getStatisticsDto : GetStatisticsDto = new GetStatisticsDto(startDate, endDate, this.pageStart, this.pageEnd);
     this.statisticsPageService.getStatistics(getStatisticsDto).subscribe((result) => { this.statistics = result; this.loadGraphs(); })
   }
-  public onPageChange(event:any):void{
+  public onPageChange(event: any): void {
     this.pageStart = event.pageIndex * event.pageSize
     this.pageEnd = event.pageIndex * event.pageSize + event.pageSize
     this.sendStatisticsPage()

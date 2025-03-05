@@ -8,11 +8,11 @@
     <tr>
       <th class="one-cell">
         <span class="statistic-value">
-          @switch (statisticSevirity) { @case(Sevirity.good){
+          @switch (statisticSevirity) { @case(Sevirity.GOOD){
           <span id = "good">{{ statisticValue }}</span>
-          } @case(Sevirity.warn){
+          } @case(Sevirity.WARN){
           <span id = "warn">{{ statisticValue }}</span>
-          } @case(Sevirity.bad){
+          } @case(Sevirity.BAD){
           <span id = "bad">{{ statisticValue}}</span>
           } }
         </span>

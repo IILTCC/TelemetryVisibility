@@ -10,7 +10,6 @@ import { Sevirity } from '../../../dtos/sevirityEnum';
 })
 export class StatisticBoxComponent {
   constructor(){
-    console.log()
   }
   public Sevirity = Sevirity;
   @Input() public statisticName:string = "";

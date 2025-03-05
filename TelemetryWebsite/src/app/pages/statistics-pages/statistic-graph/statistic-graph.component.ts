@@ -30,13 +30,21 @@ export class StatisticGraphComponent {
   public xaxis!: ApexXAxis;
   public tooltip!: ApexTooltip;
   public legend!: ApexLegend;
-  constructor() {
-    console.log(this.graphName)
-  }
   public colors: string[] = ["#9478de"]; // Custom color for the series
+
   @Input() public graphName = "testing";
   @Input() public graphData: { [key: string]: StatisticsPoint[] } = {};
   @Input() public lineColor: string[] = [];
+
+  constructor() { }
+
+  ngOnInit(): void {
+    if (this.graphData != undefined && Object.keys(this.graphData).length != 0)
+      this.initChartData();
+  }
+  ngOnChanges(): void {
+    this.initChartData()
+  }
   public initChartData(): void {
     let graphDataPoints: { [key: string]: number[][] } = {};
 
@@ -48,7 +56,7 @@ export class StatisticGraphComponent {
 
       this.graphData[graph].forEach((point) => {
         if (!graphDataPoints.hasOwnProperty(graph))
-          graphDataPoints[graph] = [];        
+          graphDataPoints[graph] = [];
         graphDataPoints[graph].push([point.x, point.y])
 
       });
@@ -76,10 +84,10 @@ export class StatisticGraphComponent {
     this.markers = {
       size: 0
     };
-    this.legend ={
+    this.legend = {
       show: true,
-      labels:{
-        colors: ["#e2cfea","#e2cfea","#e2cfea","#e2cfea"]
+      labels: {
+        colors: ["#e2cfea", "#e2cfea", "#e2cfea", "#e2cfea"]
       }
     }
     this.title = {
@@ -126,7 +134,7 @@ export class StatisticGraphComponent {
       x: {
         formatter: function (value: number) {
           const date = new Date(value);
-          return date.toISOString(); 
+          return date.toISOString();
         }
       },
       shared: true,
@@ -136,12 +144,5 @@ export class StatisticGraphComponent {
         }
       },
     };
-  }
-  ngOnInit(): void {  
-    if (this.graphData != undefined  &&  Object.keys(this.graphData).length != 0)    
-      this.initChartData();
-  }
-  ngOnChanges(): void {
-    this.initChartData()
   }
 }
