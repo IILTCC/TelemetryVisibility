@@ -1,0 +1,72 @@
+@import "../../../styles.scss";
+
+#main-container {
+  display: flex;
+}
+::ng-deep body,
+html {
+  overflow-y: hidden !important;
+  overflow-x: hidden !important;
+}
+.selector-div {
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #333232;
+  width: 33vw;
+  margin: 1rem;
+  height: 17vh;
+}
+.date-range-picker {
+  width:15vw;
+  transform: translateY(10px);
+  margin-right: 0.8rem;
+  margin-left: 0.8rem;
+}
+
+::ng-deep .date-range-picker > .mat-mdc-text-field-wrapper {
+  background-color: #7862b3 !important;
+  color: white;
+}
+::ng-deep .date-range-picker .mat-mdc-text-field-wrapper > * {
+  color: white !important;
+}
+::ng-deep .date-range-picker * {
+  color: $thistle !important;
+}
+.packet-type-selector {
+  width: 90%;
+}
+.statistic-type-tr {
+  width: 99vw;
+}
+.statistic-type-th {
+  width: 100%;
+}
+.statistic-main-container {
+  overflow-y: auto;
+  height: 75vh;
+}
+.statistic-title {
+  font-size: 1.5rem;
+  color: $amethyst;
+  justify-content: center;
+  text-align: center;
+}
+::ng-deep .packet-type-selector * {
+  color: $thistle;
+}
+::ng-deep .selector-paginator * {
+  color: $thistle !important;
+}
+::ng-deep .selector-paginator {
+  width: 15vw;
+}
+.mat-mdc-paginator {
+  background-color: #7862b3 !important;
+  border-radius: 8px;
+}
+::ng-deep .mat-calendar{
+  background-color: #d6c8fb  !important;
+}

@@ -24,4 +24,7 @@ export class HeaderComponent {
   public goToSystemInfo(dahsboardName:string): void {
     this.router.navigate(['/system-info',dahsboardName]);
   }
+  public goToStatistics(): void {
+    this.router.navigate(['statistics']);
+  } 
 }

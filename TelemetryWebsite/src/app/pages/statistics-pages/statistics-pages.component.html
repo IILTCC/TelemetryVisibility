@@ -1,0 +1,65 @@
+<div class="selector-div">
+  <mat-form-field class="date-range-picker">
+    <mat-label>Enter a date range</mat-label>
+    <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+      <input matStartDate formControlName="start" placeholder="Start date" />
+      <input
+        matEndDate
+        formControlName="end"
+        placeholder="End date"
+        (dateChange)="onEndDateChange($event)"
+      />
+    </mat-date-range-input>
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-date-range-picker #picker></mat-date-range-picker>
+  </mat-form-field>
+  <mat-paginator
+    class="selector-paginator"
+    [length]="currentStatisticsCount"
+    [pageSize]="10"
+    [pageSizeOptions]="[5, 10, 25, 100, 250, 500]"
+    aria-label="Select page"
+    (page)="onPageChange($event)"
+  >
+  </mat-paginator>
+</div>
+<div class="statistic-main-container">
+  <div *ngFor="let statisticTypeKey of statisticsTypeKeys()">
+    <div class="statistic-title">{{ statisticTypeKey }}</div>
+    <table class="statistic-type-tr">
+      <tr>
+        @for(sevirity of statisticValueKeys(statisticTypeKey); track $index) {
+        <th>
+          <app-statistic-box
+            [statisticValue]="
+              this.statisticsType[statisticTypeKey].values[sevirity]
+            "
+            [statisticName]="sevirity"
+            [statisticSevirity]="
+              this.statisticsType[statisticTypeKey].sevirityValues[sevirity]
+            "
+          ></app-statistic-box>
+        </th>
+        }
+      </tr>
+    </table>
+    <div>
+      <app-statistic-graph
+        [graphData]="this.statisticsType[statisticTypeKey].graphs"
+        [lineColor]="chartColors"
+        graphName=""
+      />
+    </div>
+  </div>
+  <div *ngFor="let statisticKey of statisticsKeys()">
+    <div class="statistic-title">{{ statisticKey }}</div>
+
+    <app-statistic-graph
+      [graphData]="
+        formatStatisticDict(this.statistics.graphs[statisticKey], statisticKey)
+      "
+      [lineColor]="chartColors"
+      graphName=""
+    />
+  </div>
+</div>
