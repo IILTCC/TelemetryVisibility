@@ -6,6 +6,8 @@ export class Consts {
     public static readonly ARCHIVE_GET_FRAMES = "frameByIcd";
     public static readonly ARCHIVE_GET_FRAME_COUNT = "getFrameCount";
     public static readonly STATISTICS_URL = "http://localhost:4999/api/Statistics/";
-    public static readonly STATISTICS_GET_STATISTICS = "getStatistics"; 
+    public static readonly STATISTICS_GET_STATISTICS = "getStatistics";
     public static readonly STATISTICS_GET_STATISTICS_COUNT = "getStatisticsCount";
+    public static readonly SIGNALR_STATISTICS_NAME = 'updateStatistics';
+    public static readonly SIGNALR_URL = 'http://localhost:4998/statistics';
 }

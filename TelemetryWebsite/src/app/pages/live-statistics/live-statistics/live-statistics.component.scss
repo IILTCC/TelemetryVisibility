@@ -1,0 +1,31 @@
+@import "../../../../styles.scss";
+
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/mixins";
+
+@import "ngx-toastr/toastr";
+@import "ngx-toastr/toastr-bs5-alert";
+
+.statistic-title {
+  font-size: 1.5rem;
+  color: $amethyst;
+  justify-content: center;
+  text-align: center;
+}
+.statistic-boxes {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+.main-statistic-title {
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  color: $amethyst;
+  justify-content: center;
+  text-align: center;
+}
+::ng-deep body,
+html {
+  overflow-x: hidden !important;
+}

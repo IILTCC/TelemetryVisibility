@@ -4,12 +4,14 @@ import { SimulatorPageComponent } from './pages/simulator/simulator-page/simulat
 import { ArchivePageComponent } from './pages/archive-page/archive-page.component';
 import { SystemInfoComponent } from './pages/system-info/system-info/system-info.component';
 import { StatisticsPagesComponent } from './pages/statistics-pages/statistics-pages.component';
+import { LiveStatisticsComponent } from './pages/live-statistics/live-statistics/live-statistics.component';
 
 export const routes: Routes = [
     { path: 'simulator', component: SimulatorPageComponent },
     { path: 'archive', component: ArchivePageComponent },
-    { path: 'system-info/:dashboardName', component:SystemInfoComponent },
-    { path: 'statistics', component:StatisticsPagesComponent }
+    { path: 'system-info/:dashboardName', component: SystemInfoComponent },
+    { path: 'statistics', component: StatisticsPagesComponent },
+    { path: 'live-statistics', component: LiveStatisticsComponent }
 
 ];
 
