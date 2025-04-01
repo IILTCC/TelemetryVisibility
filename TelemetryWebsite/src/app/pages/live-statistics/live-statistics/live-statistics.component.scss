@@ -19,6 +19,7 @@
   justify-content: center;
 }
 .main-statistic-title {
+  margin-top: 3vh;
   margin-bottom: 2rem;
   font-size: 2rem;
   color: $amethyst;
@@ -28,4 +29,10 @@
 ::ng-deep body,
 html {
   overflow-x: hidden !important;
+}
+#waiting-image {
+  height: 30vh;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
 }

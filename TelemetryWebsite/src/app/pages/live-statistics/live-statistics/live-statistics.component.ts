@@ -79,7 +79,6 @@ export class LiveStatisticsComponent {
         this.singleStatistics.statisticValues[key].value = this.singleStatistics.statisticValues[key].value * 100;
       }
     })
-    console.log(this.multipleStatistics)
     Object.keys(this.multipleStatistics).forEach((key) => {
       if (this.graphsToFormat.includes(key)) {
         Object.keys(this.multipleStatistics[key].statisticValues).forEach((innerKey) => {

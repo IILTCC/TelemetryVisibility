@@ -40,3 +40,11 @@ $index) {
   ></app-statistic-box>
   }
 </div>
+@if(multipleStatisticKeys().length==0) {
+
+<img
+  id="waiting-image"
+  src="../../../../assets/waitingForLive.png"
+  alt="waiting for live"
+/>
+}
