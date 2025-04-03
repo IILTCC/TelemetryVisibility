@@ -12,6 +12,14 @@
       (opened)="onSidenavToggle()"
       (closed)="onSidenavToggle()"
     >
+      <div>
+        <button
+          mat-flat-button
+          (click)="exportAllGraphs()"
+          class="export-button"
+        >
+          export
+        </button>
       <div class="side-nav-row">
         <mat-form-field class="date-range-picker">
           <mat-label>Enter a date range</mat-label>
