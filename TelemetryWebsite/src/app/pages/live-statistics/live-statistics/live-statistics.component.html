@@ -1,0 +1,50 @@
+<div class="main-statistic-title">Multiple Statistics Values</div>
+@for (topMultipleKey of multipleStatisticKeys(); track $index;let topIndex =
+$index) {
+<div class="statistic-title">{{ topMultipleKey }}</div>
+<div class="statistic-boxes">
+  <div class="statistic-boxes">{{ topIndex }}</div>
+  @for (finalMultipleItem of multipleStatisticValueKeys(topMultipleKey); track
+  $index) {
+  <app-statistic-box
+    [statisticValue]="
+      this.multipleStatistics[topMultipleKey].statisticValues[finalMultipleItem]
+        .value
+    "
+    [statisticName]="finalMultipleItem"
+    [statisticSevirity]="
+      this.multipleStatistics[topMultipleKey].statisticValues[finalMultipleItem]
+        .sevirity
+    "
+    [statisticUnit]="this.statisticsUnits[topIndex]"
+  ></app-statistic-box>
+  }
+</div>
+}
+<div class="main-statistic-title">Single Statistics Values</div>
+
+<div class="statistic-boxes">
+  @for (singleStatisticKey of singleStatisticValueKeys(); track $index) {
+
+  <app-statistic-box
+    [statisticValue]="
+      this.singleStatistics.statisticValues[singleStatisticKey].value
+    "
+    [statisticName]="singleStatisticKey"
+    [statisticSevirity]="
+      this.singleStatistics.statisticValues[singleStatisticKey].sevirity
+    "
+    [statisticUnit]="
+      this.statisticsUnits[$index + multipleStatisticKeys().length]
+    "
+  ></app-statistic-box>
+  }
+</div>
+@if(multipleStatisticKeys().length==0) {
+
+<img
+  id="waiting-image"
+  src="../../../../assets/waitingForLive.png"
+  alt="waiting for live"
+/>
+}
