@@ -10,4 +10,9 @@ export class Consts {
     public static readonly STATISTICS_GET_STATISTICS_COUNT = "getStatisticsCount";
     public static readonly SIGNALR_STATISTICS_NAME = 'updateStatistics';
     public static readonly SIGNALR_URL = 'http://localhost:4998/statistics';
+    public static readonly CSV_HEADER_DATETIME = 'Date,Time';
+    public static readonly CSV_HEADER_VALUE = 'Value';
+    public static readonly CSV_DATE_FORMAT = 'YYYY-MM-DD';
+    public static readonly CSV_TIME_FORMAT = 'HH:mm:ss';
+    public static readonly CSV_EXPORT_NAME = 'exported_graphs.zip';
 }

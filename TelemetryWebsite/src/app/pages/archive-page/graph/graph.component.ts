@@ -15,6 +15,7 @@ import {
 
 } from "ng-apexcharts";
 import { DataPoint } from '../../../dtos/dataPoint';
+import { Consts } from '../../../services/consts';
 
 @Component({
   selector: 'app-graph',
@@ -176,48 +177,35 @@ export class GraphComponent {
       }
     };
   }
-  public exportCSV() {
-    console.log("Exporting CSV for graph:", this.graphName);
-    if (!this.series || !this.series[0] || !this.series[0].data || this.series[0].data.length === 0) {
-      console.error("No data available to generate manual CSV.");
-      return;
+  async getCSVBlob(): Promise<{ filename: string, blob: Blob } | null> {
+    try {
+      const data: [number, number][] = this.series[0].data as [number, number][];
+      const csvRows: string[] = [];
+      const safeGraphName: string = this.graphName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const filename: string = `${safeGraphName || 'chart_data'}.csv`;
+
+      const headerCategory: string = Consts.CSV_HEADER_DATETIME;
+      const headerValue: string = Consts.CSV_HEADER_VALUE;
+      csvRows.push(`${headerCategory},${headerValue}`);
+
+      for (const point of data) {
+        const timestamp = point[0];
+        const value = point[1];
+
+        const formattedDate: string = dayjs(timestamp).format(Consts.CSV_DATE_FORMAT);
+        const formattedTime: string = dayjs(timestamp).format(Consts.CSV_TIME_FORMAT);
+        const formattedValue: number | string = typeof value === 'number' ? value : String(value);
+
+        csvRows.push(`${formattedDate},${formattedTime},${formattedValue}`);
+      }
+
+      const csvString: string = csvRows.join("\n");
+      const blob: Blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+      return { filename, blob };
+
+    } catch (error) {
+      return null;
     }
-
-    const data = this.series[0].data as [number, number][];
-    const csvRows = [];
-
-    const headerCategory = "Date,Time";
-    const headerValue = this.graphName || 'Value';
-    csvRows.push(`${headerCategory},${headerValue}`);
-
-    for (const point of data) {
-      const timestamp = point[0];
-      const value = point[1];
-
-      const formattedDate = dayjs(timestamp).format("YYYY-MM-DD");
-      const formattedTime = dayjs(timestamp).format("HH:mm:ss");
-      const formattedValue = typeof value === 'number' ? value.toFixed(2) : value;
-
-      csvRows.push(`${formattedDate},${formattedTime},${formattedValue}`);
-    }
-    console.log("CSV Rows:", csvRows); // Debugging line
-    const csvString = csvRows.join("\n");
-    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-
-    const link = document.createElement("a");
-    if (link.download !== undefined) {
-      const url = URL.createObjectURL(blob);
-      link.setAttribute("href", url);
-      link.setAttribute("download", `${this.graphName || 'chart-data'}.csv`);
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    } else {
-      console.error("Browser does not support automatic download link generation.");
-    }
-    console.log("CSV export completed for graph:", this.graphName); // Debugging line
   }
 }
 

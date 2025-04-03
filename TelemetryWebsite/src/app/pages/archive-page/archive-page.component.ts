@@ -18,6 +18,9 @@ import { ChannelName } from '../../common/channelName';
 import { CUSTOM_DATE_FORMATS, DateFormatter } from '../../common/dateFormatter';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon'
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
+import { Consts } from '../../services/consts';
 
 
 @Component({
@@ -46,17 +49,65 @@ export class ArchivePageComponent {
   });
   public graphsRequest: archiveFramesRo = new archiveFramesRo({});
   public framesList: DataPoint[] = [];
+  public isExporting = false;
   constructor(private archiveService: ArchivePageService) { }
   onPageChange(event: any) {
     this.pageStart = event.pageIndex * event.pageSize
     this.pageEnd = event.pageIndex * event.pageSize + event.pageSize
     this.sendArchiveRequest(false)
   }
-  public exportAllGraphs(): void {
+
+  public async exportAllGraphs(): Promise<void> {
+    if (this.isExporting) {
+      return;
+    }
+    if (!this.graphComponents || this.graphComponents.length === 0) {
+      return;
+    }
+    this.isExporting = true;
+    const promises: Promise<{ filename: string, blob: Blob } | null>[] = [];
+
     this.graphComponents.forEach((graphComponent) => {
-      console.log(graphComponent.graphName)
-      graphComponent.exportCSV();
-    })
+      if (this.selectedParmateres.get(graphComponent.graphName))
+        promises.push(graphComponent.getCSVBlob());
+    });
+
+    if (promises.length === 0) {
+      this.isExporting = false;
+      return;
+    }
+    const allFileCsvResults: ({ filename: string, blob: Blob } | null)[] = await Promise.all(promises);
+    this.createZipSave(allFileCsvResults);
+  }
+  public async createZipSave(allFileCsvResults: ({ filename: string, blob: Blob } | null)[]): Promise<void> {
+    const zip: JSZip = new JSZip();
+    try {
+
+      let filesAdded: number = 0;
+      allFileCsvResults.forEach(allFileCsvResults => {
+        if (allFileCsvResults) {
+          zip.file(allFileCsvResults.filename, allFileCsvResults.blob);
+          filesAdded++;
+        }
+      });
+
+      if (filesAdded === 0) {
+        this.isExporting = false;
+        return;
+      }
+      const zipBlob: Blob = await zip.generateAsync({
+        type: "blob",
+        compression: "DEFLATE",
+        compressionOptions: {
+          level: 6
+        }
+      });
+
+      saveAs(zipBlob, Consts.CSV_EXPORT_NAME);
+
+    } finally {
+      this.isExporting = false;
+    }
   }
   public sendArchiveRequest(restartFilter: boolean): void {
 
