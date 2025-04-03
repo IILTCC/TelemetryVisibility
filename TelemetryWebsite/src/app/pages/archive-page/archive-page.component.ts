@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, QueryList, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DateAdapter, MAT_DATE_FORMATS, MatNativeDateModule } from '@angular/material/core';
 import { DataPoint } from '../../dtos/dataPoint';
@@ -32,6 +32,7 @@ import { MatIconModule } from '@angular/material/icon'
   ]
 })
 export class ArchivePageComponent {
+  @ViewChildren(GraphComponent) graphComponents!: QueryList<GraphComponent>;
   public selectedParmateres: Map<string, boolean> = new Map<string, boolean>();
   public showFiller = false;
   public currentPacketCount = 0;
@@ -50,6 +51,12 @@ export class ArchivePageComponent {
     this.pageStart = event.pageIndex * event.pageSize
     this.pageEnd = event.pageIndex * event.pageSize + event.pageSize
     this.sendArchiveRequest(false)
+  }
+  public exportAllGraphs(): void {
+    this.graphComponents.forEach((graphComponent) => {
+      console.log(graphComponent.graphName)
+      graphComponent.exportCSV();
+    })
   }
   public sendArchiveRequest(restartFilter: boolean): void {
 

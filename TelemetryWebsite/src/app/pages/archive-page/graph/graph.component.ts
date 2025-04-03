@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
+import dayjs from 'dayjs';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -9,7 +10,9 @@ import {
   ApexYAxis,
   ApexXAxis,
   ApexTooltip,
-  NgApexchartsModule
+  NgApexchartsModule,
+  ChartComponent
+
 } from "ng-apexcharts";
 import { DataPoint } from '../../../dtos/dataPoint';
 
@@ -24,6 +27,7 @@ export class GraphComponent {
   public colors: string[] = ["#9478de"]; // Custom color for the series
   @Input() public graphName = "testing";
   @Input() public graphData: DataPoint[] = [];
+  @ViewChild(ChartComponent) chartInstance!: ChartComponent; // Keep ViewChild
 
   public series!: ApexAxisChartSeries;
   public chart!: ApexChart;
@@ -91,7 +95,24 @@ export class GraphComponent {
         allowMouseWheelZoom: false
       },
       toolbar: {
-        autoSelected: "zoom"
+        autoSelected: "zoom",
+        export: {
+          csv: {
+            filename: this.graphName,
+            columnDelimiter: ",",  // Make sure separator is semicolon
+            headerCategory: "Date,Time", // Header for x-axis
+            headerValue: this.graphName,  // Header for y-axis
+
+            categoryFormatter: (timestamp: number) => {
+              return dayjs(timestamp).format("YYYY-MM-DD,HH:mm:ss"); // Splitting Date & Time
+            },
+
+            valueFormatter: (value: number) => {
+              return value.toFixed(2); // Ensure numeric values are formatted separately
+            }
+          }
+        }
+
       }
     };
     this.dataLabels = {
@@ -155,6 +176,48 @@ export class GraphComponent {
       }
     };
   }
+  public exportCSV() {
+    console.log("Exporting CSV for graph:", this.graphName);
+    if (!this.series || !this.series[0] || !this.series[0].data || this.series[0].data.length === 0) {
+      console.error("No data available to generate manual CSV.");
+      return;
+    }
 
+    const data = this.series[0].data as [number, number][];
+    const csvRows = [];
+
+    const headerCategory = "Date,Time";
+    const headerValue = this.graphName || 'Value';
+    csvRows.push(`${headerCategory},${headerValue}`);
+
+    for (const point of data) {
+      const timestamp = point[0];
+      const value = point[1];
+
+      const formattedDate = dayjs(timestamp).format("YYYY-MM-DD");
+      const formattedTime = dayjs(timestamp).format("HH:mm:ss");
+      const formattedValue = typeof value === 'number' ? value.toFixed(2) : value;
+
+      csvRows.push(`${formattedDate},${formattedTime},${formattedValue}`);
+    }
+    console.log("CSV Rows:", csvRows); // Debugging line
+    const csvString = csvRows.join("\n");
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+
+    const link = document.createElement("a");
+    if (link.download !== undefined) {
+      const url = URL.createObjectURL(blob);
+      link.setAttribute("href", url);
+      link.setAttribute("download", `${this.graphName || 'chart-data'}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } else {
+      console.error("Browser does not support automatic download link generation.");
+    }
+    console.log("CSV export completed for graph:", this.graphName); // Debugging line
+  }
 }
 
