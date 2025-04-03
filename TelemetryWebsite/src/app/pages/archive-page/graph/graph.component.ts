@@ -100,16 +100,16 @@ export class GraphComponent {
         export: {
           csv: {
             filename: this.graphName,
-            columnDelimiter: ",",  // Make sure separator is semicolon
-            headerCategory: "Date,Time", // Header for x-axis
-            headerValue: this.graphName,  // Header for y-axis
+            columnDelimiter: ",",
+            headerCategory: "Date,Time",
+            headerValue: this.graphName,
 
             categoryFormatter: (timestamp: number) => {
-              return dayjs(timestamp).format("YYYY-MM-DD,HH:mm:ss"); // Splitting Date & Time
+              return dayjs(timestamp).format("YYYY-MM-DD,HH:mm:ss");
             },
 
             valueFormatter: (value: number) => {
-              return value.toFixed(2); // Ensure numeric values are formatted separately
+              return value.toFixed(2);
             }
           }
         }
