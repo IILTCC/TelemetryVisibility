@@ -10,20 +10,32 @@ html {
   overflow-x: hidden !important;
 }
 .selector-paginator {
-  margin-bottom: 3vh;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .mat-mdc-paginator {
   background-color: #7862b3 !important;
   border-radius: 8px;
+  margin-top: 0.4rem;
+}
+::ng-deep .mat-mdc-paginator-range-label {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 .date-range-picker {
+  display: inline-block;
   width: 90%;
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
   margin-top: 1rem;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 .graphs-space {
+  flex-wrap: wrap;
+  display: flex;
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
@@ -38,7 +50,7 @@ app-graph {
   display: block;
 }
 .graph {
-  width: 100%;
+  width: 33%;
 }
 ::ng-deep .date-range-picker > .mat-mdc-text-field-wrapper {
   background-color: #7862b3 !important;
@@ -50,8 +62,12 @@ app-graph {
 ::ng-deep .date-range-picker * {
   color: $thistle !important;
 }
+::ng-deep .mat-mdc-paginator-page-size-label {
+  display: none !important;
+}
 .packet-type-selector {
   width: 90%;
+  margin-bottom: -2rem;
 }
 ::ng-deep .packet-type-selector * {
   color: $thistle;
@@ -59,6 +75,13 @@ app-graph {
 ::ng-deep .selector-paginator * {
   color: $thistle !important;
 }
+// ::ng-deep .mat-mdc-paginator {
+//   left: 50% !important;
+//   position: absolute !important;
+//   bottom: 0 !important;
+//   transform: translateX(-50%) !important;
+//   margin-bottom: 0.5rem !important;
+// }
 ::ng-deep .packet-type-selector > .mat-mdc-text-field-wrapper {
   background-color: #7862b3 !important;
   margin-bottom: 2rem;
@@ -113,10 +136,19 @@ app-graph {
   background-color: #d6c8fb !important;
 }
 .param-type-selector {
+  width: 90%;
+  border: 1px solid dark $thistle;
+  border-radius: 8px;
   overflow-y: auto;
-  height: 25vh;
+  height: 30vh;
   scrollbar-color: $thistle rgba(0, 0, 0, 0);
   scrollbar-width: thin;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 0.6rem;
+}
+.param-type-selector th {
+  text-align: left;
 }
 ::ng-deep .mdc-checkbox__background {
   border-color: $amethyst !important;
@@ -142,7 +174,13 @@ app-graph {
   width: 15vw;
   height: auto;
 }
-
+::ng-deep .side-nav-row {
+  width: 90% !important;
+}
+table.side-nav-row {
+  width: 100%;
+  table-layout: fixed;
+}
 ::ng-deep .mat-drawer-content {
   overflow-x: hidden !important;
 }
@@ -152,7 +190,7 @@ app-graph {
 .menu-button {
   @extend .shared-buttons;
   width: 2.5rem !important;
-  margin-bottom: 1rem;
+  margin: 0.15rem;
   background: rgba(255, 255, 255, 0) !important;
   border: 1px solid rgba(255, 255, 255, 0) !important;
   transition: all 0.2s ease !important;
@@ -166,6 +204,8 @@ app-graph {
 .export-button {
   @extend .shared-buttons;
   margin: 0.4rem;
+  height: 2.3rem !important;
+  width: 4.5rem !important;
   background: rgba(255, 255, 255, 0.15) !important;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
   backdrop-filter: blur(5px) !important;
