@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, QueryList, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DateAdapter, MAT_DATE_FORMATS, MatNativeDateModule } from '@angular/material/core';
 import { DataPoint } from '../../dtos/dataPoint';
@@ -18,6 +18,9 @@ import { ChannelName } from '../../common/channelName';
 import { CUSTOM_DATE_FORMATS, DateFormatter } from '../../common/dateFormatter';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon'
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
+import { Consts } from '../../services/consts';
 
 
 @Component({
@@ -32,6 +35,7 @@ import { MatIconModule } from '@angular/material/icon'
   ]
 })
 export class ArchivePageComponent {
+  @ViewChildren(GraphComponent) graphComponents!: QueryList<GraphComponent>;
   public selectedParmateres: Map<string, boolean> = new Map<string, boolean>();
   public showFiller = false;
   public currentPacketCount = 0;
@@ -45,11 +49,75 @@ export class ArchivePageComponent {
   });
   public graphsRequest: archiveFramesRo = new archiveFramesRo({});
   public framesList: DataPoint[] = [];
+  public isExporting: boolean = false;
   constructor(private archiveService: ArchivePageService) { }
   onPageChange(event: any) {
     this.pageStart = event.pageIndex * event.pageSize
     this.pageEnd = event.pageIndex * event.pageSize + event.pageSize
     this.sendArchiveRequest(false)
+  }
+
+  public createFilePromises(): Promise<{ filename: string, blob: Blob } | null>[] {
+    if (this.isExporting)
+      return [];
+
+    if (!this.graphComponents || this.graphComponents.length === 0)
+      return [];
+
+    this.isExporting = true;
+    const promises: Promise<{ filename: string, blob: Blob } | null>[] = [];
+
+    this.graphComponents.forEach((graphComponent) => {
+      if (this.selectedParmateres.get(graphComponent.graphName))
+        promises.push(graphComponent.getCSVBlob());
+    });
+    return promises;
+  }
+
+  public async exportAllGraphs(): Promise<void> {
+    const promises: Promise<{ filename: string, blob: Blob } | null>[] = this.createFilePromises();
+
+    if (promises.length === 0) {
+      this.isExporting = false;
+      return;
+    }
+    const allFileCsvResults: ({ filename: string, blob: Blob } | null)[] = await Promise.all(promises);
+    this.createZipFile(allFileCsvResults);
+  }
+
+  public addCsvFiles(allFileCsvResults: ({ filename: string, blob: Blob } | null)[]): JSZip {
+    const zip: JSZip = new JSZip();
+    let filesAdded: number = 0;
+    allFileCsvResults.forEach(allFileCsvResults => {
+      if (allFileCsvResults) {
+        zip.file(allFileCsvResults.filename, allFileCsvResults.blob);
+        filesAdded++;
+      }
+    });
+
+    if (filesAdded === 0) {
+      this.isExporting = false;
+      return new JSZip();
+    }
+    return zip
+  }
+
+
+  public async createZipFile(allFileCsvResults: ({ filename: string, blob: Blob } | null)[]): Promise<void> {
+    try {
+      const zip: JSZip = this.addCsvFiles(allFileCsvResults);
+
+      const zipBlob: Blob = await zip.generateAsync({
+        type: "blob",
+        compression: "DEFLATE",
+        compressionOptions: {
+          level: 6
+        }
+      });
+      saveAs(zipBlob, Consts.CSV_EXPORT_NAME);
+    } finally {
+      this.isExporting = false;
+    }
   }
   public sendArchiveRequest(restartFilter: boolean): void {
 

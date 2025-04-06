@@ -54,6 +54,10 @@
         submit
       </button>
       @if(frameKeys().length > 0) {
+      <button mat-flat-button (click)="exportAllGraphs()" class="export-button">
+        export
+      </button>
+      } @if(frameKeys().length > 0) {
       <div>
         <div class="selector-paginator">
           <mat-paginator
@@ -93,7 +97,7 @@
           {{ graphKey }}
         </mat-expansion-panel-header>
 
-        <mat-panel-description>
+        <mat-panel-description id="apexchart-{{ graphKey }}">
           <app-graph
             class="graph"
             [graphName]="graphKey"
