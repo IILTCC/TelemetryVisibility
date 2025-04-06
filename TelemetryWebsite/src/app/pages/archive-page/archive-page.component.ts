@@ -86,13 +86,12 @@ export class ArchivePageComponent {
     if (event.value == null)
       return
   }
-  onSidenavToggle() {
+  public onSidenavToggle() {
     setTimeout(() => {
       window.dispatchEvent(new Event('resize'));
     }, 1);
   }
-  public onCheckboxChange(event: any) {
+  public onCheckboxChange(event: any): void {
     this.selectedParmateres.set(event.source.value, !this.selectedParmateres.get(event.source.value))
-    console.log(this.selectedParmateres)
   }
 } 
