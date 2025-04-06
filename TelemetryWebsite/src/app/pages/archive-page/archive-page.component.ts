@@ -16,12 +16,14 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { GetPacketCountDto } from '../../dtos/getPacketCountDto';
 import { ChannelName } from '../../common/channelName';
 import { CUSTOM_DATE_FORMATS, DateFormatter } from '../../common/dateFormatter';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon'
 
 
 @Component({
   selector: 'app-archive-page',
   standalone: true,
-  imports: [GraphComponent, CommonModule, MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, MatNativeDateModule, MatPaginatorModule, MatSelectModule, MatSidenavModule, MatExpansionModule],
+  imports: [GraphComponent, CommonModule, MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, MatNativeDateModule, MatPaginatorModule, MatSelectModule, MatSidenavModule, MatExpansionModule, MatCheckboxModule, MatIconModule],
   templateUrl: './archive-page.component.html',
   styleUrl: './archive-page.component.scss',
   providers: [
@@ -30,6 +32,8 @@ import { CUSTOM_DATE_FORMATS, DateFormatter } from '../../common/dateFormatter';
   ]
 })
 export class ArchivePageComponent {
+  public selectedParmateres: Map<string, boolean> = new Map<string, boolean>();
+  public showFiller = false;
   public currentPacketCount = 0;
   public packetTypes: string[] = [ChannelName.flightBoxDown, ChannelName.flightBoxUp, ChannelName.fiberBoxDown, ChannelName.fiberBoxUp];
   public packetTypeSelected: string = this.packetTypes[0];
@@ -45,9 +49,9 @@ export class ArchivePageComponent {
   onPageChange(event: any) {
     this.pageStart = event.pageIndex * event.pageSize
     this.pageEnd = event.pageIndex * event.pageSize + event.pageSize
-    this.sendArchiveRequest()
+    this.sendArchiveRequest(false)
   }
-  public sendArchiveRequest(): void {
+  public sendArchiveRequest(restartFilter: boolean): void {
 
     if (this.range.get('start')?.value == null || this.range.get('end')?.value == null)
       return
@@ -59,6 +63,11 @@ export class ArchivePageComponent {
     let request: GetFrameDto = new GetFrameDto(this.pageStart, this.pageEnd - this.pageStart, this.packetTypeToNumber(this.packetTypeSelected), startDate, endDate);
     this.archiveService.getPackets(request).subscribe((result: any) => {
       this.graphsRequest = new archiveFramesRo(result)
+      if (restartFilter) {
+        Object.keys(this.graphsRequest.framesList).forEach((key) => {
+          this.selectedParmateres.set(key, true);
+        });
+      }
     })
   }
   private packetTypeToNumber(wantedPacket: string): number {
@@ -68,7 +77,7 @@ export class ArchivePageComponent {
     return 0
   }
   public onPacketTypeChange(): void {
-    this.sendArchiveRequest()
+    this.sendArchiveRequest(true)
   }
   public frameKeys(): string[] {
     return Object.keys(this.graphsRequest.framesList);
@@ -77,5 +86,12 @@ export class ArchivePageComponent {
     if (event.value == null)
       return
   }
-
+  public onSidenavToggle() {
+    setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 1);
+  }
+  public onCheckboxChange(event: any): void {
+    this.selectedParmateres.set(event.source.value, !this.selectedParmateres.get(event.source.value))
+  }
 } 
