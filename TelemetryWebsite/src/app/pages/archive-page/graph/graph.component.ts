@@ -177,27 +177,31 @@ export class GraphComponent {
       }
     };
   }
-  async getCSVBlob(): Promise<{ filename: string, blob: Blob } | null> {
+
+  public pushCsvData(data: [number, number][]): string[] {
+    let csvRows: string[] = [];
+    csvRows.push(`${Consts.CSV_HEADER_DATETIME},${Consts.CSV_HEADER_VALUE}`);
+
+    for (const point of data) {
+      const timestamp = point[0];
+      const value = point[1];
+
+      const formattedDate: string = dayjs(timestamp).format(Consts.CSV_DATE_FORMAT);
+      const formattedTime: string = dayjs(timestamp).format(Consts.CSV_TIME_FORMAT);
+      const formattedValue: number | string = typeof value === 'number' ? value : String(value);
+
+      csvRows.push(`${formattedDate},${formattedTime},${formattedValue}`);
+    }
+    return csvRows;
+  }
+
+  public async getCSVBlob(): Promise<{ filename: string, blob: Blob } | null> {
     try {
       const data: [number, number][] = this.series[0].data as [number, number][];
-      const csvRows: string[] = [];
       const safeGraphName: string = this.graphName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
       const filename: string = `${safeGraphName || 'chart_data'}.csv`;
 
-      const headerCategory: string = Consts.CSV_HEADER_DATETIME;
-      const headerValue: string = Consts.CSV_HEADER_VALUE;
-      csvRows.push(`${headerCategory},${headerValue}`);
-
-      for (const point of data) {
-        const timestamp = point[0];
-        const value = point[1];
-
-        const formattedDate: string = dayjs(timestamp).format(Consts.CSV_DATE_FORMAT);
-        const formattedTime: string = dayjs(timestamp).format(Consts.CSV_TIME_FORMAT);
-        const formattedValue: number | string = typeof value === 'number' ? value : String(value);
-
-        csvRows.push(`${formattedDate},${formattedTime},${formattedValue}`);
-      }
+      const csvRows: string[] = this.pushCsvData(data);
 
       const csvString: string = csvRows.join("\n");
       const blob: Blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });

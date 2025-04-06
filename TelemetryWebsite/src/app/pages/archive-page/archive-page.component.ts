@@ -49,7 +49,7 @@ export class ArchivePageComponent {
   });
   public graphsRequest: archiveFramesRo = new archiveFramesRo({});
   public framesList: DataPoint[] = [];
-  public isExporting = false;
+  public isExporting: boolean = false;
   constructor(private archiveService: ArchivePageService) { }
   onPageChange(event: any) {
     this.pageStart = event.pageIndex * event.pageSize
@@ -57,13 +57,13 @@ export class ArchivePageComponent {
     this.sendArchiveRequest(false)
   }
 
-  public async exportAllGraphs(): Promise<void> {
-    if (this.isExporting) {
-      return;
-    }
-    if (!this.graphComponents || this.graphComponents.length === 0) {
-      return;
-    }
+  public createFilePromises(): Promise<{ filename: string, blob: Blob } | null>[] {
+    if (this.isExporting)
+      return [];
+
+    if (!this.graphComponents || this.graphComponents.length === 0)
+      return [];
+
     this.isExporting = true;
     const promises: Promise<{ filename: string, blob: Blob } | null>[] = [];
 
@@ -71,30 +71,42 @@ export class ArchivePageComponent {
       if (this.selectedParmateres.get(graphComponent.graphName))
         promises.push(graphComponent.getCSVBlob());
     });
+    return promises;
+  }
+
+  public async exportAllGraphs(): Promise<void> {
+    const promises: Promise<{ filename: string, blob: Blob } | null>[] = this.createFilePromises();
 
     if (promises.length === 0) {
       this.isExporting = false;
       return;
     }
     const allFileCsvResults: ({ filename: string, blob: Blob } | null)[] = await Promise.all(promises);
-    this.createZipSave(allFileCsvResults);
+    this.createZipFile(allFileCsvResults);
   }
-  public async createZipSave(allFileCsvResults: ({ filename: string, blob: Blob } | null)[]): Promise<void> {
+
+  public addCsvFiles(allFileCsvResults: ({ filename: string, blob: Blob } | null)[]): JSZip {
     const zip: JSZip = new JSZip();
-    try {
-
-      let filesAdded: number = 0;
-      allFileCsvResults.forEach(allFileCsvResults => {
-        if (allFileCsvResults) {
-          zip.file(allFileCsvResults.filename, allFileCsvResults.blob);
-          filesAdded++;
-        }
-      });
-
-      if (filesAdded === 0) {
-        this.isExporting = false;
-        return;
+    let filesAdded: number = 0;
+    allFileCsvResults.forEach(allFileCsvResults => {
+      if (allFileCsvResults) {
+        zip.file(allFileCsvResults.filename, allFileCsvResults.blob);
+        filesAdded++;
       }
+    });
+
+    if (filesAdded === 0) {
+      this.isExporting = false;
+      return new JSZip();
+    }
+    return zip
+  }
+
+
+  public async createZipFile(allFileCsvResults: ({ filename: string, blob: Blob } | null)[]): Promise<void> {
+    try {
+      const zip: JSZip = this.addCsvFiles(allFileCsvResults);
+
       const zipBlob: Blob = await zip.generateAsync({
         type: "blob",
         compression: "DEFLATE",
@@ -102,9 +114,7 @@ export class ArchivePageComponent {
           level: 6
         }
       });
-
       saveAs(zipBlob, Consts.CSV_EXPORT_NAME);
-
     } finally {
       this.isExporting = false;
     }
