@@ -37,6 +37,9 @@ import { TooltipPosition, MatTooltipModule, TooltipComponent } from '@angular/ma
 })
 export class ArchivePageComponent {
   @ViewChildren(GraphComponent) graphComponents!: QueryList<GraphComponent>;
+  public data: TableTelemetryData[] = [{ date: new Date(), position: 0, value: 3 }];
+  public dataHeader: string[] = ["value", "position", "date"];
+
   public selectedParmateres: Map<string, boolean> = new Map<string, boolean>();
   public showFiller = false;
   public currentPacketCount = 0;
