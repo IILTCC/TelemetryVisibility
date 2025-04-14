@@ -12,9 +12,6 @@
       (opened)="onSidenavToggle()"
       (closed)="onSidenavToggle()"
     >
-      <button mat-flat-button (click)="exportAllGraphs()" class="export-button">
-        export
-      </button>
       <div class="side-nav-row">
         <mat-form-field class="date-range-picker">
           <mat-label>Enter a date range</mat-label>
@@ -53,19 +50,22 @@
           submit
         </button>
 
-      <button
-        mat-flat-button
-        (click)="sendArchiveRequest(true)"
-        class="submit-button"
-      >
-        submit
-      </button>
-      @if(frameKeys().length > 0) {
-      <button mat-flat-button (click)="exportAllGraphs()" class="export-button">
-        export
-      </button>
-      } @if(frameKeys().length > 0) {
-      <div>
+        @if(frameKeys().length > 0) {
+        <button
+          matTooltipShowDelay="500"
+          matTooltipHideDelay="1000"
+          matTooltip="export"
+          mat-flat-button
+          (click)="exportAllGraphs()"
+          class="export-button"
+        >
+          <img
+            id="export-button-image"
+            src="../../../assets/export.png"
+            alt="Icon"
+          />
+        </button>
+        } @if(frameKeys().length > 0) {
         <div class="selector-paginator">
           <mat-paginator
             [length]="currentPacketCount"
@@ -86,8 +86,9 @@
           <br />
           }
         </div>
+
+        }
       </div>
-      }
     </mat-drawer>
 
     <button mat-flat-button (click)="drawer.toggle()" class="menu-button">

@@ -21,12 +21,13 @@ import { MatIconModule } from '@angular/material/icon'
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { Consts } from '../../services/consts';
+import { TooltipPosition, MatTooltipModule, TooltipComponent } from '@angular/material/tooltip';
 
 
 @Component({
   selector: 'app-archive-page',
   standalone: true,
-  imports: [GraphComponent, CommonModule, MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, MatNativeDateModule, MatPaginatorModule, MatSelectModule, MatSidenavModule, MatExpansionModule, MatCheckboxModule, MatIconModule],
+  imports: [GraphComponent, CommonModule, MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, MatNativeDateModule, MatPaginatorModule, MatSelectModule, MatSidenavModule, MatExpansionModule, MatCheckboxModule, MatIconModule, MatTooltipModule],
   templateUrl: './archive-page.component.html',
   styleUrl: './archive-page.component.scss',
   providers: [
