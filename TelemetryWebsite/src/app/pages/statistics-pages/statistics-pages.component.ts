@@ -15,18 +15,25 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { GetStatisticsCount } from '../../dtos/getStatisticsCount';
 import { MAT_DATE_FORMATS, DateAdapter } from '@angular/material/core';
 import { CUSTOM_DATE_FORMATS, DateFormatter } from '../../common/dateFormatter';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatInputModule } from '@angular/material/input';
+import { ChangeDetectionStrategy } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-statistics-pages',
   standalone: true,
-  imports: [MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, MatNativeDateModule, StatisticBoxComponent, StatisticGraphComponent, CommonModule, MatPaginatorModule],
+  imports: [MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, MatNativeDateModule, StatisticBoxComponent, StatisticGraphComponent, CommonModule, MatPaginatorModule, MatSliderModule, MatInputModule, MatIconModule],
   templateUrl: './statistics-pages.component.html',
   styleUrl: './statistics-pages.component.scss',
   providers: [
     { provide: DateAdapter, useClass: DateFormatter },
     { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS }
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+
 })
 export class StatisticsPagesComponent {
+  public startTimeline: Date = new Date();
   public Object: any;
   public currentStatisticsCount: number = 0;
   private pageStart: number = 0;
@@ -49,6 +56,7 @@ export class StatisticsPagesComponent {
   }
   public statisticsKeys(): string[] {
     return Object.keys(this.statistics.graphs);
+
   }
   public statisticValueKeys(statisticTypeKey: string): string[] {
     return Object.keys(this.statisticsType[statisticTypeKey].values);

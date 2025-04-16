@@ -11,6 +11,7 @@ html {
 .selector-div {
   border-radius: 8px;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   background-color: #333232;
@@ -89,4 +90,10 @@ html {
     transform: scale(1.05) !important;
     filter: brightness(1.2) !important;
   }
+}
+.timeline-slider {
+  width: 50%;
+}
+.timeline-outer {
+  width: 100%;
 }
