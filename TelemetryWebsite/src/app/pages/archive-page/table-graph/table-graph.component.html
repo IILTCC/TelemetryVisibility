@@ -1,11 +1,31 @@
-<table mat-table [dataSource]="tableData">
+<table
+  mat-table
+  [dataSource]="dataSource"
+  matSort
+  (matSortChange)="announceSortChange($event)"
+>
   @for(tableRow of getRowKeys(); track $index) {
   <ng-container [matColumnDef]="displayedColumns[$index]">
-    <th mat-header-cell *matHeaderCellDef>{{ displayedColumns[$index] }}</th>
+    <th
+      mat-header-cell
+      *matHeaderCellDef
+      mat-sort-header
+      [sortActionDescription]="
+        isDate(displayedColumns[$index]) ? 'Sort by date' : 'Sort by number'
+      "
+    >
+      {{ displayedColumns[$index] }}
+    </th>
     <th></th>
-    <td mat-cell *matCellDef="let element">{{ element }}</td>
+    <td mat-cell *matCellDef="let element">
+      {{
+        isDate(element[displayedColumns[$index]])
+          ? (element[displayedColumns[$index]] | date : "yyyy-MM-dd HH:mm:ss")
+          : element[displayedColumns[$index]]
+      }}
+    </td>
   </ng-container>
   }
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 </table>

@@ -2,8 +2,6 @@
   href="https://fonts.googleapis.com/icon?family=Material+Icons"
   rel="stylesheet"
 />
-<app-table-graph [tableData]="data" [displayedColumns]="dataHeader">
-</app-table-graph>
 <div id="main-container">
   <mat-drawer-container class="sidenav-selector-container" autosize>
     <mat-drawer
@@ -14,15 +12,10 @@
       (opened)="onSidenavToggle()"
       (closed)="onSidenavToggle()"
     >
-      <div>
-        <button
-          mat-flat-button
-          (click)="exportAllGraphs()"
-          class="export-button"
-        >
-          export
-        </button>
       <div class="side-nav-row">
+        <button mat-flat-button (click)="toggleTable()" class="toggle-table">
+          toggle tables
+        </button>
         <mat-form-field class="date-range-picker">
           <mat-label>Enter a date range</mat-label>
           <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
@@ -107,13 +100,36 @@
   </mat-drawer-container>
 
   <div class="graphs-space">
-    @for(graphKey of frameKeys(); track $index) {
+    @if(isShowTable){ @for(graphKey of getVisibleFrameKeys(); track $index) {
+    @if( filterTables($index)){
+    <div class="table-outer-header">
+      <p class="table-header">{{ graphKey }}</p>
+      <div class="table-scroll">
+        <app-table-graph
+          class="table-data"
+          [tableData]="tableData.get(graphKey)!"
+          [displayedColumns]="dataHeader"
+        >
+        </app-table-graph>
+      </div>
+    </div>
+    } }
+    <div class="table-scroll-buttons">
+      <button class="table-scroll-button" (click)="moveTableRight()">
+        {{ "<" }}
+      </button>
+      <button class="table-scroll-button" (click)="moveTableLeft()">
+        {{ ">" }}
+      </button>
+    </div>
+    } @if(!isShowTable){ @for(graphKey of frameKeys(); track $index) {
     @if(selectedParmateres.get(graphKey)) {
+
     <app-graph
       class="graph"
       [graphName]="graphKey"
       [graphData]="graphsRequest.framesList[graphKey]"
     ></app-graph>
-    } }
+    } } }
   </div>
 </div>
