@@ -19,6 +19,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatInputModule } from '@angular/material/input';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+
 @Component({
   selector: 'app-statistics-pages',
   standalone: true,
@@ -33,7 +34,16 @@ import { MatIconModule } from '@angular/material/icon';
 
 })
 export class StatisticsPagesComponent {
-  public startTimeline: Date = new Date();
+  public minTimeline: number = 0;
+  public maxTimeline: number = 0;
+  public startTimeLine: number = 0;
+  public endTimeLine: number = 0;
+  public timelineForm = new FormGroup({
+    timelineStart: new FormControl<Date | null>(null),
+    timelineEnd: new FormControl<Date | null>(null),
+  });
+  public startTimeLineDate: Date = new Date();
+  public endTimeLineDate: Date = new Date();
   public Object: any;
   public currentStatisticsCount: number = 0;
   private pageStart: number = 0;
@@ -49,8 +59,11 @@ export class StatisticsPagesComponent {
   private graphsToFormat: string[] = ["CorruptedPacket"];
   constructor(private statisticsPageService: StatisticsPagesService) {
     this.sendStatisticsPage();
-  }
+    this.initializeTimeLine();
 
+  }
+  ngOnInit() {
+  }
   public statisticsTypeKeys(): string[] {
     return Object.keys(this.statisticsType);
   }
@@ -103,6 +116,23 @@ export class StatisticsPagesComponent {
       }
     })
   }
+  public initializeTimeLine(): void {
+    this.statisticsPageService.getFrameDateRange().subscribe((result) => {
+      this.minTimeline = new Date(result.startDate).getTime();
+      this.maxTimeline = new Date(result.endDate).getTime();
+      this.minTimeline = 1538780378577;
+
+      this.startTimeLine = this.minTimeline;
+      this.endTimeLine = this.maxTimeline / 2;
+      this.startTimeLine = 1538780378577;
+
+      this.startTimeLineDate = new Date(1538780378577);
+      this.endTimeLineDate = new Date(result.endDate);
+      this.timelineForm.patchValue({ timelineStart: this.startTimeLineDate, timelineEnd: this.endTimeLineDate });
+
+      console.log(this.startTimeLineDate, this.endTimeLineDate)
+    });
+  }
   public sendStatisticsPage(): void {
 
     if (this.range.get('start')?.value == null || this.range.get('end')?.value == null)
@@ -122,4 +152,26 @@ export class StatisticsPagesComponent {
     this.pageEnd = event.pageIndex * event.pageSize + event.pageSize
     this.sendStatisticsPage()
   }
+  public onSliderStartChange() {
+    console.log(this.startTimeLine)
+  }
+  public onSliderEndChange() {
+    console.log(this.endTimeLine)
+  }
+  public onTimeLineChange(event: any) {
+    console.log(this.startTimeLine)
+    console.log(this.endTimeLine)
+    this.startTimeLineDate = new Date(this.startTimeLine);
+    this.endTimeLineDate = new Date(this.endTimeLine);
+    this.timelineForm.patchValue({ timelineStart: this.startTimeLineDate, timelineEnd: this.endTimeLineDate });
+  }
+  public onEndDateChange(event: any) {
+    console.log(event.value)
+    this.endTimeLine = new Date(event.value).getTime();
+  }
+  public onStartDateChange(event: any) {
+    console.log(event.value)
+    this.startTimeLine = new Date(event.value).getTime();
+  }
+
 }

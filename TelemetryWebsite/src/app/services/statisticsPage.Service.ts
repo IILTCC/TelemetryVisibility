@@ -7,6 +7,7 @@ import { Consts } from "./consts";
 import { GetStatisticsDto } from "../dtos/getStatisticsDto";
 import { StatisticsRo } from "../dtos/statisticsRo";
 import { GetStatisticsCount } from "../dtos/getStatisticsCount";
+import { GetDateRangeDto } from "../dtos/getDateRangeDto";
 
 @Injectable({
     providedIn: 'root'
@@ -18,5 +19,8 @@ export class StatisticsPagesService {
     }
     public getStatisticsCount(getStatisticsCount: GetStatisticsCount): Observable<any> {
         return this.http.post<GetStatisticsCount>(Consts.STATISTICS_URL + Consts.STATISTICS_GET_STATISTICS_COUNT, getStatisticsCount);
+    }
+    public getFrameDateRange() {
+        return this.http.get<GetDateRangeDto>(Consts.STATISTICS_URL + Consts.STATISTICS_DATE_RANGE);
     }
 }

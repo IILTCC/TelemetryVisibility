@@ -17,7 +17,6 @@ html {
   background-color: #333232;
   width: 55vw;
   margin: 1rem;
-  height: 14vh;
 }
 .date-range-picker {
   width: 17vw;
@@ -61,6 +60,7 @@ html {
   color: $thistle !important;
 }
 ::ng-deep .selector-paginator {
+  margin-top: 1rem;
   width: 30vw;
 }
 .mat-mdc-paginator {
@@ -92,8 +92,19 @@ html {
   }
 }
 .timeline-slider {
-  width: 50%;
+  width: 85%;
 }
 .timeline-outer {
   width: 100%;
+}
+::ng-deep .selector-div .mat-mdc-text-field-wrapper {
+  background-color: #7862b3 !important;
+  color: white;
+}
+::ng-deep .selector-div .mat-mdc-text-field-wrapper * {
+  color: white !important;
+}
+.timeline-outer {
+  display: flex;
+  justify-content: center;
 }

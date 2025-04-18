@@ -15,4 +15,5 @@ export class Consts {
     public static readonly CSV_DATE_FORMAT = 'YYYY-MM-DD';
     public static readonly CSV_TIME_FORMAT = 'HH:mm:ss';
     public static readonly CSV_EXPORT_NAME = 'exported_graphs.zip';
+    public static readonly STATISTICS_DATE_RANGE = "getFrameDates";
 }
