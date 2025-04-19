@@ -128,19 +128,14 @@
   </div>
   @for(statisticKey of statisticsKeys(); track $index;let graphIndex = $index) {
 
-  <!-- <div *ngFor="let statisticKey of statisticsKeys(); let graphIndex = index"> -->
   <div class="statistic-title">{{ statisticKey }}</div>
-
   <app-statistic-graph
-    [graphData]="
-      formatStatisticDict(this.statistics.graphs[statisticKey], statisticKey)
-    "
+    [graphData]="{ statisticKey: this.statistics.graphs[statisticKey] }"
     [lineColor]="chartColors"
     [graphUnits]="
       this.statisticsUnits[graphIndex + statisticsTypeKeys().length]
     "
     graphName=""
   />
-  <!-- </div> -->
   }
 </div>

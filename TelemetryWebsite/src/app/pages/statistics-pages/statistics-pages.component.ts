@@ -33,6 +33,9 @@ import { GetFullStatisticsDto } from '../../dtos/getFullStatisticsDto';
   ],
 })
 export class StatisticsPagesComponent {
+  public test: { [key: string]: StatisticsPoint[] } = { "test": [new StatisticsPoint(1, 2), new StatisticsPoint(2, 3), new StatisticsPoint(3, 4)] };
+
+
   public minTimeline: number = 0;
   public maxTimeline: number = 0;
   public startTimeLine: number = 0;
@@ -62,12 +65,6 @@ export class StatisticsPagesComponent {
     this.initializeTimeLine();
 
   }
-  ngOnInit() {
-    console.log("inint")
-  }
-  ngOnChanges() {
-    console.log("onChanges")
-  }
   public statisticsTypeKeys(): string[] {
     return Object.keys(this.statisticsType);
   }
@@ -80,7 +77,6 @@ export class StatisticsPagesComponent {
     return Object.keys(this.statisticsType[statisticTypeKey].values);
   }
   public formatStatisticDict(list: StatisticsPoint[], name: string): { [key: string]: StatisticsPoint[] } {
-
     let retDict: { [key: string]: StatisticsPoint[] } = {}
     retDict[name] = list;
     return retDict
