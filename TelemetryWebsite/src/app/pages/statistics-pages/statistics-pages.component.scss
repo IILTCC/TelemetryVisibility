@@ -18,6 +18,12 @@ html {
   width: 55vw;
   margin: 1rem;
 }
+.selector-inner {
+  margin: 1rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
 .date-range-picker {
   width: 17vw;
   transform: translateY(10px);
@@ -60,7 +66,7 @@ html {
   color: $thistle !important;
 }
 ::ng-deep .selector-paginator {
-  margin-top: 1rem;
+  // margin-top: 1rem;
   width: 30vw;
 }
 .mat-mdc-paginator {
@@ -107,4 +113,8 @@ html {
 .timeline-outer {
   display: flex;
   justify-content: center;
+}
+::ng-deep .timeline-date {
+  margin-left: 0.3rem;
+  margin-right: 0.3rem;
 }

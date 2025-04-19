@@ -19,6 +19,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatInputModule } from '@angular/material/input';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { GetFullStatisticsDto } from '../../dtos/getFullStatisticsDto';
 
 @Component({
   selector: 'app-statistics-pages',
@@ -30,8 +31,6 @@ import { MatIconModule } from '@angular/material/icon';
     { provide: DateAdapter, useClass: DateFormatter },
     { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS }
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-
 })
 export class StatisticsPagesComponent {
   public minTimeline: number = 0;
@@ -42,6 +41,7 @@ export class StatisticsPagesComponent {
     timelineStart: new FormControl<Date | null>(null),
     timelineEnd: new FormControl<Date | null>(null),
   });
+  public isTimeLine: boolean = false;
   public startTimeLineDate: Date = new Date();
   public endTimeLineDate: Date = new Date();
   public Object: any;
@@ -63,11 +63,16 @@ export class StatisticsPagesComponent {
 
   }
   ngOnInit() {
+    console.log("inint")
+  }
+  ngOnChanges() {
+    console.log("onChanges")
   }
   public statisticsTypeKeys(): string[] {
     return Object.keys(this.statisticsType);
   }
   public statisticsKeys(): string[] {
+
     return Object.keys(this.statistics.graphs);
 
   }
@@ -75,6 +80,7 @@ export class StatisticsPagesComponent {
     return Object.keys(this.statisticsType[statisticTypeKey].values);
   }
   public formatStatisticDict(list: StatisticsPoint[], name: string): { [key: string]: StatisticsPoint[] } {
+
     let retDict: { [key: string]: StatisticsPoint[] } = {}
     retDict[name] = list;
     return retDict
@@ -120,13 +126,11 @@ export class StatisticsPagesComponent {
     this.statisticsPageService.getFrameDateRange().subscribe((result) => {
       this.minTimeline = new Date(result.startDate).getTime();
       this.maxTimeline = new Date(result.endDate).getTime();
-      this.minTimeline = 1538780378577;
 
       this.startTimeLine = this.minTimeline;
       this.endTimeLine = this.maxTimeline / 2;
-      this.startTimeLine = 1538780378577;
 
-      this.startTimeLineDate = new Date(1538780378577);
+      this.startTimeLineDate = new Date(result.startDate);
       this.endTimeLineDate = new Date(result.endDate);
       this.timelineForm.patchValue({ timelineStart: this.startTimeLineDate, timelineEnd: this.endTimeLineDate });
 
@@ -134,7 +138,15 @@ export class StatisticsPagesComponent {
     });
   }
   public sendStatisticsPage(): void {
+    this.statisticsType = {};
+    this.statistics = new StatisticsRo({}, {}, {});
+    if (!this.isTimeLine)
+      this.sendTimelineStatistics()
+    else
+      this.sendPaginationStatistics()
+  }
 
+  public sendPaginationStatistics(): void {
     if (this.range.get('start')?.value == null || this.range.get('end')?.value == null)
       return
 
@@ -147,31 +159,31 @@ export class StatisticsPagesComponent {
     let getStatisticsDto: GetStatisticsDto = new GetStatisticsDto(startDate, endDate, this.pageStart, this.pageEnd);
     this.statisticsPageService.getStatistics(getStatisticsDto).subscribe((result) => { this.statistics = result; this.loadGraphs(); })
   }
+  public sendTimelineStatistics(): void {
+
+    if (this.startTimeLineDate == null || this.endTimeLineDate == null)
+      return
+    let getStatisticsDto: GetFullStatisticsDto = new GetFullStatisticsDto(this.startTimeLineDate, this.endTimeLineDate);
+    this.statisticsPageService.getFullStatistics(getStatisticsDto).subscribe((result) => { this.statistics = result; this.loadGraphs(); })
+  }
   public onPageChange(event: any): void {
     this.pageStart = event.pageIndex * event.pageSize
     this.pageEnd = event.pageIndex * event.pageSize + event.pageSize
     this.sendStatisticsPage()
   }
-  public onSliderStartChange() {
-    console.log(this.startTimeLine)
-  }
-  public onSliderEndChange() {
-    console.log(this.endTimeLine)
-  }
+
   public onTimeLineChange(event: any) {
-    console.log(this.startTimeLine)
-    console.log(this.endTimeLine)
     this.startTimeLineDate = new Date(this.startTimeLine);
     this.endTimeLineDate = new Date(this.endTimeLine);
     this.timelineForm.patchValue({ timelineStart: this.startTimeLineDate, timelineEnd: this.endTimeLineDate });
   }
   public onEndDateChange(event: any) {
-    console.log(event.value)
     this.endTimeLine = new Date(event.value).getTime();
   }
   public onStartDateChange(event: any) {
-    console.log(event.value)
     this.startTimeLine = new Date(event.value).getTime();
   }
-
+  public swithcTimelinePagination(): void {
+    this.isTimeLine = !this.isTimeLine;
+  }
 }
