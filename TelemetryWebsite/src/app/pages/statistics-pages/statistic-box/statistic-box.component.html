@@ -1,4 +1,11 @@
-<div class="statistic-box">
+<div
+  class="statistic-box"
+  [ngClass]="{
+    'border-good': statisticSevirity === Sevirity.GOOD,
+    'border-warn': statisticSevirity === Sevirity.WARN,
+    'border-bad': statisticSevirity === Sevirity.BAD
+  }"
+>
   <table>
     <tr>
       <th class="one-cell">
@@ -8,13 +15,7 @@
     <tr>
       <th class="one-cell">
         <span class="statistic-value">
-          @switch (statisticSevirity) { @case(Sevirity.GOOD){
-          <span id = "good">{{ formattedStatisticValue +statisticUnit}}</span>
-          } @case(Sevirity.WARN){
-          <span id = "warn">{{ formattedStatisticValue+statisticUnit }}</span>
-          } @case(Sevirity.BAD){
-          <span id = "bad">{{ formattedStatisticValue+statisticUnit }}</span>
-          } }
+          <span>{{ formattedStatisticValue + statisticUnit }}</span>
         </span>
       </th>
     </tr>

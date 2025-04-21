@@ -1,3 +1,5 @@
+@if(multipleStatisticKeys().length!=0) {
+
 <div class="main-statistic-title">Multiple Statistics Values</div>
 @for (topMultipleKey of multipleStatisticKeys(); track $index;let topIndex =
 $index) {
@@ -40,11 +42,12 @@ $index) {
   ></app-statistic-box>
   }
 </div>
-@if(multipleStatisticKeys().length==0) {
-
-<img
-  id="waiting-image"
-  src="../../../../assets/waitingForLive.png"
-  alt="waiting for live"
-/>
+} @if(multipleStatisticKeys().length==0) {
+<div class="waiting-image-container">
+  <img
+    id="waiting-image"
+    src="../../../../assets/waitingForLive.png"
+    alt="waiting for live"
+  />
+</div>
 }

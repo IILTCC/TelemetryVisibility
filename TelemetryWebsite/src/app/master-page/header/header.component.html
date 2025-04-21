@@ -13,15 +13,20 @@
         </button>
       </th>
       <th>
-        <button
-          mat-button
-          class="header-button"
-          #menuTrigger="matMenuTrigger"
-          [matMenuTriggerFor]="myMenu"
-          (mouseenter)="menuTrigger.openMenu()"
-        >
-          System info
-        </button>
+        <div class="drop-down-container">
+          <button mat-button class="header-button drop-down-button">
+            System info
+          </button>
+          <div class="drop-down-content">
+            <a (click)="goToSystemInfo('telemetry')">Telemetry Dashboard</a>
+            <a (click)="goToSystemInfo('mongoConsumer')"
+              >MongoConsumer Dashboard</a
+            >
+            <a (click)="goToSystemInfo('archive')">Archive Dashboard</a>
+            <a (click)="goToSystemInfo('kafka')">Kafka</a>
+            <a (click)="goToSystemInfo('all')">All Dashboards</a>
+          </div>
+        </div>
       </th>
       <th>
         <button mat-button class="header-button" (click)="goToStatistics()">
@@ -36,20 +41,3 @@
     </tr>
   </table>
 </div>
-<mat-menu #myMenu="matMenu">
-  <div class="menu-content" (mouseleave)="menuTrigger.closeMenu()">
-    <button mat-menu-item (click)="goToSystemInfo('telemetry')">
-      Telemetry Dashboard
-    </button>
-    <button mat-menu-item (click)="goToSystemInfo('mongoConsumer')">
-      MongoConsumer Dashboard
-    </button>
-    <button mat-menu-item (click)="goToSystemInfo('archive')">
-      Archive Dashboard
-    </button>
-    <button mat-menu-item (click)="goToSystemInfo('statistics')">Kafka</button>
-    <button mat-menu-item (click)="goToSystemInfo('all')">
-      All Dashboards
-    </button>
-  </div>
-</mat-menu>

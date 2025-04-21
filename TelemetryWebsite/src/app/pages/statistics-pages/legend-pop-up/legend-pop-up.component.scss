@@ -1,0 +1,19 @@
+.outer-div {
+  padding: 1rem;
+}
+.outer-div * {
+  font-size: 2rem;
+}
+.inner-div-good {
+  color: #37ce78;
+}
+$outline-color: rgba(0, 0, 0, 0.221);
+
+.inner-div-warn {
+  color: yellow;
+  text-shadow: -1px -1px 0 $outline-color, 1px -1px 0$outline-color,
+    -1px 1px 0 $outline-color, 1px 1px 0 $outline-color;
+}
+.inner-div-error {
+  color: red;
+}

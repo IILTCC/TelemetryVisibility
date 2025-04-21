@@ -1,3 +1,4 @@
+<button mat-flat-button (click)="openLegend()" class="info-button">!</button>
 <div class="selector-div">
   <div class="selector-inner">
     <button
@@ -10,9 +11,9 @@
     <button
       mat-flat-button
       (click)="swithcTimelinePagination()"
-      class="submit-button"
+      class="mode-button"
     >
-      switch
+      @if(isTimeLine){ timeline } @else { pagination }
     </button>
   </div>
   <div class="selector-inner">
@@ -126,16 +127,20 @@
       />
     </div>
   </div>
-  @for(statisticKey of statisticsKeys(); track $index;let graphIndex = $index) {
-
-  <div class="statistic-title">{{ statisticKey }}</div>
-  <app-statistic-graph
-    [graphData]="{ statisticKey: this.statistics.graphs[statisticKey] }"
-    [lineColor]="chartColors"
-    [graphUnits]="
-      this.statisticsUnits[graphIndex + statisticsTypeKeys().length]
-    "
-    graphName=""
-  />
-  }
+  <div class="all-single-graphs-container">
+    @for(statisticKey of statisticsKeys(); track $index;let graphIndex = $index)
+    {
+    <div class="single-graph-container">
+      <div class="statistic-title">{{ statisticKey }}</div>
+      <app-statistic-graph
+        [graphData]="{ statisticKey: this.statistics.graphs[statisticKey] }"
+        [lineColor]="chartColors"
+        [graphUnits]="
+          this.statisticsUnits[graphIndex + statisticsTypeKeys().length]
+        "
+        graphName=""
+      />
+    </div>
+    }
+  </div>
 </div>

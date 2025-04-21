@@ -1,11 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { Sevirity } from '../../../dtos/sevirityEnum';
 import { CommonConsts } from '../../../common/commonConsts';
-
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-statistic-box',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './statistic-box.component.html',
   styleUrl: './statistic-box.component.scss'
 })

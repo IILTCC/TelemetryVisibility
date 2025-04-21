@@ -13,9 +13,45 @@
       (closed)="onSidenavToggle()"
     >
       <div class="side-nav-row">
-        <button mat-flat-button (click)="toggleTable()" class="toggle-table">
-          toggle tables
-        </button>
+        <div class="side-nav-header-buttons">
+          <button mat-flat-button (click)="toggleTable()" class="toggle-table">
+            @if(isShowTable) {
+            <img
+              matTooltipShowDelay="500"
+              matTooltipHideDelay="1000"
+              matTooltip="toggle graph"
+              class="export-button-image"
+              src="../../../assets/graphIcon.png"
+              alt="Icon"
+            />
+            } @else{
+            <img
+              matTooltipShowDelay="500"
+              matTooltipHideDelay="1000"
+              matTooltip="toggle tables"
+              class="export-button-image"
+              src="../../../assets/tableIcon.png"
+              alt="Icon"
+            />
+            }
+          </button>
+          @if(frameKeys().length > 0) {
+          <button
+            matTooltipShowDelay="500"
+            matTooltipHideDelay="1000"
+            matTooltip="export"
+            mat-flat-button
+            (click)="exportAllGraphs()"
+            class="export-button"
+          >
+            <img
+              class="export-button-image"
+              src="../../../assets/export.png"
+              alt="Icon"
+            />
+          </button>
+          }
+        </div>
         <mat-form-field class="date-range-picker">
           <mat-label>Enter a date range</mat-label>
           <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
@@ -53,31 +89,7 @@
         </button>
 
         @if(frameKeys().length > 0) {
-        <button
-          matTooltipShowDelay="500"
-          matTooltipHideDelay="1000"
-          matTooltip="export"
-          mat-flat-button
-          (click)="exportAllGraphs()"
-          class="export-button"
-        >
-          <img
-            id="export-button-image"
-            src="../../../assets/export.png"
-            alt="Icon"
-          />
-        </button>
-        } @if(frameKeys().length > 0) {
-        <div class="selector-paginator">
-          <mat-paginator
-            [length]="currentPacketCount"
-            [pageSize]="10"
-            [pageSizeOptions]="[5, 10, 25, 100, 250, 500]"
-            aria-label="Select page"
-            (page)="onPageChange($event)"
-          >
-          </mat-paginator>
-        </div>
+
         <div class="param-type-selector">
           @for(paramType of frameKeys(); track $index) {
           <mat-checkbox
@@ -88,7 +100,16 @@
           <br />
           }
         </div>
-
+        <div class="selector-paginator">
+          <mat-paginator
+            [length]="currentPacketCount"
+            [pageSize]="10"
+            [pageSizeOptions]="[5, 10, 25, 100, 250, 500]"
+            aria-label="Select page"
+            (page)="onPageChange($event)"
+          >
+          </mat-paginator>
+        </div>
         }
       </div>
     </mat-drawer>
@@ -112,7 +133,8 @@
         </app-table-graph>
       </div>
     </div>
-    } }
+    } } @if(frameKeys().length > 0){
+
     <div class="table-scroll-buttons">
       <button class="table-scroll-button" (click)="moveTableRight()">
         {{ "<" }}
@@ -121,7 +143,7 @@
         {{ ">" }}
       </button>
     </div>
-    } @if(!isShowTable){ @for(graphKey of frameKeys(); track $index) {
+    } } @if(!isShowTable){ @for(graphKey of frameKeys(); track $index) {
     @if(selectedParmateres.get(graphKey)) {
 
     <app-graph
