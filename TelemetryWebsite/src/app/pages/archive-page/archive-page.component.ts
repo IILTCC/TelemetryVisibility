@@ -25,6 +25,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TableGraphComponent } from "./table-graph/table-graph.component";
 import { TableTelemetryData } from './table-graph/tableTelemetryData';
 import { CommonConsts } from '../../common/commonConsts';
+import { ExportService } from '../../services/export.Service';
+import { GraphType } from './graphType';
 
 
 
@@ -59,7 +61,7 @@ export class ArchivePageComponent {
   public graphsRequest: archiveFramesRo = new archiveFramesRo({});
   public framesList: DataPoint[] = [];
   public isExporting: boolean = false;
-  constructor(private archiveService: ArchivePageService) { }
+  constructor(private archiveService: ArchivePageService, private exportService: ExportService<GraphType>) { }
 
   onPageChange(event: any) {
     this.pageStart = event.pageIndex * event.pageSize
@@ -85,14 +87,27 @@ export class ArchivePageComponent {
   }
 
   public async exportAllGraphs(): Promise<void> {
-    const promises: Promise<{ filename: string, blob: Blob } | null>[] = this.createGraphFilePromises();
-
-    if (promises.length === 0) {
-      this.isExporting = false;
-      return;
+    let data: GraphType[][] = [];
+    let one: GraphType[] = []
+    for (let i = 0; i < 3; i++) {
+      one.push(new GraphType(new Date(new Date().getSeconds() + i), i))
     }
-    const allFileCsvResults: ({ filename: string, blob: Blob } | null)[] = await Promise.all(promises);
-    this.createZipFile(allFileCsvResults);
+    data.push(one)
+
+    let headerNames: string[][] = [["1", "2", "3"]];
+    let fileNames = ["test"];
+    console.log(data)
+    console.log(one)
+    console.log(data)
+    this.exportService.exportAllGraphs(data, headerNames, fileNames);
+    // const promises: Promise<{ filename: string, blob: Blob } | null>[] = this.createGraphFilePromises();
+
+    // if (promises.length === 0) {
+    //   this.isExporting = false;
+    //   return;
+    // }
+    // const allFileCsvResults: ({ filename: string, blob: Blob } | null)[] = await Promise.all(promises);
+    // this.createZipFile(allFileCsvResults);
   }
 
   public addCsvFiles(allFileCsvResults: ({ filename: string, blob: Blob } | null)[]): JSZip {
@@ -111,7 +126,6 @@ export class ArchivePageComponent {
     }
     return zip
   }
-
 
   public async createZipFile(allFileCsvResults: ({ filename: string, blob: Blob } | null)[]): Promise<void> {
     try {
