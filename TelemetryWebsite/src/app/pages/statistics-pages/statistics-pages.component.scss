@@ -9,6 +9,8 @@ html {
   overflow-x: hidden !important;
 }
 .selector-div {
+  margin-top: 0.6rem;
+  position: relative;
   margin-left: auto;
   margin-right: auto;
   border-radius: 8px;
@@ -17,18 +19,17 @@ html {
   justify-content: center;
   align-items: center;
   background-color: #333232;
-  width: 55vw;
+  width: fit-content;
 }
 .selector-inner {
   margin: 1rem;
-  width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 .date-range-picker {
   width: 17vw;
   transform: translateY(10px);
-  margin-right: 0.8rem;
 }
 
 ::ng-deep .date-range-picker > .mat-mdc-text-field-wrapper {
@@ -52,7 +53,10 @@ html {
 }
 .statistic-main-container {
   overflow-y: auto;
-  height: 60vh;
+  height: 80vh;
+  overflow-x: hidden;
+  margin-right: 0.5rem;
+  margin-left: 0.5rem;
 }
 .statistic-title {
   font-size: 1.5rem;
@@ -65,10 +69,6 @@ html {
 }
 ::ng-deep .selector-paginator * {
   color: $thistle !important;
-}
-::ng-deep .selector-paginator {
-  // margin-top: 1rem;
-  width: 30vw;
 }
 .mat-mdc-paginator {
   background-color: #7862b3 !important;
@@ -100,17 +100,20 @@ html {
 ::ng-deep .submit-button {
   width: 5rem !important;
   @extend .shared-buttons;
+  margin-left: 2rem;
 }
 ::ng-deep .mode-button {
   @extend .shared-buttons;
   width: 5.5em !important;
+  margin-right: 2rem;
 }
 .timeline-slider {
-  width: 85%;
+  width: 15vw;
 }
-.timeline-outer {
-  width: 100%;
+::ng-deep .mdc-slider__track--inactive {
+  background-color: $thistle !important;
 }
+
 ::ng-deep .selector-div .mat-mdc-text-field-wrapper {
   background-color: #7862b3 !important;
   color: white;
@@ -127,7 +130,10 @@ html {
   margin-right: 0.3rem;
 }
 ::ng-deep .info-button {
-  transform: translateY(5vh);
+  margin-top: 0.4rem;
+  position: absolute;
+  top: 0;
+  left: 0;
   color: lighten($amethyst, 15%) !important;
   margin-left: 0.5rem;
   font-size: 1rem;
@@ -148,9 +154,20 @@ html {
     filter: brightness(1.2) !important;
   }
 }
+.info-div {
+  width: 3vw;
+}
 .single-graph-container {
   width: 49%;
 }
 .all-single-graphs-container {
   display: flex;
+}
+::ng-deep .mat-mdc-paginator-page-size-label {
+  display: none !important;
+}
+.export-button-image {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
 }

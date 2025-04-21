@@ -21,11 +21,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { GetFullStatisticsDto } from '../../dtos/getFullStatisticsDto';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { LegendPopUpComponent } from './legend-pop-up/legend-pop-up.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-statistics-pages',
   standalone: true,
-  imports: [MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, MatNativeDateModule, StatisticBoxComponent, StatisticGraphComponent, CommonModule, MatPaginatorModule, MatSliderModule, MatInputModule, MatIconModule, MatDialogModule],
+  imports: [MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, MatNativeDateModule, StatisticBoxComponent, StatisticGraphComponent, CommonModule, MatPaginatorModule, MatSliderModule, MatInputModule, MatIconModule, MatDialogModule, MatTooltipModule],
   templateUrl: './statistics-pages.component.html',
   styleUrl: './statistics-pages.component.scss',
   providers: [

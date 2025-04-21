@@ -21,7 +21,7 @@ import { MatIconModule } from '@angular/material/icon'
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { Consts } from '../../services/consts';
-import { TooltipPosition, MatTooltipModule, TooltipComponent } from '@angular/material/tooltip';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TableGraphComponent } from "./table-graph/table-graph.component";
 import { TableTelemetryData } from './table-graph/tableTelemetryData';
 import { CommonConsts } from '../../common/commonConsts';

@@ -28,7 +28,7 @@ export class GraphComponent {
   public colors: string[] = ["#9478de"]; // Custom color for the series
   @Input() public graphName = "testing";
   @Input() public graphData: DataPoint[] = [];
-  @ViewChild(ChartComponent) chartInstance!: ChartComponent; // Keep ViewChild
+  @ViewChild(ChartComponent) chartInstance!: ChartComponent;
 
   public series!: ApexAxisChartSeries;
   public chart!: ApexChart;

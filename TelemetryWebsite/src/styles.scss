@@ -1,9 +1,6 @@
-// @use "@angular/material" as mat;
-// @import "@angular/material/prebuilt-themes/indigo-pink.css";
 @import "@angular/material/prebuilt-themes/deeppurple-amber.css";
 
 @import "@fontsource/inter"; // Defaults to including all weights and styles
-
 
 $dark-green: #262626;
 $purssian-blue: #102b3f;
@@ -17,4 +14,7 @@ body {
 }
 body > * {
   font-family: "Inter", sans-serif;
+}
+::ng-deep button {
+  cursor: pointer;
 }
