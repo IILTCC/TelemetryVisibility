@@ -21,11 +21,13 @@ export class ExportService<RowType extends Object> {
     }
 
     public createGraphFilePromises(rawData: RowType[][], headerNames: string[][], fileNames: string[]): Promise<{ filename: string, blob: Blob } | null>[] {
+
         if (this.isExporting)
             return [];
 
         if (!rawData || rawData.length === 0)
             return [];
+
         this.isExporting = true;
         const promises: Promise<{ filename: string, blob: Blob } | null>[] = [];
 

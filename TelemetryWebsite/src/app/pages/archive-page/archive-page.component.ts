@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, QueryList, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DateAdapter, MAT_DATE_FORMATS, MatNativeDateModule } from '@angular/material/core';
 import { DataPoint } from '../../dtos/dataPoint';
@@ -18,9 +18,6 @@ import { ChannelName } from '../../common/channelName';
 import { CUSTOM_DATE_FORMATS, DateFormatter } from '../../common/dateFormatter';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon'
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
-import { Consts } from '../../services/consts';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TableGraphComponent } from "./table-graph/table-graph.component";
 import { TableTelemetryData } from './table-graph/tableTelemetryData';
@@ -69,30 +66,12 @@ export class ArchivePageComponent {
     this.sendArchiveRequest(false)
   }
 
-  public createGraphFilePromises(): Promise<{ filename: string, blob: Blob } | null>[] {
-    if (this.isExporting)
-      return [];
-
-    if (!this.graphComponents || this.graphComponents.length === 0)
-      return [];
-
-    this.isExporting = true;
-    const promises: Promise<{ filename: string, blob: Blob } | null>[] = [];
-
-    this.graphComponents.forEach((graphComponent) => {
-      if (this.selectedParmateres.get(graphComponent.graphName))
-        promises.push(graphComponent.getCSVBlob());
-    });
-    return promises;
-  }
-
   public async exportAllGraphs(): Promise<void> {
     let allGraphs: GraphType[][] = [];
     let fileNames: string[] = [];
     let headerNames: string[][] = []
     Object.keys(this.graphsRequest.framesList).forEach((graphKey) => {
       if (this.selectedParmateres.get(graphKey)) {
-
         let oneGraph: GraphType[] = [];
         fileNames.push(graphKey)
         this.graphsRequest.framesList[graphKey].forEach(graphPoint => {
@@ -102,52 +81,9 @@ export class ArchivePageComponent {
         headerNames.push(["Value", "Is faulty", "Date"])
       }
     });
-    // let headerNames: string[][] = [["Value", "Is faulty", "Date"]];
-
     this.exportService.exportAllGraphs(allGraphs, headerNames, fileNames);
-    // const promises: Promise<{ filename: string, blob: Blob } | null>[] = this.createGraphFilePromises();
-
-    // if (promises.length === 0) {
-    //   this.isExporting = false;
-    //   return;
-    // }
-    // const allFileCsvResults: ({ filename: string, blob: Blob } | null)[] = await Promise.all(promises);
-    // this.createZipFile(allFileCsvResults);
   }
 
-  public addCsvFiles(allFileCsvResults: ({ filename: string, blob: Blob } | null)[]): JSZip {
-    const zip: JSZip = new JSZip();
-    let filesAdded: number = 0;
-    allFileCsvResults.forEach(allFileCsvResults => {
-      if (allFileCsvResults) {
-        zip.file(allFileCsvResults.filename, allFileCsvResults.blob);
-        filesAdded++;
-      }
-    });
-
-    if (filesAdded === 0) {
-      this.isExporting = false;
-      return new JSZip();
-    }
-    return zip
-  }
-
-  public async createZipFile(allFileCsvResults: ({ filename: string, blob: Blob } | null)[]): Promise<void> {
-    try {
-      const zip: JSZip = this.addCsvFiles(allFileCsvResults);
-
-      const zipBlob: Blob = await zip.generateAsync({
-        type: "blob",
-        compression: "DEFLATE",
-        compressionOptions: {
-          level: 6
-        }
-      });
-      saveAs(zipBlob, Consts.CSV_EXPORT_NAME);
-    } finally {
-      this.isExporting = false;
-    }
-  }
   public sendArchiveRequest(restartFilter: boolean): void {
 
     if (this.range.get('start')?.value == null || this.range.get('end')?.value == null)

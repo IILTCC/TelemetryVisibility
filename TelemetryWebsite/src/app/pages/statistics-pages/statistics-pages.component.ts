@@ -22,6 +22,8 @@ import { GetFullStatisticsDto } from '../../dtos/getFullStatisticsDto';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { LegendPopUpComponent } from './legend-pop-up/legend-pop-up.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ExportService } from '../../services/export.Service';
+import { StatisticsGraphType } from './statistic-graph/multiStatisticsGraphType';
 
 @Component({
   selector: 'app-statistics-pages',
@@ -60,7 +62,7 @@ export class StatisticsPagesComponent {
   });
   public statisticsUnits: string[] = ["%", "ms", "ms", "ms", "%"]
   private graphsToFormat: string[] = ["CorruptedPacket"];
-  constructor(private statisticsPageService: StatisticsPagesService) {
+  constructor(private statisticsPageService: StatisticsPagesService, private exportService: ExportService<StatisticsGraphType>) {
     this.sendStatisticsPage();
     this.initializeTimeLine();
   }
@@ -181,5 +183,35 @@ export class StatisticsPagesComponent {
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`)
     });
+  }
+  public async exportAllGraphs(): Promise<void> {
+    let allGraphs: StatisticsGraphType[][] = [];
+    let fileNames: string[] = [];
+    let headerNames: string[][] = []
+
+    Object.keys(this.statistics.graphs).forEach((singleGraphKey) => {
+      let oneGraph: StatisticsGraphType[] = []
+      fileNames.push(singleGraphKey)
+      headerNames.push(["Date", "Value"])
+
+      this.statistics.graphs[singleGraphKey].forEach(graphPoint => {
+        oneGraph.push(new StatisticsGraphType(new Date(graphPoint.x), graphPoint.y))
+      });
+      allGraphs.push(oneGraph)
+    });
+
+    Object.keys(this.statisticsType).forEach((multiTopGraphKey) => {
+      Object.keys(this.statisticsType[multiTopGraphKey].graphs).forEach((multiBottomGraphKey) => {
+        let oneGraph: StatisticsGraphType[] = []
+        fileNames.push(multiTopGraphKey + " " + multiBottomGraphKey)
+        headerNames.push(["Date", "Value"])
+        this.statisticsType[multiTopGraphKey].graphs[multiBottomGraphKey].forEach((graphPoint) => {
+          oneGraph.push(new StatisticsGraphType(new Date(graphPoint.x), graphPoint.y))
+        })
+        allGraphs.push(oneGraph)
+      })
+
+    });
+    this.exportService.exportAllGraphs(allGraphs, headerNames, fileNames);
   }
 }
