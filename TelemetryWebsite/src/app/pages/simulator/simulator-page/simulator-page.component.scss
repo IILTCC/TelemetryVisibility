@@ -48,14 +48,12 @@
   font-size: 1em;
 }
 
-
 .channel-data-name {
   display: flex;
   color: $thistle;
   font-weight: 300;
   align-items: end;
   padding-bottom: 1em;
-
 }
 
 .channel-data-input {
@@ -63,14 +61,14 @@
   border-radius: 3px;
   margin-left: 1rem;
   border: none;
-  background-color: rgba($thistle,0);
+  background-color: rgba($thistle, 0);
   border: 2px solid rgba(255, 255, 255, 0.3);
   height: 1.1rem;
-  width : 4rem;
+  width: 4rem;
   text-indent: 12px;
-  color: $thistle
+  color: $thistle;
 }
-     
+
 .icon-start {
   color: lighten($amethyst, 10%) !important;
 }
@@ -90,7 +88,7 @@
 
   transition: all 0.3s ease !important;
   &:hover {
-    background: linear-gradient(135deg, #4caf50, #388e3c) !important;
+    border: 3px solid #4caf50 !important;
     color: white !important;
     transform: scale(1.05) !important;
     filter: brightness(1.2) !important;
@@ -108,9 +106,13 @@
 
   transition: all 0.3s ease !important;
   &:hover {
-    background: linear-gradient(135deg, #b04343, #8e3838) !important;
+    border: 3px solid #b04343 !important;
     color: white !important;
     transform: scale(1.05) !important;
     filter: brightness(1.2) !important;
   }
+}
+::ng-deep .card-actions {
+  display: flex;
+  justify-content: center;
 }

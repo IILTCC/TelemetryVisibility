@@ -3,7 +3,10 @@
   rel="stylesheet"
 />
 <div id="main-container">
-  <div class="secondary-container" *ngFor="let channelName of channels; let currentChannel = index">
+  <div
+    class="secondary-container"
+    *ngFor="let channelName of channels; let currentChannel = index"
+  >
     <div class="margin-div">
       <mat-card appearance="outlined" class="channel-card">
         <mat-card-header>
@@ -40,7 +43,7 @@
           </table>
         </mat-card-content>
 
-        <mat-card-actions>
+        <mat-card-actions class="card-actions">
           <button
             mat-flat-button
             (click)="clickOnStart(currentChannel)"

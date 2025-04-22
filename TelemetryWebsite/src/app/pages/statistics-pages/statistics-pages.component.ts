@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -19,11 +19,14 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { GetFullStatisticsDto } from '../../dtos/getFullStatisticsDto';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { LegendPopUpComponent } from './legend-pop-up/legend-pop-up.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-statistics-pages',
   standalone: true,
-  imports: [MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, MatNativeDateModule, StatisticBoxComponent, StatisticGraphComponent, CommonModule, MatPaginatorModule, MatSliderModule, MatInputModule, MatIconModule],
+  imports: [MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, MatNativeDateModule, StatisticBoxComponent, StatisticGraphComponent, CommonModule, MatPaginatorModule, MatSliderModule, MatInputModule, MatIconModule, MatDialogModule, MatTooltipModule],
   templateUrl: './statistics-pages.component.html',
   styleUrl: './statistics-pages.component.scss',
   providers: [
@@ -32,6 +35,7 @@ import { GetFullStatisticsDto } from '../../dtos/getFullStatisticsDto';
   ],
 })
 export class StatisticsPagesComponent {
+  readonly dialog = inject(MatDialog);
   public minTimeline: number = 0;
   public maxTimeline: number = 0;
   public startTimeLine: number = 0;
@@ -170,5 +174,12 @@ export class StatisticsPagesComponent {
   }
   public swithcTimelinePagination(): void {
     this.isTimeLine = !this.isTimeLine;
+  }
+  public openLegend(): void {
+    const dialogRef = this.dialog.open(LegendPopUpComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`)
+    });
   }
 }

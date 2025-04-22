@@ -1,23 +1,22 @@
 <div class="selector-div">
   <div class="selector-inner">
-    <button
-      mat-flat-button
-      (click)="sendStatisticsPage()"
-      class="submit-button"
-    >
-      submit
-    </button>
-    <button
-      mat-flat-button
-      (click)="swithcTimelinePagination()"
-      class="submit-button"
-    >
-      switch
-    </button>
-  </div>
-  <div class="selector-inner">
+    <div class="info-div">
+      <button
+        mat-flat-button
+        (click)="openLegend()"
+        class="info-button"
+        matTooltipShowDelay="500"
+        matTooltipHideDelay="1000"
+        matTooltip="info"
+      >
+        <img
+          class="export-button-image"
+          src="../../../assets/infoIcon.png"
+          alt="Icon"
+        />
+      </button>
+    </div>
     @if(isTimeLine){
-
     <mat-form-field class="date-range-picker">
       <mat-label>Enter a date range</mat-label>
       <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
@@ -30,6 +29,33 @@
       ></mat-datepicker-toggle>
       <mat-date-range-picker #picker></mat-date-range-picker>
     </mat-form-field>
+    } @if(!isTimeLine){
+    <mat-slider
+      class="timeline-slider"
+      [max]="maxTimeline"
+      [min]="minTimeline"
+      (change)="onTimeLineChange($event)"
+    >
+      <input matSliderStartThumb [(ngModel)]="startTimeLine" #slider />
+      <input matSliderEndThumb [(ngModel)]="endTimeLine" #slider />
+    </mat-slider>
+    }
+    <button
+      mat-flat-button
+      (click)="sendStatisticsPage()"
+      class="submit-button"
+    >
+      submit
+    </button>
+    <button
+      mat-flat-button
+      (click)="swithcTimelinePagination()"
+      class="mode-button"
+    >
+      @if(isTimeLine){ timeline } @else { pagination }
+    </button>
+
+    @if(isTimeLine){
     <mat-paginator
       class="selector-paginator"
       [length]="currentStatisticsCount"
@@ -40,15 +66,7 @@
     >
     </mat-paginator>
     } @if(!isTimeLine) {
-    <mat-slider
-      class="timeline-slider"
-      [max]="maxTimeline"
-      [min]="minTimeline"
-      (change)="onTimeLineChange($event)"
-    >
-      <input matSliderStartThumb [(ngModel)]="startTimeLine" #slider />
-      <input matSliderEndThumb [(ngModel)]="endTimeLine" #slider />
-    </mat-slider>
+
     <div class="timeline-outer">
       <mat-form-field
         class="timeline-date"
@@ -126,16 +144,20 @@
       />
     </div>
   </div>
-  @for(statisticKey of statisticsKeys(); track $index;let graphIndex = $index) {
-
-  <div class="statistic-title">{{ statisticKey }}</div>
-  <app-statistic-graph
-    [graphData]="{ statisticKey: this.statistics.graphs[statisticKey] }"
-    [lineColor]="chartColors"
-    [graphUnits]="
-      this.statisticsUnits[graphIndex + statisticsTypeKeys().length]
-    "
-    graphName=""
-  />
-  }
+  <div class="all-single-graphs-container">
+    @for(statisticKey of statisticsKeys(); track $index;let graphIndex = $index)
+    {
+    <div class="single-graph-container">
+      <div class="statistic-title">{{ statisticKey }}</div>
+      <app-statistic-graph
+        [graphData]="{ statisticKey: this.statistics.graphs[statisticKey] }"
+        [lineColor]="chartColors"
+        [graphUnits]="
+          this.statisticsUnits[graphIndex + statisticsTypeKeys().length]
+        "
+        graphName=""
+      />
+    </div>
+    }
+  </div>
 </div>

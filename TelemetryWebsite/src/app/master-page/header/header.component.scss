@@ -3,7 +3,8 @@
 #header {
   font-size: 1.6rem;
   color: $amethyst;
-  margin: 0;
+  margin: 0.2rem;
+  margin-left: 0.4rem;
 }
 #header-div {
   background-color: $dark-green;
@@ -13,11 +14,12 @@
   background-color: $dark-green;
   padding-top: 0.3rem;
   padding-bottom: 1rem;
+  border-bottom: rgba(255, 255, 255, 0.425) 2px solid;
 }
 .horizontal-bar {
   width: 100vw;
   padding-left: 0;
-  padding-right:0 ;
+  padding-right: 0;
 }
 .horizontal-bar > * {
   font-size: 1.1rem;
@@ -29,4 +31,40 @@
 ::ng-deep .header-button:hover {
   color: $dark-green !important;
 }
+.drop-down-container {
+  position: relative;
+  display: inline-block;
+}
+.drop-down-content {
+  display: none;
+  position: absolute;
+  background-color: #fcedff;
+  min-width: 15vw;
+  border-radius: 8px !important;
+  font-size: 0.95rem !important;
+  z-index: 1000;
+}
 
+.drop-down-content a {
+  color: rgba(0, 0, 0, 0.711);
+  padding: 12px 16px;
+  text-decoration: none;
+  cursor: pointer;
+
+  display: block;
+}
+.drop-down-content a:hover {
+  background-color: #ffffff;
+  border-radius: 8px !important;
+}
+
+.drop-down-container:hover .drop-down-content {
+  display: block;
+}
+
+.drop-down-button {
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+}
