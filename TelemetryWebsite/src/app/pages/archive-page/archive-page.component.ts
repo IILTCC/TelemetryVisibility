@@ -42,15 +42,11 @@ import { CommonConsts } from '../../common/commonConsts';
 export class ArchivePageComponent {
   @ViewChildren(GraphComponent) graphComponents!: QueryList<GraphComponent>;
   @ViewChildren(TableGraphComponent) tableComponents!: QueryList<TableGraphComponent<TableTelemetryData[]>>;
-  public allowedTables: number[] = [];
   public isShowTable: boolean = false;
   public tableData: Map<string, TableTelemetryData[]> = new Map<string, TableTelemetryData[]>();
   public dataHeader: string[] = ["value", "isFaulty", "date"];
-  public currentShownTables: TableTelemetryData[] = [];
-  public currentTablesStartIndex: number = 1;
-  public currentTablesIndex: number = 0;
+  private currentTablesStartIndex: number = 1;
   public selectedParmateres: Map<string, boolean> = new Map<string, boolean>();
-  public showFiller = false;
   public currentPacketCount = 0;
   public packetTypes: string[] = [ChannelName.flightBoxDown, ChannelName.flightBoxUp, ChannelName.fiberBoxDown, ChannelName.fiberBoxUp];
   public packetTypeSelected: string = this.packetTypes[0];
@@ -168,11 +164,8 @@ export class ArchivePageComponent {
   public frameKeys(): string[] {
     return Object.keys(this.graphsRequest.framesList);
   }
-  public onStartDateChange(event: any) {
-    if (event.value == null)
-      return
-  }
-  public onSidenavToggle() {
+
+  public onSidenavToggle(): void {
     setTimeout(() => {
       window.dispatchEvent(new Event('resize'));
     }, 1);
@@ -181,7 +174,7 @@ export class ArchivePageComponent {
   public onCheckboxChange(event: any): void {
     this.selectedParmateres.set(event.source.value, !this.selectedParmateres.get(event.source.value))
   }
-  public convertToTable() {
+  public convertToTable(): void {
     Object.keys(this.graphsRequest.framesList).forEach((tableName) => {
       this.tableData.set(tableName, [])
       for (let dataPointIndex: number = 0; dataPointIndex < this.graphsRequest.framesList[tableName].length; dataPointIndex++)
@@ -189,14 +182,14 @@ export class ArchivePageComponent {
     })
   }
 
-  public toggleTable() {
+  public toggleTable(): void {
     this.isShowTable = !this.isShowTable;
     if (this.isShowTable) {
       this.convertToTable();
     }
   }
 
-  public filterTables(index: number) {
+  public filterTables(index: number): boolean {
     let decision: boolean = index >= this.currentTablesStartIndex * CommonConsts.TABLES_IN_ROW - CommonConsts.TABLES_IN_ROW && index < CommonConsts.TABLES_IN_ROW * this.currentTablesStartIndex;
     return decision;
   }
@@ -208,12 +201,12 @@ export class ArchivePageComponent {
     });
     return visibleKeys;
   }
-  public moveTableRight() {
+  public moveTableRight(): void {
     if (this.currentTablesStartIndex > 1)
       this.currentTablesStartIndex--;
 
   }
-  public moveTableLeft() {
+  public moveTableLeft(): void {
     if (this.currentTablesStartIndex < Object.keys(this.graphsRequest.framesList).length / CommonConsts.TABLES_IN_ROW) {
       this.currentTablesStartIndex++;
     }
