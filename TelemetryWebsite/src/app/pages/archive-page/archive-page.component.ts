@@ -90,7 +90,6 @@ export class ArchivePageComponent {
     let data: GraphType[][] = [];
     let one: GraphType[] = []
     for (let i = 0; i < 3; i++) {
-      one.push(new GraphType(new Date(new Date().getSeconds() + i), i))
     }
     data.push(one)
 

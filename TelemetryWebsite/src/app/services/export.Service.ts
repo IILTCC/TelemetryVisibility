@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { Consts } from "./consts";
-import dayjs from "dayjs";
 import JSZip from "jszip";
 import saveAs from "file-saver";
 
