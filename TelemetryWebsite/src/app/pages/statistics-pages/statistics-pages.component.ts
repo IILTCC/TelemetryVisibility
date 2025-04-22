@@ -15,18 +15,34 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { GetStatisticsCount } from '../../dtos/getStatisticsCount';
 import { MAT_DATE_FORMATS, DateAdapter } from '@angular/material/core';
 import { CUSTOM_DATE_FORMATS, DateFormatter } from '../../common/dateFormatter';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { GetFullStatisticsDto } from '../../dtos/getFullStatisticsDto';
+
 @Component({
   selector: 'app-statistics-pages',
   standalone: true,
-  imports: [MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, MatNativeDateModule, StatisticBoxComponent, StatisticGraphComponent, CommonModule, MatPaginatorModule],
+  imports: [MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, MatNativeDateModule, StatisticBoxComponent, StatisticGraphComponent, CommonModule, MatPaginatorModule, MatSliderModule, MatInputModule, MatIconModule],
   templateUrl: './statistics-pages.component.html',
   styleUrl: './statistics-pages.component.scss',
   providers: [
     { provide: DateAdapter, useClass: DateFormatter },
     { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS }
-  ]
+  ],
 })
 export class StatisticsPagesComponent {
+  public minTimeline: number = 0;
+  public maxTimeline: number = 0;
+  public startTimeLine: number = 0;
+  public endTimeLine: number = 0;
+  public timelineForm = new FormGroup({
+    timelineStart: new FormControl<Date | null>(null),
+    timelineEnd: new FormControl<Date | null>(null),
+  });
+  public isTimeLine: boolean = false;
+  public startTimeLineDate: Date = new Date();
+  public endTimeLineDate: Date = new Date();
   public Object: any;
   public currentStatisticsCount: number = 0;
   private pageStart: number = 0;
@@ -42,8 +58,8 @@ export class StatisticsPagesComponent {
   private graphsToFormat: string[] = ["CorruptedPacket"];
   constructor(private statisticsPageService: StatisticsPagesService) {
     this.sendStatisticsPage();
+    this.initializeTimeLine();
   }
-
   public statisticsTypeKeys(): string[] {
     return Object.keys(this.statisticsType);
   }
@@ -95,8 +111,27 @@ export class StatisticsPagesComponent {
       }
     })
   }
-  public sendStatisticsPage(): void {
+  public initializeTimeLine(): void {
+    this.statisticsPageService.getFrameDateRange().subscribe((result) => {
+      this.minTimeline = new Date(result.startDate).getTime();
+      this.maxTimeline = new Date(result.endDate).getTime();
 
+      this.startTimeLine = this.minTimeline;
+      this.endTimeLine = (this.maxTimeline + this.minTimeline) / 2;
+
+      this.startTimeLineDate = new Date(result.startDate);
+      this.endTimeLineDate = new Date(result.endDate);
+      this.timelineForm.patchValue({ timelineStart: this.startTimeLineDate, timelineEnd: this.endTimeLineDate });
+    });
+  }
+  public sendStatisticsPage(): void {
+    if (!this.isTimeLine)
+      this.sendTimelineStatistics()
+    else
+      this.sendPaginationStatistics()
+  }
+
+  public sendPaginationStatistics(): void {
     if (this.range.get('start')?.value == null || this.range.get('end')?.value == null)
       return
 
@@ -109,9 +144,31 @@ export class StatisticsPagesComponent {
     let getStatisticsDto: GetStatisticsDto = new GetStatisticsDto(startDate, endDate, this.pageStart, this.pageEnd);
     this.statisticsPageService.getStatistics(getStatisticsDto).subscribe((result) => { this.statistics = result; this.loadGraphs(); })
   }
+  public sendTimelineStatistics(): void {
+
+    if (this.startTimeLineDate == null || this.endTimeLineDate == null)
+      return
+    let getStatisticsDto: GetFullStatisticsDto = new GetFullStatisticsDto(this.startTimeLineDate, this.endTimeLineDate);
+    this.statisticsPageService.getFullStatistics(getStatisticsDto).subscribe((result) => { this.statistics = result; this.loadGraphs(); })
+  }
   public onPageChange(event: any): void {
     this.pageStart = event.pageIndex * event.pageSize
     this.pageEnd = event.pageIndex * event.pageSize + event.pageSize
     this.sendStatisticsPage()
+  }
+
+  public onTimeLineChange(event: any): void {
+    this.startTimeLineDate = new Date(this.startTimeLine);
+    this.endTimeLineDate = new Date(this.endTimeLine);
+    this.timelineForm.patchValue({ timelineStart: this.startTimeLineDate, timelineEnd: this.endTimeLineDate });
+  }
+  public onEndDateChange(event: any): void {
+    this.endTimeLine = new Date(event.value).getTime();
+  }
+  public onStartDateChange(event: any): void {
+    this.startTimeLine = new Date(event.value).getTime();
+  }
+  public swithcTimelinePagination(): void {
+    this.isTimeLine = !this.isTimeLine;
   }
 }
