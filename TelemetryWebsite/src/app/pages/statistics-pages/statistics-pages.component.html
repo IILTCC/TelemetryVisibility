@@ -15,6 +15,20 @@
           alt="Icon"
         />
       </button>
+      <button
+        matTooltipShowDelay="500"
+        matTooltipHideDelay="1000"
+        matTooltip="export"
+        mat-flat-button
+        (click)="exportAllGraphs()"
+        class="export-button"
+      >
+        <img
+          class="export-button-image"
+          src="../../../assets/export.png"
+          alt="Icon"
+        />
+      </button>
     </div>
     @if(isTimeLine){
     <mat-form-field class="date-range-picker">

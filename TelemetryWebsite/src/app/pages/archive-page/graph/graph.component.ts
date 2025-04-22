@@ -15,7 +15,6 @@ import {
 
 } from "ng-apexcharts";
 import { DataPoint } from '../../../dtos/dataPoint';
-import { Consts } from '../../../services/consts';
 
 @Component({
   selector: 'app-graph',
@@ -176,40 +175,6 @@ export class GraphComponent {
         }
       }
     };
-  }
-
-  public pushCsvData(data: [number, number][]): string[] {
-    let csvRows: string[] = [];
-    csvRows.push(`${Consts.CSV_HEADER_DATETIME},${Consts.CSV_HEADER_VALUE}`);
-
-    for (const point of data) {
-      const timestamp = point[0];
-      const value = point[1];
-
-      const formattedDate: string = dayjs(timestamp).format(Consts.CSV_DATE_FORMAT);
-      const formattedTime: string = dayjs(timestamp).format(Consts.CSV_TIME_FORMAT);
-      const formattedValue: number | string = typeof value === 'number' ? value : String(value);
-
-      csvRows.push(`${formattedDate},${formattedTime},${formattedValue}`);
-    }
-    return csvRows;
-  }
-
-  public async getCSVBlob(): Promise<{ filename: string, blob: Blob } | null> {
-    try {
-      const data: [number, number][] = this.series[0].data as [number, number][];
-      const safeGraphName: string = this.graphName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-      const filename: string = `${safeGraphName || 'chart_data'}.csv`;
-
-      const csvRows: string[] = this.pushCsvData(data);
-
-      const csvString: string = csvRows.join("\n");
-      const blob: Blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
-      return { filename, blob };
-
-    } catch (error) {
-      return null;
-    }
   }
 }
 
