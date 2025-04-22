@@ -87,18 +87,24 @@ export class ArchivePageComponent {
   }
 
   public async exportAllGraphs(): Promise<void> {
-    let data: GraphType[][] = [];
-    let one: GraphType[] = []
-    for (let i = 0; i < 3; i++) {
-    }
-    data.push(one)
+    let allGraphs: GraphType[][] = [];
+    let fileNames: string[] = [];
+    let headerNames: string[][] = []
+    Object.keys(this.graphsRequest.framesList).forEach((graphKey) => {
+      if (this.selectedParmateres.get(graphKey)) {
 
-    let headerNames: string[][] = [["1", "2", "3"]];
-    let fileNames = ["test"];
-    console.log(data)
-    console.log(one)
-    console.log(data)
-    this.exportService.exportAllGraphs(data, headerNames, fileNames);
+        let oneGraph: GraphType[] = [];
+        fileNames.push(graphKey)
+        this.graphsRequest.framesList[graphKey].forEach(graphPoint => {
+          oneGraph.push(new GraphType(graphPoint.packetTime, graphPoint.value, graphPoint.isFaulty))
+        });
+        allGraphs.push(oneGraph);
+        headerNames.push(["Value", "Is faulty", "Date"])
+      }
+    });
+    // let headerNames: string[][] = [["Value", "Is faulty", "Date"]];
+
+    this.exportService.exportAllGraphs(allGraphs, headerNames, fileNames);
     // const promises: Promise<{ filename: string, blob: Blob } | null>[] = this.createGraphFilePromises();
 
     // if (promises.length === 0) {

@@ -53,7 +53,7 @@ export class ExportService<RowType extends Object> {
 
     public pushCsvData(data: RowType[], headerNames: string[]): string[] {
         let csvRows: string[] = [];
-        csvRows.push(Object.keys(headerNames).join(","));
+        csvRows.push(headerNames.join(","));
         data.forEach(row => {
             let objects: string[] = []
             Object.values(row).forEach((value) => {
