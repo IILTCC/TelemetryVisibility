@@ -1,0 +1,19 @@
+@import "../../../../styles.scss";
+
+::ng-deep .mat-mdc-table {
+  background-color: $dark-green !important;
+  border: 2px solid lighten($royal-pruple, 10) !important;
+  border-radius: 6px;
+}
+::ng-deep .mat-mdc-table * {
+  color: rgb(228, 228, 228) !important;
+}
+table tr:last-child td {
+  border-bottom: 1px solid rgba(255, 0, 0, 0) !important;
+}
+table tr:last-child th {
+  border-bottom: 1px solid rgba($thistle, 0.5) !important;
+}
+.mat-mdc-cell.mdc-data-table__cell {
+  border-bottom: 1px solid rgba($thistle, 0.5) !important;
+}

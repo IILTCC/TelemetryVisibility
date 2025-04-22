@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, QueryList, ViewChildren } from '@angular/core';
+import { Component, inject, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DateAdapter, MAT_DATE_FORMATS, MatNativeDateModule } from '@angular/material/core';
 import { DataPoint } from '../../dtos/dataPoint';
@@ -22,12 +22,16 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { Consts } from '../../services/consts';
 import { TooltipPosition, MatTooltipModule, TooltipComponent } from '@angular/material/tooltip';
+import { TableGraphComponent } from "./table-graph/table-graph.component";
+import { TableTelemetryData } from './table-graph/tableTelemetryData';
+import { CommonConsts } from '../../common/commonConsts';
+
 
 
 @Component({
   selector: 'app-archive-page',
   standalone: true,
-  imports: [GraphComponent, CommonModule, MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, MatNativeDateModule, MatPaginatorModule, MatSelectModule, MatSidenavModule, MatExpansionModule, MatCheckboxModule, MatIconModule, MatTooltipModule],
+  imports: [GraphComponent, CommonModule, MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, MatNativeDateModule, MatPaginatorModule, MatSelectModule, MatSidenavModule, MatExpansionModule, MatCheckboxModule, MatIconModule, MatTooltipModule, TableGraphComponent],
   templateUrl: './archive-page.component.html',
   styleUrl: './archive-page.component.scss',
   providers: [
@@ -37,8 +41,12 @@ import { TooltipPosition, MatTooltipModule, TooltipComponent } from '@angular/ma
 })
 export class ArchivePageComponent {
   @ViewChildren(GraphComponent) graphComponents!: QueryList<GraphComponent>;
+  @ViewChildren(TableGraphComponent) tableComponents!: QueryList<TableGraphComponent<TableTelemetryData[]>>;
+  public isShowTable: boolean = false;
+  public tableData: Map<string, TableTelemetryData[]> = new Map<string, TableTelemetryData[]>();
+  public dataHeader: string[] = ["value", "isFaulty", "date"];
+  private currentTablesStartIndex: number = 1;
   public selectedParmateres: Map<string, boolean> = new Map<string, boolean>();
-  public showFiller = false;
   public currentPacketCount = 0;
   public packetTypes: string[] = [ChannelName.flightBoxDown, ChannelName.flightBoxUp, ChannelName.fiberBoxDown, ChannelName.fiberBoxUp];
   public packetTypeSelected: string = this.packetTypes[0];
@@ -52,13 +60,14 @@ export class ArchivePageComponent {
   public framesList: DataPoint[] = [];
   public isExporting: boolean = false;
   constructor(private archiveService: ArchivePageService) { }
+
   onPageChange(event: any) {
     this.pageStart = event.pageIndex * event.pageSize
     this.pageEnd = event.pageIndex * event.pageSize + event.pageSize
     this.sendArchiveRequest(false)
   }
 
-  public createFilePromises(): Promise<{ filename: string, blob: Blob } | null>[] {
+  public createGraphFilePromises(): Promise<{ filename: string, blob: Blob } | null>[] {
     if (this.isExporting)
       return [];
 
@@ -76,7 +85,7 @@ export class ArchivePageComponent {
   }
 
   public async exportAllGraphs(): Promise<void> {
-    const promises: Promise<{ filename: string, blob: Blob } | null>[] = this.createFilePromises();
+    const promises: Promise<{ filename: string, blob: Blob } | null>[] = this.createGraphFilePromises();
 
     if (promises.length === 0) {
       this.isExporting = false;
@@ -137,7 +146,11 @@ export class ArchivePageComponent {
           this.selectedParmateres.set(key, true);
         });
       }
+      if (this.isShowTable) {
+        this.convertToTable();
+      }
     })
+
   }
   private packetTypeToNumber(wantedPacket: string): number {
     for (let packetIndex = 0; packetIndex < this.packetTypes.length; packetIndex++)
@@ -151,16 +164,51 @@ export class ArchivePageComponent {
   public frameKeys(): string[] {
     return Object.keys(this.graphsRequest.framesList);
   }
-  public onStartDateChange(event: any) {
-    if (event.value == null)
-      return
-  }
-  public onSidenavToggle() {
+
+  public onSidenavToggle(): void {
     setTimeout(() => {
       window.dispatchEvent(new Event('resize'));
     }, 1);
   }
+
   public onCheckboxChange(event: any): void {
     this.selectedParmateres.set(event.source.value, !this.selectedParmateres.get(event.source.value))
   }
-} 
+  public convertToTable(): void {
+    Object.keys(this.graphsRequest.framesList).forEach((tableName) => {
+      this.tableData.set(tableName, [])
+      for (let dataPointIndex: number = 0; dataPointIndex < this.graphsRequest.framesList[tableName].length; dataPointIndex++)
+        this.tableData.get(tableName)?.push(new TableTelemetryData(this.graphsRequest.framesList[tableName][dataPointIndex].value, this.graphsRequest.framesList[tableName][dataPointIndex].isFaulty, this.graphsRequest.framesList[tableName][dataPointIndex].packetTime))
+    })
+  }
+
+  public toggleTable(): void {
+    this.isShowTable = !this.isShowTable;
+    if (this.isShowTable) {
+      this.convertToTable();
+    }
+  }
+
+  public filterTables(index: number): boolean {
+    let decision: boolean = index >= this.currentTablesStartIndex * CommonConsts.TABLES_IN_ROW - CommonConsts.TABLES_IN_ROW && index < CommonConsts.TABLES_IN_ROW * this.currentTablesStartIndex;
+    return decision;
+  }
+  public getVisibleFrameKeys(): string[] {
+    let visibleKeys: string[] = [];
+    Object.keys(this.graphsRequest.framesList).forEach((key) => {
+      if (this.selectedParmateres.get(key))
+        visibleKeys.push(key);
+    });
+    return visibleKeys;
+  }
+  public moveTableRight(): void {
+    if (this.currentTablesStartIndex > 1)
+      this.currentTablesStartIndex--;
+
+  }
+  public moveTableLeft(): void {
+    if (this.currentTablesStartIndex < Object.keys(this.graphsRequest.framesList).length / CommonConsts.TABLES_IN_ROW) {
+      this.currentTablesStartIndex++;
+    }
+  }
+}
