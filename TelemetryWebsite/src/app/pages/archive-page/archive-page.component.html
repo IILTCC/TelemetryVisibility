@@ -12,7 +12,7 @@
       (opened)="onSidenavToggle()"
       (closed)="onSidenavToggle()"
     >
-      <div>
+      <div class="side-nav-row">
         <mat-form-field class="date-range-picker">
           <mat-label>Enter a date range</mat-label>
           <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
@@ -30,8 +30,6 @@
           ></mat-datepicker-toggle>
           <mat-date-range-picker #picker></mat-date-range-picker>
         </mat-form-field>
-      </div>
-      <div>
         <mat-form-field class="packet-type-selector">
           <mat-label>Packet Type</mat-label>
           <mat-select
@@ -44,21 +42,30 @@
             }
           </mat-select>
         </mat-form-field>
-      </div>
+        <button
+          mat-flat-button
+          (click)="sendArchiveRequest(true)"
+          class="submit-button"
+        >
+          submit
+        </button>
 
-      <button
-        mat-flat-button
-        (click)="sendArchiveRequest(true)"
-        class="submit-button"
-      >
-        submit
-      </button>
-      @if(frameKeys().length > 0) {
-      <button mat-flat-button (click)="exportAllGraphs()" class="export-button">
-        export
-      </button>
-      } @if(frameKeys().length > 0) {
-      <div>
+        @if(frameKeys().length > 0) {
+        <button
+          matTooltipShowDelay="500"
+          matTooltipHideDelay="1000"
+          matTooltip="export"
+          mat-flat-button
+          (click)="exportAllGraphs()"
+          class="export-button"
+        >
+          <img
+            id="export-button-image"
+            src="../../../assets/export.png"
+            alt="Icon"
+          />
+        </button>
+        } @if(frameKeys().length > 0) {
         <div class="selector-paginator">
           <mat-paginator
             [length]="currentPacketCount"
@@ -79,8 +86,9 @@
           <br />
           }
         </div>
+
+        }
       </div>
-      }
     </mat-drawer>
 
     <button mat-flat-button (click)="drawer.toggle()" class="menu-button">
@@ -89,23 +97,13 @@
   </mat-drawer-container>
 
   <div class="graphs-space">
-    <mat-accordion class="graph-accordion" [multi]="true">
-      @for(graphKey of frameKeys(); track $index) {
-      @if(selectedParmateres.get(graphKey)) {
-      <mat-expansion-panel [expanded]="true">
-        <mat-expansion-panel-header>
-          {{ graphKey }}
-        </mat-expansion-panel-header>
-
-        <mat-panel-description id="apexchart-{{ graphKey }}">
-          <app-graph
-            class="graph"
-            [graphName]="graphKey"
-            [graphData]="graphsRequest.framesList[graphKey]"
-          ></app-graph>
-        </mat-panel-description>
-      </mat-expansion-panel>
-      } }
-    </mat-accordion>
+    @for(graphKey of frameKeys(); track $index) {
+    @if(selectedParmateres.get(graphKey)) {
+    <app-graph
+      class="graph"
+      [graphName]="graphKey"
+      [graphData]="graphsRequest.framesList[graphKey]"
+    ></app-graph>
+    } }
   </div>
 </div>
