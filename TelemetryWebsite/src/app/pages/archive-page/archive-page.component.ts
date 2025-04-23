@@ -24,13 +24,14 @@ import { TableTelemetryData } from './table-graph/tableTelemetryData';
 import { CommonConsts } from '../../common/commonConsts';
 import { ExportService } from '../../services/export.Service';
 import { GraphType } from './graphType';
-
-
+import { MatSliderModule } from '@angular/material/slider';
+import { MatInputModule } from '@angular/material/input';
+import { GetFullFramesDto } from '../../dtos/getFullFramesDto';
 
 @Component({
   selector: 'app-archive-page',
   standalone: true,
-  imports: [GraphComponent, CommonModule, MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, MatNativeDateModule, MatPaginatorModule, MatSelectModule, MatSidenavModule, MatExpansionModule, MatCheckboxModule, MatIconModule, MatTooltipModule, TableGraphComponent],
+  imports: [GraphComponent, CommonModule, MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, MatNativeDateModule, MatPaginatorModule, MatSelectModule, MatSidenavModule, MatExpansionModule, MatCheckboxModule, MatIconModule, MatTooltipModule, TableGraphComponent, MatSliderModule, MatInputModule],
   templateUrl: './archive-page.component.html',
   styleUrl: './archive-page.component.scss',
   providers: [
@@ -41,6 +42,17 @@ import { GraphType } from './graphType';
 export class ArchivePageComponent {
   @ViewChildren(GraphComponent) graphComponents!: QueryList<GraphComponent>;
   @ViewChildren(TableGraphComponent) tableComponents!: QueryList<TableGraphComponent<TableTelemetryData[]>>;
+  public minTimeline: number = 0;
+  public maxTimeline: number = 0;
+  public startTimeLine: number = 0;
+  public endTimeLine: number = 0;
+  public timelineForm = new FormGroup({
+    timelineStart: new FormControl<Date | null>(null),
+    timelineEnd: new FormControl<Date | null>(null),
+  });
+  public startTimeLineDate: Date = new Date();
+  public endTimeLineDate: Date = new Date();
+  public isTimeLine: boolean = true;
   public isShowTable: boolean = false;
   public tableData: Map<string, TableTelemetryData[]> = new Map<string, TableTelemetryData[]>();
   public dataHeader: string[] = ["value", "isFaulty", "date"];
@@ -58,7 +70,7 @@ export class ArchivePageComponent {
   public graphsRequest: archiveFramesRo = new archiveFramesRo({});
   public framesList: DataPoint[] = [];
   public isExporting: boolean = false;
-  constructor(private archiveService: ArchivePageService, private exportService: ExportService<GraphType>) { }
+  constructor(private archiveService: ArchivePageService, private exportService: ExportService<GraphType>) { this.initializeTimeLine(); }
 
   onPageChange(event: any) {
     this.pageStart = event.pageIndex * event.pageSize
@@ -85,15 +97,36 @@ export class ArchivePageComponent {
   }
 
   public sendArchiveRequest(restartFilter: boolean): void {
+    if (this.isTimeLine) {
+      this.sendTimelineRequest(restartFilter);
+    } else {
+      this.sendPaginationRequest(restartFilter);
+    }
+  }
+  public sendTimelineRequest(restartFilter: boolean): void {
+    let request: GetFullFramesDto = new GetFullFramesDto(this.packetTypeToNumber(), this.startTimeLineDate, this.endTimeLineDate);
+    this.archiveService.getFullFrames(request).subscribe((result: any) => {
+      this.graphsRequest = new archiveFramesRo(result)
+      if (restartFilter) {
+        Object.keys(this.graphsRequest.framesList).forEach((key) => {
+          this.selectedParmateres.set(key, true);
+        });
+      }
+      if (this.isShowTable) {
+        this.convertToTable();
+      }
+    })
+  }
 
+  public sendPaginationRequest(restartFilter: boolean): void {
     if (this.range.get('start')?.value == null || this.range.get('end')?.value == null)
       return
     let startDate = this.range.get('start')?.value ?? new Date();
     let endDate = this.range.get('end')?.value ?? new Date();
-    let packetCountRequest = new GetPacketCountDto(this.packetTypeToNumber(this.packetTypeSelected), startDate, endDate);
+    let packetCountRequest = new GetPacketCountDto(this.packetTypeToNumber(), startDate, endDate);
     this.archiveService.getPacketCount(packetCountRequest).subscribe((result) => this.currentPacketCount = result)
 
-    let request: GetFrameDto = new GetFrameDto(this.pageStart, this.pageEnd - this.pageStart, this.packetTypeToNumber(this.packetTypeSelected), startDate, endDate);
+    let request: GetFrameDto = new GetFrameDto(this.pageStart, this.pageEnd - this.pageStart, this.packetTypeToNumber(), startDate, endDate);
     this.archiveService.getPackets(request).subscribe((result: any) => {
       this.graphsRequest = new archiveFramesRo(result)
       if (restartFilter) {
@@ -105,16 +138,12 @@ export class ArchivePageComponent {
         this.convertToTable();
       }
     })
-
   }
-  private packetTypeToNumber(wantedPacket: string): number {
+  private packetTypeToNumber(): number {
     for (let packetIndex = 0; packetIndex < this.packetTypes.length; packetIndex++)
-      if (this.packetTypes[packetIndex] == wantedPacket)
+      if (this.packetTypes[packetIndex] == this.packetTypeSelected)
         return packetIndex
     return 0
-  }
-  public onPacketTypeChange(): void {
-    this.sendArchiveRequest(true)
   }
   public frameKeys(): string[] {
     return Object.keys(this.graphsRequest.framesList);
@@ -125,7 +154,10 @@ export class ArchivePageComponent {
       window.dispatchEvent(new Event('resize'));
     }, 1);
   }
-
+  public formatUnixDate = (value: number): string => {
+    const date: Date = new Date(value);
+    return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+  };
   public onCheckboxChange(event: any): void {
     this.selectedParmateres.set(event.source.value, !this.selectedParmateres.get(event.source.value))
   }
@@ -136,14 +168,36 @@ export class ArchivePageComponent {
         this.tableData.get(tableName)?.push(new TableTelemetryData(this.graphsRequest.framesList[tableName][dataPointIndex].value, this.graphsRequest.framesList[tableName][dataPointIndex].isFaulty, this.graphsRequest.framesList[tableName][dataPointIndex].packetTime))
     })
   }
-
+  public onEndDateChange(event: any): void {
+    this.endTimeLine = new Date(event.value).getTime();
+  }
+  public onStartDateChange(event: any): void {
+    this.startTimeLine = new Date(event.value).getTime();
+  }
   public toggleTable(): void {
     this.isShowTable = !this.isShowTable;
     if (this.isShowTable) {
       this.convertToTable();
     }
   }
+  public onTimeLineChange(event: any): void {
+    this.startTimeLineDate = new Date(this.startTimeLine);
+    this.endTimeLineDate = new Date(this.endTimeLine);
+    this.timelineForm.patchValue({ timelineStart: this.startTimeLineDate, timelineEnd: this.endTimeLineDate });
+  }
+  public initializeTimeLine(): void {
+    this.archiveService.getFramesDateRange(this.packetTypeToNumber()).subscribe((result) => {
+      this.minTimeline = new Date(result.startDate).getTime();
+      this.maxTimeline = new Date(result.endDate).getTime();
 
+      this.startTimeLine = this.minTimeline;
+      this.endTimeLine = (this.maxTimeline + this.minTimeline) / 2;
+
+      this.startTimeLineDate = new Date(result.startDate);
+      this.endTimeLineDate = new Date(result.endDate);
+      this.timelineForm.patchValue({ timelineStart: this.startTimeLineDate, timelineEnd: this.endTimeLineDate });
+    });
+  }
   public filterTables(index: number): boolean {
     let decision: boolean = index >= this.currentTablesStartIndex * CommonConsts.TABLES_IN_ROW - CommonConsts.TABLES_IN_ROW && index < CommonConsts.TABLES_IN_ROW * this.currentTablesStartIndex;
     return decision;
@@ -165,5 +219,8 @@ export class ArchivePageComponent {
     if (this.currentTablesStartIndex < Object.keys(this.graphsRequest.framesList).length / CommonConsts.TABLES_IN_ROW) {
       this.currentTablesStartIndex++;
     }
+  }
+  public swithcTimelinePagination(): void {
+    this.isTimeLine = !this.isTimeLine;
   }
 }
