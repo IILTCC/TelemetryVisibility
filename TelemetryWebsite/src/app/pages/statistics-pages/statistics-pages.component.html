@@ -48,6 +48,8 @@
       class="timeline-slider"
       [max]="maxTimeline"
       [min]="minTimeline"
+      [discrete]="true"
+      [displayWith]="formatUnixDate"
       (change)="onTimeLineChange($event)"
     >
       <input matSliderStartThumb [(ngModel)]="startTimeLine" #slider />

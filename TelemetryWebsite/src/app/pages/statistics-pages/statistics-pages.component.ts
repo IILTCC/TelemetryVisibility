@@ -66,6 +66,10 @@ export class StatisticsPagesComponent {
     this.sendStatisticsPage();
     this.initializeTimeLine();
   }
+  public formatUnixDate = (value: number): string => {
+    const date: Date = new Date(value);
+    return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+  };
   public statisticsTypeKeys(): string[] {
     return Object.keys(this.statisticsType);
   }
@@ -118,7 +122,7 @@ export class StatisticsPagesComponent {
     })
   }
   public initializeTimeLine(): void {
-    this.statisticsPageService.getFrameDateRange().subscribe((result) => {
+    this.statisticsPageService.getStatisticsDateRange().subscribe((result) => {
       this.minTimeline = new Date(result.startDate).getTime();
       this.maxTimeline = new Date(result.endDate).getTime();
 

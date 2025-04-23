@@ -303,3 +303,45 @@ table.side-nav-row {
   margin-right: auto;
   margin-left: auto;
 }
+::ng-deep .mode-button {
+  @extend .shared-buttons;
+  margin: 0.4rem;
+  height: 2.5rem !important;
+  width: 5.3rem !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: blur(5px) !important;
+  -webkit-backdrop-filter: blur(5px) !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.17) !important;
+  transition: all 0.3s ease !important;
+  &:hover {
+    background: linear-gradient(135deg, $amethyst, $royal-pruple) !important;
+  }
+}
+
+::ng-deep .mdc-slider__value-indicator {
+  background-color: $royal-pruple !important;
+  padding: 0.35rem !important;
+  opacity: 1 !important;
+}
+::ng-deep .mdc-slider__value-indicator-text {
+  color: white;
+}
+::ng-deep .mdc-slider__value-indicator::before {
+  display: none;
+}
+::ng-deep .timeline-date > .mat-mdc-text-field-wrapper {
+  background-color: #7862b3 !important;
+  color: white;
+}
+::ng-deep .timeline-date .mat-mdc-text-field-wrapper * {
+  color: white !important;
+}
+::ng-deep .timeline-date {
+  width: 90% !important;
+}
+.timeline-slider {
+  margin-top: 1rem;
+  width: 80%;
+}

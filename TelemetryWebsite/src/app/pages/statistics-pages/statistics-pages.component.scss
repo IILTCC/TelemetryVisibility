@@ -190,3 +190,15 @@ html {
     color: white !important;
   }
 }
+
+::ng-deep .mdc-slider__value-indicator {
+  background-color: $royal-pruple !important;
+  padding: 0.35rem !important;
+  opacity: 1 !important;
+}
+::ng-deep .mdc-slider__value-indicator-text {
+  color: white;
+}
+::ng-deep .mdc-slider__value-indicator::before {
+  display: none;
+}
