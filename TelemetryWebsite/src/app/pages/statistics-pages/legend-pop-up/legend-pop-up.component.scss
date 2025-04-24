@@ -1,6 +1,7 @@
+@import "../../../../styles.scss";
 .outer-div {
   padding: 1rem;
-  background-color: black !important;
+  background-color: $dark-green !important;
 }
 .outer-div * {
   font-size: 2rem;
@@ -12,9 +13,10 @@ $outline-color: rgba(0, 0, 0, 0.221);
 
 .inner-div-warn {
   color: yellow;
-  text-shadow: -1px -1px 0 $outline-color, 1px -1px 0$outline-color,
-    -1px 1px 0 $outline-color, 1px 1px 0 $outline-color;
 }
 .inner-div-error {
   color: red;
+}
+.mat-mdc-dialog-container {
+  --mdc-dialog-container-shape: 20px;
 }

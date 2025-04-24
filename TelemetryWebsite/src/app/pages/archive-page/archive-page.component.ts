@@ -216,7 +216,14 @@ export class ArchivePageComponent {
 
   }
   public moveTableLeft(): void {
-    if (this.currentTablesStartIndex < Object.keys(this.graphsRequest.framesList).length / CommonConsts.TABLES_IN_ROW) {
+    let counter: number = 0;
+    this.selectedParmateres.forEach((value, key) => {
+      if (!value) {
+        counter++;
+      }
+    })
+    console.log(counter)
+    if (this.currentTablesStartIndex * CommonConsts.TABLES_IN_ROW < Object.keys(this.graphsRequest.framesList).length - counter) {
       this.currentTablesStartIndex++;
     }
   }

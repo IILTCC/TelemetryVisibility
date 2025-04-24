@@ -156,7 +156,7 @@
           <br />
           }
         </div>
-        @if(!isTimeLine){
+        @if(!isTimeLine && frameKeys().length > 0){
         <div class="selector-paginator">
           <mat-paginator
             [length]="currentPacketCount"
