@@ -45,17 +45,20 @@ html {
 mat-expansion-panel {
   width: 100%;
 }
-
+.graph-wrapper {
+  height: 45% !important;
+  width: 32%;
+  margin: 0.3rem;
+}
 app-graph {
   width: 100%;
   display: block;
 }
 .graph {
-  width: 32%;
   border: #d6c8fb 1px solid !important;
   border-radius: 8px;
-  margin: 0.3rem;
 }
+
 ::ng-deep .date-range-picker > .mat-mdc-text-field-wrapper {
   background-color: #7862b3 !important;
   color: white;

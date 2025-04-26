@@ -16,6 +16,7 @@ export class TableGraphComponent<Row> implements AfterViewInit, OnChanges {
   @Input() public tableData: Row[] = [];
   @Input() public tableName: string = "";
   @Input() public displayedColumns: string[] = [];
+  @Input() public valueColumns: string[] = [];
   @Input() public seriesData: [number, number][] = [];
 
   private _liveAnnouncer = inject(LiveAnnouncer);
@@ -34,7 +35,16 @@ export class TableGraphComponent<Row> implements AfterViewInit, OnChanges {
   }
   public isDate(value: any): boolean {
     return value instanceof Date;
+
   }
+  public formatValue(value: any): string {
+    if (value instanceof Date) {
+      const date: Date = new Date(value);
+      return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+    }
+    return value;
+  }
+
   announceSortChange(sortState: Sort) {
     if (sortState.direction) {
       this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);

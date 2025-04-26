@@ -184,12 +184,14 @@
       <div class="table-scroll">
         <app-table-graph
           class="table-data"
+          [valueColumns]="valueHeader"
           [tableData]="tableData.get(graphKey)!"
           [displayedColumns]="dataHeader"
         >
         </app-table-graph>
       </div>
     </div>
+
     } } @if(frameKeys().length > 0){
 
     <div class="table-scroll-buttons">
@@ -200,14 +202,25 @@
         {{ ">" }}
       </button>
     </div>
-    } } @if(!isShowTable){ @for(graphKey of frameKeys(); track $index) {
-    @if(selectedParmateres.get(graphKey)) {
+    } } @if(!isShowTable){ @for(graphKey of getVisibleFrameKeys(); track $index)
+    { @if( filterGraphs($index)){
+    <div class="graph-wrapper">
+      <app-graph
+        class="graph"
+        [graphName]="graphKey"
+        [graphData]="graphsRequest.framesList[graphKey]"
+      ></app-graph>
+    </div>
+    } } @if(frameKeys().length > 0){
 
-    <app-graph
-      class="graph"
-      [graphName]="graphKey"
-      [graphData]="graphsRequest.framesList[graphKey]"
-    ></app-graph>
-    } } }
+    <div class="table-scroll-buttons">
+      <button class="table-scroll-button" (click)="moveGraphLeft()">
+        {{ "<" }}
+      </button>
+      <button class="table-scroll-button" (click)="moveGraphRight()">
+        {{ ">" }}
+      </button>
+    </div>
+    } }
   </div>
 </div>

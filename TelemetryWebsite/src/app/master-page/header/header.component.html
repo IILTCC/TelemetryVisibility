@@ -1,43 +1,50 @@
-<div id="table-div">
-  <table class="horizontal-bar">
-    <tr class="horizontal-bar">
-      <p id="header">Telemetry Device</p>
-      <th>
-        <button mat-button class="header-button" (click)="goToSimulator()">
-          Simulator
-        </button>
-      </th>
-      <th>
-        <button mat-button class="header-button" (click)="goToArchive()">
-          Archive
-        </button>
-      </th>
-      <th>
-        <div class="drop-down-container">
-          <button mat-button class="header-button drop-down-button">
-            System info
+<div class="header-container">
+  <img src="../../../assets/websiteLogo.png" id="logo" />
+
+  <div id="table-div">
+    <table class="horizontal-bar">
+      <tr class="horizontal-bar">
+        <th>
+          <button mat-button class="header-button" (click)="goToSimulator()">
+            Simulator
           </button>
-          <div class="drop-down-content">
-            <a (click)="goToSystemInfo('telemetry')">Telemetry Dashboard</a>
-            <a (click)="goToSystemInfo('mongoConsumer')"
-              >MongoConsumer Dashboard</a
-            >
-            <a (click)="goToSystemInfo('archive')">Archive Dashboard</a>
-            <a (click)="goToSystemInfo('kafka')">Kafka</a>
-            <a (click)="goToSystemInfo('all')">All Dashboards</a>
+        </th>
+        <th>
+          <button mat-button class="header-button" (click)="goToArchive()">
+            Archive
+          </button>
+        </th>
+        <th>
+          <div class="drop-down-container">
+            <button mat-button class="header-button drop-down-button">
+              System info
+            </button>
+            <div class="drop-down-content">
+              <a (click)="goToSystemInfo('telemetry')">Telemetry Dashboard</a>
+              <a (click)="goToSystemInfo('mongoConsumer')"
+                >MongoConsumer Dashboard</a
+              >
+              <a (click)="goToSystemInfo('archive')">Archive Dashboard</a>
+              <a (click)="goToSystemInfo('kafka')">Kafka</a>
+              <a (click)="goToSystemInfo('all')">All Dashboards</a>
+            </div>
           </div>
-        </div>
-      </th>
-      <th>
-        <button mat-button class="header-button" (click)="goToStatistics()">
-          Statistics
-        </button>
-      </th>
-      <th>
-        <button mat-button class="header-button" (click)="goToLiveStatistics()">
-          Live Statistics
-        </button>
-      </th>
-    </tr>
-  </table>
+        </th>
+        <th>
+          <button mat-button class="header-button" (click)="goToStatistics()">
+            Statistics
+          </button>
+        </th>
+        <th>
+          <button
+            mat-button
+            class="header-button"
+            (click)="goToLiveStatistics()"
+          >
+            Live Statistics
+          </button>
+        </th>
+      </tr>
+    </table>
+  </div>
 </div>
