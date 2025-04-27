@@ -204,12 +204,14 @@ export class ArchivePageComponent {
     });
   }
   public filterTables(index: number): boolean {
-    let decision: boolean = index >= this.currentTablesStartIndex * CommonConsts.TABLES_IN_ROW - CommonConsts.TABLES_IN_ROW && index < CommonConsts.TABLES_IN_ROW * this.currentTablesStartIndex;
-    return decision;
+    const ifHigher: boolean = index >= this.currentTablesStartIndex * CommonConsts.TABLES_IN_ROW - CommonConsts.TABLES_IN_ROW;
+    const ifLower: boolean = index < CommonConsts.TABLES_IN_ROW * this.currentTablesStartIndex;
+    return ifHigher && ifLower;
   }
   public filterGraphs(index: number): boolean {
-    let decision: boolean = index >= this.currentGraphsStartIndex * CommonConsts.TABLES_IN_ROW - CommonConsts.TABLES_IN_ROW && index < CommonConsts.TABLES_IN_ROW * this.currentGraphsStartIndex;
-    return decision;
+    const ifHigher: boolean = index >= this.currentGraphsStartIndex * CommonConsts.TABLES_IN_ROW - CommonConsts.TABLES_IN_ROW;
+    const ifLower: boolean = index < CommonConsts.TABLES_IN_ROW * this.currentGraphsStartIndex;
+    return ifHigher && ifLower;
   }
   public getVisibleFrameKeys(): string[] {
     let visibleKeys: string[] = [];
