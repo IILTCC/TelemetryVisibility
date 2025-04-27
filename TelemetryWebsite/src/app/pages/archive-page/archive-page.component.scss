@@ -45,17 +45,20 @@ html {
 mat-expansion-panel {
   width: 100%;
 }
-
+.graph-wrapper {
+  height: 45% !important;
+  width: 32%;
+  margin: 0.3rem;
+}
 app-graph {
   width: 100%;
   display: block;
 }
 .graph {
-  width: 32%;
   border: #d6c8fb 1px solid !important;
   border-radius: 8px;
-  margin: 0.3rem;
 }
+
 ::ng-deep .date-range-picker > .mat-mdc-text-field-wrapper {
   background-color: #7862b3 !important;
   color: white;
@@ -184,6 +187,8 @@ app-graph {
 }
 .side-nav-header-buttons {
   display: flex;
+  width: 100%;
+  justify-content: center;
 }
 table.side-nav-row {
   width: 100%;
@@ -220,9 +225,9 @@ table.side-nav-row {
 }
 .export-button {
   @extend .shared-buttons;
-  margin: 0.4rem;
+  margin: 0.3rem;
   height: 2.3rem !important;
-  width: 4.5rem !important;
+  width: 30% !important;
   background: rgba(255, 255, 255, 0.15) !important;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
   backdrop-filter: blur(5px) !important;
@@ -270,9 +275,9 @@ table.side-nav-row {
 .toggle-table {
   @extend .shared-buttons;
   align-self: flex-start;
-  margin: 0.4rem;
+  margin: 0.3rem;
   height: 2.3rem !important;
-  width: 4rem !important;
+  width: 30% !important;
   background: rgba(255, 255, 255, 0.15) !important;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
   backdrop-filter: blur(5px) !important;
@@ -302,12 +307,13 @@ table.side-nav-row {
 .table-outer-header {
   margin-right: auto;
   margin-left: auto;
+  width: 32%;
 }
 ::ng-deep .mode-button {
   @extend .shared-buttons;
-  margin: 0.4rem;
+  margin: 0.3rem;
   height: 2.5rem !important;
-  width: 5.3rem !important;
+  width: 40% !important;
   background: rgba(255, 255, 255, 0.15) !important;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
   backdrop-filter: blur(5px) !important;

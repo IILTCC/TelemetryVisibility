@@ -15,6 +15,7 @@ import {
 
 } from "ng-apexcharts";
 import { DataPoint } from '../../../dtos/dataPoint';
+import { ApexOptions } from 'apexcharts';
 
 @Component({
   selector: 'app-graph',
@@ -87,7 +88,6 @@ export class GraphComponent {
     this.chart = {
       type: "area",
       stacked: false,
-      height: 350,
       zoom: {
         type: "x",
         enabled: true,

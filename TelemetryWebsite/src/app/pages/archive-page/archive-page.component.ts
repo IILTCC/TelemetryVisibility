@@ -55,8 +55,10 @@ export class ArchivePageComponent {
   public isTimeLine: boolean = true;
   public isShowTable: boolean = false;
   public tableData: Map<string, TableTelemetryData[]> = new Map<string, TableTelemetryData[]>();
-  public dataHeader: string[] = ["value", "isFaulty", "date"];
+  public dataHeader: string[] = ["Date", "Is faulty", "Value"];
+  public valueHeader: string[] = ["date", "isFaulty", "value"];
   private currentTablesStartIndex: number = 1;
+  private currentGraphsStartIndex: number = 1;
   public selectedParmateres: Map<string, boolean> = new Map<string, boolean>();
   public currentPacketCount = 0;
   public packetTypes: string[] = [ChannelName.flightBoxDown, ChannelName.flightBoxUp, ChannelName.fiberBoxDown, ChannelName.fiberBoxUp];
@@ -70,7 +72,9 @@ export class ArchivePageComponent {
   public graphsRequest: archiveFramesRo = new archiveFramesRo({});
   public framesList: DataPoint[] = [];
   public isExporting: boolean = false;
-  constructor(private archiveService: ArchivePageService, private exportService: ExportService<GraphType>) { this.initializeTimeLine(); }
+  constructor(private archiveService: ArchivePageService, private exportService: ExportService<GraphType>) {
+    this.initializeTimeLine();
+  }
 
   onPageChange(event: any) {
     this.pageStart = event.pageIndex * event.pageSize
@@ -165,7 +169,8 @@ export class ArchivePageComponent {
     Object.keys(this.graphsRequest.framesList).forEach((tableName) => {
       this.tableData.set(tableName, [])
       for (let dataPointIndex: number = 0; dataPointIndex < this.graphsRequest.framesList[tableName].length; dataPointIndex++)
-        this.tableData.get(tableName)?.push(new TableTelemetryData(this.graphsRequest.framesList[tableName][dataPointIndex].value, this.graphsRequest.framesList[tableName][dataPointIndex].isFaulty, this.graphsRequest.framesList[tableName][dataPointIndex].packetTime))
+        this.tableData.get(tableName)?.push(new TableTelemetryData(this.graphsRequest.framesList[tableName][dataPointIndex].value, this.graphsRequest.framesList[tableName][dataPointIndex].isFaulty, new Date(this.graphsRequest.framesList[tableName][dataPointIndex].packetTime)))
+
     })
   }
   public onEndDateChange(event: any): void {
@@ -199,8 +204,14 @@ export class ArchivePageComponent {
     });
   }
   public filterTables(index: number): boolean {
-    let decision: boolean = index >= this.currentTablesStartIndex * CommonConsts.TABLES_IN_ROW - CommonConsts.TABLES_IN_ROW && index < CommonConsts.TABLES_IN_ROW * this.currentTablesStartIndex;
-    return decision;
+    const ifHigher: boolean = index >= this.currentTablesStartIndex * CommonConsts.TABLES_IN_ROW - CommonConsts.TABLES_IN_ROW;
+    const ifLower: boolean = index < CommonConsts.TABLES_IN_ROW * this.currentTablesStartIndex;
+    return ifHigher && ifLower;
+  }
+  public filterGraphs(index: number): boolean {
+    const ifHigher: boolean = index >= this.currentGraphsStartIndex * CommonConsts.TABLES_IN_ROW - CommonConsts.TABLES_IN_ROW;
+    const ifLower: boolean = index < CommonConsts.TABLES_IN_ROW * this.currentGraphsStartIndex;
+    return ifHigher && ifLower;
   }
   public getVisibleFrameKeys(): string[] {
     let visibleKeys: string[] = [];
@@ -216,8 +227,30 @@ export class ArchivePageComponent {
 
   }
   public moveTableLeft(): void {
-    if (this.currentTablesStartIndex < Object.keys(this.graphsRequest.framesList).length / CommonConsts.TABLES_IN_ROW) {
+    let counter: number = 0;
+    this.selectedParmateres.forEach((value, key) => {
+      if (!value) {
+        counter++;
+      }
+    })
+    if (this.currentTablesStartIndex * CommonConsts.TABLES_IN_ROW < Object.keys(this.graphsRequest.framesList).length - counter) {
       this.currentTablesStartIndex++;
+    }
+  }
+  public moveGraphLeft(): void {
+    if (this.currentGraphsStartIndex > 1)
+      this.currentGraphsStartIndex--;
+
+  }
+  public moveGraphRight(): void {
+    let counter: number = 0;
+    this.selectedParmateres.forEach((value, key) => {
+      if (!value) {
+        counter++;
+      }
+    })
+    if (this.currentGraphsStartIndex * CommonConsts.TABLES_IN_ROW < Object.keys(this.graphsRequest.framesList).length - counter) {
+      this.currentGraphsStartIndex++;
     }
   }
   public swithcTimelinePagination(): void {

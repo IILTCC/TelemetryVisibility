@@ -182,11 +182,7 @@ export class StatisticsPagesComponent {
     this.isTimeLine = !this.isTimeLine;
   }
   public openLegend(): void {
-    const dialogRef = this.dialog.open(LegendPopUpComponent);
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`)
-    });
+    this.dialog.open(LegendPopUpComponent);
   }
   public async exportAllGraphs(): Promise<void> {
     let allGraphs: StatisticsGraphType[][] = [];
