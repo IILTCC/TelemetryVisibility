@@ -76,7 +76,57 @@ export class StatisticsPagesComponent {
   public statisticsKeys(): string[] {
     return Object.keys(this.statistics.graphs);
   }
-  public statisticValueKeys(statisticTypeKey: string): string[] {
+  public statisticTableValueKeys(statisticTypeKey: string): string[][] {
+    let ret: string[][] = []
+    let values: string[] = Object.keys(this.statisticsType[statisticTypeKey].values);
+    for (let index: number = 0; index < values.length; index += 2)
+      ret.push([values[index], values[index + 1]])
+    return ret;
+
+  }
+
+  private convertSingleTableDate(): void {
+    Object.keys(this.statistics.graphs).forEach((singleGraphKey) => {
+      let oneGraph: TableSingleStatisticsData[] = []
+      this.statistics.graphs[singleGraphKey].forEach((graphPoint) => {
+        oneGraph.push(new TableSingleStatisticsData(graphPoint.y, new Date(graphPoint.x)))
+      });
+      this.tableSingleData.set(singleGraphKey, oneGraph)
+    })
+  }
+  public toggleTable(): void {
+    this.isTable = !this.isTable;
+  }
+  private convertMultiTableDate(): void {
+    Object.keys(this.statisticsType).forEach((statisticsType) => {
+      let mapGraph: Map<number, TableMultipleStatisticsData> = new Map<number, TableMultipleStatisticsData>();
+      Object.keys(this.statisticsType[statisticsType].graphs).forEach((channelType) => {
+        this.statisticsType[statisticsType].graphs[channelType].forEach((graphPoint: StatisticsPoint) => {
+          const newChannelType: string = (channelType[0].toLowerCase() + channelType.slice(1)).slice(0, -3);;
+          if (mapGraph.has(graphPoint.x))
+            (mapGraph.get(graphPoint.x) as any)[newChannelType] = graphPoint.y
+          else {
+            mapGraph.set(graphPoint.x, new TableMultipleStatisticsData(0, 0, 0, 0, new Date(graphPoint.x)));
+            (mapGraph.get(graphPoint.x) as any)[newChannelType] = graphPoint.y;
+          }
+        })
+      })
+      let oneGraph: TableMultipleStatisticsData[] = []
+      mapGraph.forEach((value: TableMultipleStatisticsData) => {
+        oneGraph.push(value)
+        this.tableMultiData.set(statisticsType, oneGraph)
+      })
+
+    })
+  }
+  private convertToTableData(): void {
+    console.log(this.statisticsType)
+    this.convertSingleTableDate();
+    this.convertMultiTableDate();
+    console.log(this.tableSingleData)
+    console.log(this.tableMultiData)
+  }
+  public statisticGraphValueKeys(statisticTypeKey: string): string[] {
     return Object.keys(this.statisticsType[statisticTypeKey].values);
   }
   public formatStatisticDict(list: StatisticsPoint[], name: string): { [key: string]: StatisticsPoint[] } {

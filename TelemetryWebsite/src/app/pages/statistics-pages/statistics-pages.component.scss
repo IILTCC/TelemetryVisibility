@@ -48,8 +48,31 @@ html {
 .statistic-type-tr {
   width: 99vw;
 }
+.statistic-type-table {
+  width: 30vw;
+}
 .statistic-type-th {
   width: 100%;
+}
+.toggle-table {
+  @extend .shared-buttons;
+  // align-self: flex-start;
+  margin: 0.3rem;
+  height: 2.3rem !important;
+  width: 4rem !important;
+  margin-right: 2rem;
+
+  // width: 100% !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1) !important;
+  backdrop-filter: blur(5px) !important;
+  -webkit-backdrop-filter: blur(5px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.17) !important;
+  transition: all 0.3s ease !important;
+  &:hover {
+    background: linear-gradient(135deg, $amethyst, $royal-pruple) !important;
+    color: white !important;
+  }
 }
 .statistic-main-container {
   overflow-y: auto;
@@ -58,11 +81,40 @@ html {
   margin-right: 0.5rem;
   margin-left: 0.5rem;
 }
+.export-button-image {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+.table-multi-scroll {
+  height: 50vh;
+  width: 65vw;
+  overflow-y: scroll;
+  scrollbar-color: $thistle rgba(0, 0, 0, 0);
+  scrollbar-width: thin;
+}
+.table-multi-scroll-single {
+  height: 50vh;
+  width: 45vw;
+  overflow-y: scroll;
+  scrollbar-color: $thistle rgba(0, 0, 0, 0);
+  scrollbar-width: thin;
+}
+.table-data {
+  width: 65vw;
+}
+.table-multi-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+}
 .statistic-title {
   font-size: 1.5rem;
   color: $amethyst;
   justify-content: center;
   text-align: center;
+  margin: 2.7rem;
 }
 ::ng-deep .packet-type-selector * {
   color: $thistle;
