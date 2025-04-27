@@ -107,8 +107,22 @@ export class ArchivePageComponent {
       this.sendPaginationRequest(restartFilter);
     }
   }
+  private convertLocalToUtcPreserveTime(localDate: Date): Date {
+    return new Date(
+      Date.UTC(
+        localDate.getFullYear(),
+        localDate.getMonth(),
+        localDate.getDate(),
+        localDate.getHours(),
+        localDate.getMinutes(),
+        localDate.getSeconds(),
+        localDate.getMilliseconds()
+      )
+    );
+  }
   public sendTimelineRequest(restartFilter: boolean): void {
-    let request: GetFullFramesDto = new GetFullFramesDto(this.packetTypeToNumber(), this.startTimeLineDate, this.endTimeLineDate);
+
+    let request: GetFullFramesDto = new GetFullFramesDto(this.packetTypeToNumber(), this.convertLocalToUtcPreserveTime(this.startTimeLineDate), this.convertLocalToUtcPreserveTime(this.endTimeLineDate));
     this.archiveService.getFullFrames(request).subscribe((result: any) => {
       this.graphsRequest = new archiveFramesRo(result)
       if (restartFilter) {
@@ -192,6 +206,10 @@ export class ArchivePageComponent {
   }
   public initializeTimeLine(): void {
     this.archiveService.getFramesDateRange(this.packetTypeToNumber()).subscribe((result) => {
+      console.log(new Date(result.startDate).toTimeString())
+      console.log(new Date(new Date(result.startDate).toISOString()).toTimeString())
+      // const timezoneOffsetMs = new Date(result.startDate).getTimezoneOffset() * 60 * 1000; // convert from miliseconds
+
       this.minTimeline = new Date(result.startDate).getTime();
       this.maxTimeline = new Date(result.endDate).getTime();
 
@@ -199,6 +217,7 @@ export class ArchivePageComponent {
       this.endTimeLine = (this.maxTimeline + this.minTimeline) / 2;
 
       this.startTimeLineDate = new Date(result.startDate);
+      console.log(this.startTimeLineDate.toTimeString())
       this.endTimeLineDate = new Date(result.endDate);
       this.timelineForm.patchValue({ timelineStart: this.startTimeLineDate, timelineEnd: this.endTimeLineDate });
     });
@@ -225,6 +244,12 @@ export class ArchivePageComponent {
     if (this.currentTablesStartIndex > 1)
       this.currentTablesStartIndex--;
 
+  }
+  public getMinTime(): string {
+    return new Date(this.minTimeline).toLocaleTimeString();
+  }
+  public getMaxTime(): string {
+    return new Date(this.maxTimeline).toLocaleTimeString();
   }
   public moveTableLeft(): void {
     let counter: number = 0;

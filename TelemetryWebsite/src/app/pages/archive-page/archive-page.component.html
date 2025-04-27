@@ -78,6 +78,14 @@
           <mat-date-range-picker #picker></mat-date-range-picker>
         </mat-form-field>
         } @if (isTimeLine) {
+        <span class="slider-range"
+          ><p class="slider-range-edge">
+            {{ getMinTime() }}
+          </p>
+          <p class="slider-range-edge">
+            {{ getMaxTime() }}
+          </p></span
+        >
         <mat-slider
           class="timeline-slider"
           [max]="maxTimeline"
@@ -89,6 +97,7 @@
           <input matSliderStartThumb [(ngModel)]="startTimeLine" #slider />
           <input matSliderEndThumb [(ngModel)]="endTimeLine" #slider />
         </mat-slider>
+
         <mat-form-field
           class="timeline-date"
           appearance="fill"

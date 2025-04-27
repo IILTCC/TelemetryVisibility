@@ -24,11 +24,15 @@ import { LegendPopUpComponent } from './legend-pop-up/legend-pop-up.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ExportService } from '../../services/export.Service';
 import { StatisticsGraphType } from './statistic-graph/multiStatisticsGraphType';
+import { TableGraphComponent } from "../archive-page/table-graph/table-graph.component";
+import { TableSingleStatisticsData } from './tableSingleStatisticsData';
+import { TableMultipleStatisticsData } from './tableMultipleStatisticsData';
+
 
 @Component({
   selector: 'app-statistics-pages',
   standalone: true,
-  imports: [MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, MatNativeDateModule, StatisticBoxComponent, StatisticGraphComponent, CommonModule, MatPaginatorModule, MatSliderModule, MatInputModule, MatIconModule, MatDialogModule, MatTooltipModule],
+  imports: [MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, MatNativeDateModule, StatisticBoxComponent, StatisticGraphComponent, CommonModule, MatPaginatorModule, MatSliderModule, MatInputModule, MatIconModule, MatDialogModule, MatTooltipModule, TableGraphComponent],
   templateUrl: './statistics-pages.component.html',
   styleUrl: './statistics-pages.component.scss',
   providers: [
@@ -38,6 +42,14 @@ import { StatisticsGraphType } from './statistic-graph/multiStatisticsGraphType'
 })
 export class StatisticsPagesComponent {
   readonly dialog = inject(MatDialog);
+  public dataMultiHeader: string[] = ["Date", "FlightBoxDown", "FlightBoxUp", "FiberBoxDown", "FiberBoxUp"];
+  public valueMultiHeader: string[] = ["date", "flightBoxDown", "flightBoxUp", "fiberBoxDown", "fiberBoxUp"];
+  public dataSingleHeader: string[] = ["Date", "Value"];
+  public valueSingleHeader: string[] = ["date", "value"];
+  public tableSingleData: Map<string, TableSingleStatisticsData[]> = new Map<string, TableSingleStatisticsData[]>();
+  public tableMultiData: Map<string, TableMultipleStatisticsData[]> = new Map<string, TableMultipleStatisticsData[]>();
+
+  public isTable: boolean = true;
   public minTimeline: number = 0;
   public maxTimeline: number = 0;
   public startTimeLine: number = 0;
@@ -189,6 +201,7 @@ export class StatisticsPagesComponent {
       this.sendTimelineStatistics()
     else
       this.sendPaginationStatistics()
+
   }
 
   public sendPaginationStatistics(): void {
@@ -205,11 +218,15 @@ export class StatisticsPagesComponent {
     this.statisticsPageService.getStatistics(getStatisticsDto).subscribe((result) => { this.statistics = result; this.loadGraphs(); })
   }
   public sendTimelineStatistics(): void {
-
     if (this.startTimeLineDate == null || this.endTimeLineDate == null)
       return
+
     let getStatisticsDto: GetFullStatisticsDto = new GetFullStatisticsDto(this.startTimeLineDate, this.endTimeLineDate);
-    this.statisticsPageService.getFullStatistics(getStatisticsDto).subscribe((result) => { this.statistics = result; this.loadGraphs(); })
+    this.statisticsPageService.getFullStatistics(getStatisticsDto).subscribe((result) => {
+      console.log(this.statisticsType)
+      this.statistics = result; this.loadGraphs(); if (this.isTable)
+        this.convertToTableData()
+    })
   }
   public onPageChange(event: any): void {
     this.pageStart = event.pageIndex * event.pageSize

@@ -76,7 +76,7 @@ html {
 }
 .statistic-main-container {
   overflow-y: auto;
-  height: 80vh;
+  height: 70vh;
   overflow-x: hidden;
   margin-right: 0.5rem;
   margin-left: 0.5rem;
@@ -157,7 +157,7 @@ html {
 ::ng-deep .mode-button {
   @extend .shared-buttons;
   width: 5.5em !important;
-  margin-right: 2rem;
+  // margin-right: 2rem;
 }
 .timeline-slider {
   width: 15vw;
@@ -211,9 +211,13 @@ html {
 }
 .single-graph-container {
   width: 49%;
+  scrollbar-color: $thistle rgba(0, 0, 0, 0);
+  scrollbar-width: thin;
 }
 .all-single-graphs-container {
   display: flex;
+  margin-top: 2rem;
+  justify-content: space-between;
 }
 ::ng-deep .mat-mdc-paginator-page-size-label {
   display: none !important;

@@ -70,7 +70,27 @@
     >
       @if(isTimeLine){ timeline } @else { pagination }
     </button>
-
+    <button mat-flat-button (click)="toggleTable()" class="toggle-table">
+      @if(isTable) {
+      <img
+        matTooltipShowDelay="500"
+        matTooltipHideDelay="1000"
+        matTooltip="toggle graph"
+        class="export-button-image"
+        src="../../../assets/graphIcon.png"
+        alt="Icon"
+      />
+      } @else{
+      <img
+        matTooltipShowDelay="500"
+        matTooltipHideDelay="1000"
+        matTooltip="toggle tables"
+        class="export-button-image"
+        src="../../../assets/tableIcon.png"
+        alt="Icon"
+      />
+      }
+    </button>
     @if(isTimeLine){
     <mat-paginator
       class="selector-paginator"
@@ -200,6 +220,8 @@
 
     }
   </div>
+  @if(!isTable){
+
   <div class="all-single-graphs-container">
     @for(statisticKey of statisticsKeys(); track $index;let graphIndex = $index)
     {
