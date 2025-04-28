@@ -132,11 +132,8 @@ export class StatisticsPagesComponent {
     })
   }
   private convertToTableData(): void {
-    console.log(this.statisticsType)
     this.convertSingleTableDate();
     this.convertMultiTableDate();
-    console.log(this.tableSingleData)
-    console.log(this.tableMultiData)
   }
   public statisticGraphValueKeys(statisticTypeKey: string): string[] {
     return Object.keys(this.statisticsType[statisticTypeKey].values);
@@ -223,7 +220,6 @@ export class StatisticsPagesComponent {
 
     let getStatisticsDto: GetFullStatisticsDto = new GetFullStatisticsDto(this.startTimeLineDate, this.endTimeLineDate);
     this.statisticsPageService.getFullStatistics(getStatisticsDto).subscribe((result) => {
-      console.log(this.statisticsType)
       this.statistics = result; this.loadGraphs(); if (this.isTable)
         this.convertToTableData()
     })

@@ -1,1 +1,16 @@
 @import "../styles.scss";
+.app-header-class {
+  width: 100%;
+  display: block;
+  height: 5%;
+  margin-bottom: 1%;
+}
+.outer-div {
+  height: 100% !important;
+}
+.outer-div > * {
+  display: block;
+}
+.inner-div > * {
+  height: 100% !important;
+}

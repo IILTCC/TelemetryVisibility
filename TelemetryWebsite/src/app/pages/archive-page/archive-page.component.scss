@@ -1,5 +1,8 @@
 @import "../../../styles.scss";
-
+:host {
+  display: block;
+  height: 95%;
+}
 #main-container {
   display: flex;
   width: 100%;
@@ -349,7 +352,6 @@ table.side-nav-row {
   width: 90% !important;
 }
 .timeline-slider {
-  // margin-top: 1rem;
   width: 80%;
 }
 .slider-range {
