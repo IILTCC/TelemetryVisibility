@@ -11,8 +11,12 @@ html {
   overflow-y: hidden !important;
   overflow-x: hidden !important;
 }
+.all-div {
+  flex-direction: column;
+  display: flex;
+  height: 98%;
+}
 .selector-div {
-  height: 11%;
   margin-top: 0.6rem;
   position: relative;
   margin-left: auto;
@@ -78,7 +82,6 @@ html {
 }
 .statistic-main-container {
   overflow-y: auto;
-  height: 87%;
   overflow-x: hidden;
   margin-right: 0.5rem;
   margin-left: 0.5rem;

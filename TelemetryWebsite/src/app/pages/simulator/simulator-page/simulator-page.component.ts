@@ -1,18 +1,16 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { CommonModule } from '@angular/common';
-import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon'
-import { StartSimulatorDto } from '../../../dtos/startSimulatorDto';
-import { HttpClient } from '@angular/common/http';
-import { SimulatorPageService } from '../../../services/simulatorPage.Service';
-import { StopSimulatorDto } from '../../../dtos/stopSimulatorDto';
-import { Channel } from './channel';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import Swal from "sweetalert2";
-import { ChannelName } from '../../../common/channelName';
+import { StartSimulatorDto } from '../../../dtos/startSimulatorDto';
+import { StopSimulatorDto } from '../../../dtos/stopSimulatorDto';
+import { SimulatorPageService } from '../../../services/simulatorPage.Service';
+import { Channel } from './channel';
 
 
 @Component({
@@ -23,14 +21,19 @@ import { ChannelName } from '../../../common/channelName';
   styleUrl: './simulator-page.component.scss'
 })
 export class SimulatorPageComponent {
-  constructor(private simulatorPageService: SimulatorPageService) { }
-  channels: Channel[] = [new Channel(ChannelName.fiberBoxUp, "0", "0", 3), new Channel(ChannelName.fiberBoxDown, "0", "0", 2), new Channel(ChannelName.flightBoxDown, "0", "0", 0), new Channel(ChannelName.flightBoxUp, "0", "0", 1)];
+  public channels: Channel[] = [];
+  constructor(private simulatorPageService: SimulatorPageService) {
+    simulatorPageService.getCurrent().subscribe((result) => {
+      Object.keys(result.channelsCurrent).forEach((channel) => {
+        this.channels.push(new Channel(channel, String(result.channelsCurrent[channel].error), String(result.channelsCurrent[channel].delay), result.channelsCurrent[channel].id));
+      })
+    })
+  }
 
   clickOnStart(channelNumber: number): void {
     let startSimulatorDto: StartSimulatorDto = new StartSimulatorDto(this.channels[channelNumber].id, Number(this.channels[channelNumber].errorInput), Number(this.channels[channelNumber].delayInput));
     this.simulatorPageService.startSimulator(startSimulatorDto).subscribe((res) => {
-       if(res != 0)
-       {
+      if (res != 0) {
         Swal.fire({
           title: 'simulator request',
           text: 'reuqest failed',
@@ -42,14 +45,13 @@ export class SimulatorPageComponent {
           allowEnterKey: true,
           allowOutsideClick: true
         })
-       }
-      });
+      }
+    });
   }
   clickOnPause(channelNumber: number): void {
     let stopSimulatorDto: StopSimulatorDto = new StopSimulatorDto(this.channels[channelNumber].id);
-    this.simulatorPageService.stopSimulator(stopSimulatorDto).subscribe((res) => {        
-      if(res != 0)
-       {
+    this.simulatorPageService.stopSimulator(stopSimulatorDto).subscribe((res) => {
+      if (res != 0) {
         Swal.fire({
           title: 'simulator request',
           text: 'reuqest failed',
@@ -61,7 +63,8 @@ export class SimulatorPageComponent {
           allowEnterKey: true,
           allowOutsideClick: true
         })
-       } });
+      }
+    });
   }
 }
 

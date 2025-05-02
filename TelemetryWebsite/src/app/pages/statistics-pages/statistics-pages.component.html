@@ -1,262 +1,268 @@
-<div class="selector-div">
-  <div class="selector-inner">
-    <div class="info-div">
-      <button
-        mat-flat-button
-        (click)="openLegend()"
-        class="info-button"
-        matTooltipShowDelay="500"
-        matTooltipHideDelay="1000"
-        matTooltip="info"
+<div class="all-div">
+  <div class="selector-div">
+    <div class="selector-inner">
+      <div class="info-div">
+        <button
+          mat-flat-button
+          (click)="openLegend()"
+          class="info-button"
+          matTooltipShowDelay="500"
+          matTooltipHideDelay="1000"
+          matTooltip="info"
+        >
+          <img
+            class="export-button-image"
+            src="../../../assets/infoIcon.png"
+            alt="Icon"
+          />
+        </button>
+        <button
+          matTooltipShowDelay="500"
+          matTooltipHideDelay="1000"
+          matTooltip="export"
+          mat-flat-button
+          (click)="exportAllGraphs()"
+          class="export-button"
+        >
+          <img
+            class="export-button-image"
+            src="../../../assets/export.png"
+            alt="Icon"
+          />
+        </button>
+      </div>
+      @if(isTimeLine){
+      <mat-form-field class="date-range-picker">
+        <mat-label>Enter a date range</mat-label>
+        <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+          <input
+            matStartDate
+            formControlName="start"
+            placeholder="Start date"
+          />
+          <input matEndDate formControlName="end" placeholder="End date" />
+        </mat-date-range-input>
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+      } @if(!isTimeLine){
+      <mat-slider
+        class="timeline-slider"
+        [max]="maxTimeline"
+        [min]="minTimeline"
+        [discrete]="true"
+        [displayWith]="formatUnixDate"
+        (change)="onTimeLineChange($event)"
       >
-        <img
-          class="export-button-image"
-          src="../../../assets/infoIcon.png"
-          alt="Icon"
-        />
-      </button>
-      <button
-        matTooltipShowDelay="500"
-        matTooltipHideDelay="1000"
-        matTooltip="export"
-        mat-flat-button
-        (click)="exportAllGraphs()"
-        class="export-button"
-      >
-        <img
-          class="export-button-image"
-          src="../../../assets/export.png"
-          alt="Icon"
-        />
-      </button>
-    </div>
-    @if(isTimeLine){
-    <mat-form-field class="date-range-picker">
-      <mat-label>Enter a date range</mat-label>
-      <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
-        <input matStartDate formControlName="start" placeholder="Start date" />
-        <input matEndDate formControlName="end" placeholder="End date" />
-      </mat-date-range-input>
-      <mat-datepicker-toggle
-        matIconSuffix
-        [for]="picker"
-      ></mat-datepicker-toggle>
-      <mat-date-range-picker #picker></mat-date-range-picker>
-    </mat-form-field>
-    } @if(!isTimeLine){
-    <mat-slider
-      class="timeline-slider"
-      [max]="maxTimeline"
-      [min]="minTimeline"
-      [discrete]="true"
-      [displayWith]="formatUnixDate"
-      (change)="onTimeLineChange($event)"
-    >
-      <input matSliderStartThumb [(ngModel)]="startTimeLine" #slider />
-      <input matSliderEndThumb [(ngModel)]="endTimeLine" #slider />
-    </mat-slider>
-    }
-    <button
-      mat-flat-button
-      (click)="sendStatisticsPage()"
-      class="submit-button"
-    >
-      submit
-    </button>
-    <button
-      mat-flat-button
-      (click)="swithcTimelinePagination()"
-      class="mode-button"
-    >
-      @if(isTimeLine){ timeline } @else { pagination }
-    </button>
-    <button mat-flat-button (click)="toggleTable()" class="toggle-table">
-      @if(isTable) {
-      <img
-        matTooltipShowDelay="500"
-        matTooltipHideDelay="1000"
-        matTooltip="toggle graph"
-        class="export-button-image"
-        src="../../../assets/graphIcon.png"
-        alt="Icon"
-      />
-      } @else{
-      <img
-        matTooltipShowDelay="500"
-        matTooltipHideDelay="1000"
-        matTooltip="toggle tables"
-        class="export-button-image"
-        src="../../../assets/tableIcon.png"
-        alt="Icon"
-      />
+        <input matSliderStartThumb [(ngModel)]="startTimeLine" #slider />
+        <input matSliderEndThumb [(ngModel)]="endTimeLine" #slider />
+      </mat-slider>
       }
-    </button>
-    @if(isTimeLine){
-    <mat-paginator
-      class="selector-paginator"
-      [length]="currentStatisticsCount"
-      [pageSize]="10"
-      [pageSizeOptions]="[5, 10, 25, 100, 250, 500]"
-      aria-label="Select page"
-      (page)="onPageChange($event)"
-    >
-    </mat-paginator>
-    } @if(!isTimeLine) {
-
-    <div class="timeline-outer">
-      <mat-form-field
-        class="timeline-date"
-        appearance="fill"
-        [formGroup]="timelineForm"
+      <button
+        mat-flat-button
+        (click)="sendStatisticsPage()"
+        class="submit-button"
       >
-        <mat-label>Start Date</mat-label>
-        <input
-          matInput
-          [matDatepicker]="startPicker"
-          formControlName="timelineStart"
-          (dateChange)="onStartDateChange($event)"
-        />
-        <mat-datepicker-toggle
-          matIconSuffix
-          [for]="startPicker"
-        ></mat-datepicker-toggle>
-        <mat-datepicker #startPicker></mat-datepicker>
-      </mat-form-field>
-
-      <mat-form-field
-        appearance="fill"
-        class="timeline-date"
-        [formGroup]="timelineForm"
+        submit
+      </button>
+      <button
+        mat-flat-button
+        (click)="swithcTimelinePagination()"
+        class="mode-button"
       >
-        <mat-label>End Date</mat-label>
-        <input
-          matInput
-          [matDatepicker]="endPicker"
-          formControlName="timelineEnd"
-          (dateChange)="onEndDateChange($event)"
+        @if(isTimeLine){ timeline } @else { pagination }
+      </button>
+      <button mat-flat-button (click)="toggleTable()" class="toggle-table">
+        @if(isTable) {
+        <img
+          matTooltipShowDelay="500"
+          matTooltipHideDelay="1000"
+          matTooltip="toggle graph"
+          class="export-button-image"
+          src="../../../assets/graphIcon.png"
+          alt="Icon"
         />
-        <mat-datepicker-toggle
-          matIconSuffix
-          [for]="endPicker"
-        ></mat-datepicker-toggle>
-        <mat-datepicker #endPicker></mat-datepicker>
-      </mat-form-field>
-    </div>
-    }
-  </div>
-</div>
-<div class="statistic-main-container">
-  <div
-    *ngFor="
-      let statisticTypeKey of statisticsTypeKeys();
-      let mainGraphIndex = index
-    "
-  >
-    @if(!isTable){
-    <div class="statistic-title">{{ statisticTypeKey }}</div>
-    <table class="statistic-type-tr">
-      <tr>
-        @for(sevirity of statisticGraphValueKeys(statisticTypeKey); track
-        $index) {
-        <th>
-          <app-statistic-box
-            [statisticValue]="
-              this.statisticsType[statisticTypeKey].values[sevirity]
-            "
-            [statisticName]="sevirity"
-            [statisticSevirity]="
-              this.statisticsType[statisticTypeKey].sevirityValues[sevirity]
-            "
-            [statisticUnit]="this.statisticsUnits[mainGraphIndex]"
-          ></app-statistic-box>
-        </th>
+        } @else{
+        <img
+          matTooltipShowDelay="500"
+          matTooltipHideDelay="1000"
+          matTooltip="toggle tables"
+          class="export-button-image"
+          src="../../../assets/tableIcon.png"
+          alt="Icon"
+        />
         }
-      </tr>
-    </table>
-    <div>
-      <app-statistic-graph
-        [graphData]="this.statisticsType[statisticTypeKey].graphs"
-        [lineColor]="chartColors"
-        [graphUnits]="this.statisticsUnits[mainGraphIndex]"
-        graphName=""
-      />
+      </button>
+      @if(isTimeLine){
+      <mat-paginator
+        class="selector-paginator"
+        [length]="currentStatisticsCount"
+        [pageSize]="10"
+        [pageSizeOptions]="[5, 10, 25, 100, 250, 500]"
+        aria-label="Select page"
+        (page)="onPageChange($event)"
+      >
+      </mat-paginator>
+      } @if(!isTimeLine) {
+
+      <div class="timeline-outer">
+        <mat-form-field
+          class="timeline-date"
+          appearance="fill"
+          [formGroup]="timelineForm"
+        >
+          <mat-label>Start Date</mat-label>
+          <input
+            matInput
+            [matDatepicker]="startPicker"
+            formControlName="timelineStart"
+            (dateChange)="onStartDateChange($event)"
+          />
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="startPicker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #startPicker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field
+          appearance="fill"
+          class="timeline-date"
+          [formGroup]="timelineForm"
+        >
+          <mat-label>End Date</mat-label>
+          <input
+            matInput
+            [matDatepicker]="endPicker"
+            formControlName="timelineEnd"
+            (dateChange)="onEndDateChange($event)"
+          />
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="endPicker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #endPicker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      }
     </div>
-    }@else {
-    <div class="statistic-title">{{ statisticTypeKey }}</div>
-    <div class="table-multi-wrapper">
-      <table class="statistic-type-table">
-        @for(sevirityOuter of statisticTableValueKeys(statisticTypeKey); track
-        $index) {
+  </div>
+  <div class="statistic-main-container">
+    <div
+      *ngFor="
+        let statisticTypeKey of statisticsTypeKeys();
+        let mainGraphIndex = index
+      "
+    >
+      @if(!isTable){
+      <div class="statistic-title">{{ statisticTypeKey }}</div>
+      <table class="statistic-type-tr">
         <tr>
-          @for(sevirityInner of sevirityOuter; track $index) {
+          @for(sevirity of statisticGraphValueKeys(statisticTypeKey); track
+          $index) {
           <th>
             <app-statistic-box
               [statisticValue]="
-                this.statisticsType[statisticTypeKey].values[sevirityInner]
+                this.statisticsType[statisticTypeKey].values[sevirity]
               "
-              [statisticName]="sevirityInner"
+              [statisticName]="sevirity"
               [statisticSevirity]="
-                this.statisticsType[statisticTypeKey].sevirityValues[
-                  sevirityInner
-                ]
+                this.statisticsType[statisticTypeKey].sevirityValues[sevirity]
               "
               [statisticUnit]="this.statisticsUnits[mainGraphIndex]"
             ></app-statistic-box>
           </th>
           }
         </tr>
-        }
       </table>
-      <div class="table-multi-scroll">
-        <app-table-graph
-          class="table-data"
-          [valueColumns]="valueMultiHeader"
-          [tableData]="tableMultiData.get(statisticTypeKey)!"
-          [displayedColumns]="dataMultiHeader"
-        >
-        </app-table-graph>
+      <div>
+        <app-statistic-graph
+          [graphData]="this.statisticsType[statisticTypeKey].graphs"
+          [lineColor]="chartColors"
+          [graphUnits]="this.statisticsUnits[mainGraphIndex]"
+          graphName=""
+        />
       </div>
-    </div>
-
-    }
-  </div>
-  @if(!isTable){
-
-  <div class="all-single-graphs-container">
-    @for(statisticKey of statisticsKeys(); track $index;let graphIndex = $index)
-    {
-    <div class="single-graph-container">
-      <div class="statistic-title">{{ statisticKey }}</div>
-      <app-statistic-graph
-        [graphData]="{ statisticKey: this.statistics.graphs[statisticKey] }"
-        [lineColor]="chartColors"
-        [graphUnits]="
-          this.statisticsUnits[graphIndex + statisticsTypeKeys().length]
-        "
-        graphName=""
-      />
-    </div>
-    }
-  </div>
-  }@else {
-  <div class="all-single-graphs-container">
-    @for(statisticKey of statisticsKeys(); track $index;let graphIndex = $index)
-    {
-    <div>
-      <p class="statistic-title">{{ statisticKey }}</p>
-
-      <div class="table-multi-scroll-single">
-        <app-table-graph
-          class="table-data"
-          [valueColumns]="valueSingleHeader"
-          [tableData]="tableSingleData.get(statisticKey)!"
-          [displayedColumns]="dataSingleHeader"
-        >
-        </app-table-graph>
+      }@else {
+      <div class="statistic-title">{{ statisticTypeKey }}</div>
+      <div class="table-multi-wrapper">
+        <table class="statistic-type-table">
+          @for(sevirityOuter of statisticTableValueKeys(statisticTypeKey); track
+          $index) {
+          <tr>
+            @for(sevirityInner of sevirityOuter; track $index) {
+            <th>
+              <app-statistic-box
+                [statisticValue]="
+                  this.statisticsType[statisticTypeKey].values[sevirityInner]
+                "
+                [statisticName]="sevirityInner"
+                [statisticSevirity]="
+                  this.statisticsType[statisticTypeKey].sevirityValues[
+                    sevirityInner
+                  ]
+                "
+                [statisticUnit]="this.statisticsUnits[mainGraphIndex]"
+              ></app-statistic-box>
+            </th>
+            }
+          </tr>
+          }
+        </table>
+        <div class="table-multi-scroll">
+          <app-table-graph
+            class="table-data"
+            [valueColumns]="valueMultiHeader"
+            [tableData]="tableMultiData.get(statisticTypeKey)!"
+            [displayedColumns]="dataMultiHeader"
+          >
+          </app-table-graph>
+        </div>
       </div>
-    </div>
 
+      }
+    </div>
+    @if(!isTable){
+
+    <div class="all-single-graphs-container">
+      @for(statisticKey of statisticsKeys(); track $index;let graphIndex =
+      $index) {
+      <div class="single-graph-container">
+        <div class="statistic-title">{{ statisticKey }}</div>
+        <app-statistic-graph
+          [graphData]="{ statisticKey: this.statistics.graphs[statisticKey] }"
+          [lineColor]="chartColors"
+          [graphUnits]="
+            this.statisticsUnits[graphIndex + statisticsTypeKeys().length]
+          "
+          graphName=""
+        />
+      </div>
+      }
+    </div>
+    }@else {
+    <div class="all-single-graphs-container">
+      @for(statisticKey of statisticsKeys(); track $index;let graphIndex =
+      $index) {
+      <div>
+        <p class="statistic-title">{{ statisticKey }}</p>
+
+        <div class="table-multi-scroll-single">
+          <app-table-graph
+            class="table-data"
+            [valueColumns]="valueSingleHeader"
+            [tableData]="tableSingleData.get(statisticKey)!"
+            [displayedColumns]="dataSingleHeader"
+          >
+          </app-table-graph>
+        </div>
+      </div>
+
+      }
+    </div>
     }
   </div>
-  }
 </div>
