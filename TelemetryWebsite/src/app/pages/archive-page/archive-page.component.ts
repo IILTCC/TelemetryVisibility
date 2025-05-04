@@ -206,10 +206,6 @@ export class ArchivePageComponent {
   }
   public initializeTimeLine(): void {
     this.archiveService.getFramesDateRange(this.packetTypeToNumber()).subscribe((result) => {
-      console.log(new Date(result.startDate).toTimeString())
-      console.log(new Date(new Date(result.startDate).toISOString()).toTimeString())
-      // const timezoneOffsetMs = new Date(result.startDate).getTimezoneOffset() * 60 * 1000; // convert from miliseconds
-
       this.minTimeline = new Date(result.startDate).getTime();
       this.maxTimeline = new Date(result.endDate).getTime();
 
@@ -217,7 +213,6 @@ export class ArchivePageComponent {
       this.endTimeLine = (this.maxTimeline + this.minTimeline) / 2;
 
       this.startTimeLineDate = new Date(result.startDate);
-      console.log(this.startTimeLineDate.toTimeString())
       this.endTimeLineDate = new Date(result.endDate);
       this.timelineForm.patchValue({ timelineStart: this.startTimeLineDate, timelineEnd: this.endTimeLineDate });
     });

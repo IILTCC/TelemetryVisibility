@@ -17,9 +17,7 @@ export class TableGraphComponent<Row> implements AfterViewInit, OnChanges {
   @Input() public tableName: string = "";
   @Input() public displayedColumns: string[] = [];
   @Input() public valueColumns: string[] = [];
-  constructor() {
-    console.log(this.tableData)
-  }
+
   private _liveAnnouncer = inject(LiveAnnouncer);
   public dataSource = new MatTableDataSource<Row>([]);
   @ViewChild(MatSort) sort!: MatSort;
