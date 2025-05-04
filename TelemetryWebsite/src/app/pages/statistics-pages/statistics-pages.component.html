@@ -70,7 +70,27 @@
     >
       @if(isTimeLine){ timeline } @else { pagination }
     </button>
-
+    <button mat-flat-button (click)="toggleTable()" class="toggle-table">
+      @if(isTable) {
+      <img
+        matTooltipShowDelay="500"
+        matTooltipHideDelay="1000"
+        matTooltip="toggle graph"
+        class="export-button-image"
+        src="../../../assets/graphIcon.png"
+        alt="Icon"
+      />
+      } @else{
+      <img
+        matTooltipShowDelay="500"
+        matTooltipHideDelay="1000"
+        matTooltip="toggle tables"
+        class="export-button-image"
+        src="../../../assets/tableIcon.png"
+        alt="Icon"
+      />
+      }
+    </button>
     @if(isTimeLine){
     <mat-paginator
       class="selector-paginator"
@@ -132,10 +152,12 @@
       let mainGraphIndex = index
     "
   >
+    @if(!isTable){
     <div class="statistic-title">{{ statisticTypeKey }}</div>
     <table class="statistic-type-tr">
       <tr>
-        @for(sevirity of statisticValueKeys(statisticTypeKey); track $index) {
+        @for(sevirity of statisticGraphValueKeys(statisticTypeKey); track
+        $index) {
         <th>
           <app-statistic-box
             [statisticValue]="
@@ -159,7 +181,47 @@
         graphName=""
       />
     </div>
+    }@else {
+    <div class="statistic-title">{{ statisticTypeKey }}</div>
+    <div class="table-multi-wrapper">
+      <table class="statistic-type-table">
+        @for(sevirityOuter of statisticTableValueKeys(statisticTypeKey); track
+        $index) {
+        <tr>
+          @for(sevirityInner of sevirityOuter; track $index) {
+          <th>
+            <app-statistic-box
+              [statisticValue]="
+                this.statisticsType[statisticTypeKey].values[sevirityInner]
+              "
+              [statisticName]="sevirityInner"
+              [statisticSevirity]="
+                this.statisticsType[statisticTypeKey].sevirityValues[
+                  sevirityInner
+                ]
+              "
+              [statisticUnit]="this.statisticsUnits[mainGraphIndex]"
+            ></app-statistic-box>
+          </th>
+          }
+        </tr>
+        }
+      </table>
+      <div class="table-multi-scroll">
+        <app-table-graph
+          class="table-data"
+          [valueColumns]="valueMultiHeader"
+          [tableData]="tableMultiData.get(statisticTypeKey)!"
+          [displayedColumns]="dataMultiHeader"
+        >
+        </app-table-graph>
+      </div>
+    </div>
+
+    }
   </div>
+  @if(!isTable){
+
   <div class="all-single-graphs-container">
     @for(statisticKey of statisticsKeys(); track $index;let graphIndex = $index)
     {
@@ -176,4 +238,25 @@
     </div>
     }
   </div>
+  }@else {
+  <div class="all-single-graphs-container">
+    @for(statisticKey of statisticsKeys(); track $index;let graphIndex = $index)
+    {
+    <div>
+      <p class="statistic-title">{{ statisticKey }}</p>
+
+      <div class="table-multi-scroll-single">
+        <app-table-graph
+          class="table-data"
+          [valueColumns]="valueSingleHeader"
+          [tableData]="tableSingleData.get(statisticKey)!"
+          [displayedColumns]="dataSingleHeader"
+        >
+        </app-table-graph>
+      </div>
+    </div>
+
+    }
+  </div>
+  }
 </div>

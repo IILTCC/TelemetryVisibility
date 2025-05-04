@@ -24,11 +24,15 @@ import { LegendPopUpComponent } from './legend-pop-up/legend-pop-up.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ExportService } from '../../services/export.Service';
 import { StatisticsGraphType } from './statistic-graph/multiStatisticsGraphType';
+import { TableGraphComponent } from "../archive-page/table-graph/table-graph.component";
+import { TableSingleStatisticsData } from './tableSingleStatisticsData';
+import { TableMultipleStatisticsData } from './tableMultipleStatisticsData';
+
 
 @Component({
   selector: 'app-statistics-pages',
   standalone: true,
-  imports: [MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, MatNativeDateModule, StatisticBoxComponent, StatisticGraphComponent, CommonModule, MatPaginatorModule, MatSliderModule, MatInputModule, MatIconModule, MatDialogModule, MatTooltipModule],
+  imports: [MatFormFieldModule, MatDatepickerModule, FormsModule, ReactiveFormsModule, MatNativeDateModule, StatisticBoxComponent, StatisticGraphComponent, CommonModule, MatPaginatorModule, MatSliderModule, MatInputModule, MatIconModule, MatDialogModule, MatTooltipModule, TableGraphComponent],
   templateUrl: './statistics-pages.component.html',
   styleUrl: './statistics-pages.component.scss',
   providers: [
@@ -38,6 +42,14 @@ import { StatisticsGraphType } from './statistic-graph/multiStatisticsGraphType'
 })
 export class StatisticsPagesComponent {
   readonly dialog = inject(MatDialog);
+  public dataMultiHeader: string[] = ["Date", "FlightBoxDown", "FlightBoxUp", "FiberBoxDown", "FiberBoxUp"];
+  public valueMultiHeader: string[] = ["date", "flightBoxDown", "flightBoxUp", "fiberBoxDown", "fiberBoxUp"];
+  public dataSingleHeader: string[] = ["Date", "Value"];
+  public valueSingleHeader: string[] = ["date", "value"];
+  public tableSingleData: Map<string, TableSingleStatisticsData[]> = new Map<string, TableSingleStatisticsData[]>();
+  public tableMultiData: Map<string, TableMultipleStatisticsData[]> = new Map<string, TableMultipleStatisticsData[]>();
+
+  public isTable: boolean = true;
   public minTimeline: number = 0;
   public maxTimeline: number = 0;
   public startTimeLine: number = 0;
@@ -76,7 +88,54 @@ export class StatisticsPagesComponent {
   public statisticsKeys(): string[] {
     return Object.keys(this.statistics.graphs);
   }
-  public statisticValueKeys(statisticTypeKey: string): string[] {
+  public statisticTableValueKeys(statisticTypeKey: string): string[][] {
+    let ret: string[][] = []
+    let values: string[] = Object.keys(this.statisticsType[statisticTypeKey].values);
+    for (let index: number = 0; index < values.length; index += 2)
+      ret.push([values[index], values[index + 1]])
+    return ret;
+
+  }
+
+  private convertSingleTableDate(): void {
+    Object.keys(this.statistics.graphs).forEach((singleGraphKey) => {
+      let oneGraph: TableSingleStatisticsData[] = []
+      this.statistics.graphs[singleGraphKey].forEach((graphPoint) => {
+        oneGraph.push(new TableSingleStatisticsData(graphPoint.y, new Date(graphPoint.x)))
+      });
+      this.tableSingleData.set(singleGraphKey, oneGraph)
+    })
+  }
+  public toggleTable(): void {
+    this.isTable = !this.isTable;
+  }
+  private convertMultiTableDate(): void {
+    Object.keys(this.statisticsType).forEach((statisticsType) => {
+      let mapGraph: Map<number, TableMultipleStatisticsData> = new Map<number, TableMultipleStatisticsData>();
+      Object.keys(this.statisticsType[statisticsType].graphs).forEach((channelType) => {
+        this.statisticsType[statisticsType].graphs[channelType].forEach((graphPoint: StatisticsPoint) => {
+          const newChannelType: string = (channelType[0].toLowerCase() + channelType.slice(1)).slice(0, -3);;
+          if (mapGraph.has(graphPoint.x))
+            (mapGraph.get(graphPoint.x) as any)[newChannelType] = graphPoint.y
+          else {
+            mapGraph.set(graphPoint.x, new TableMultipleStatisticsData(0, 0, 0, 0, new Date(graphPoint.x)));
+            (mapGraph.get(graphPoint.x) as any)[newChannelType] = graphPoint.y;
+          }
+        })
+      })
+      let oneGraph: TableMultipleStatisticsData[] = []
+      mapGraph.forEach((value: TableMultipleStatisticsData) => {
+        oneGraph.push(value)
+        this.tableMultiData.set(statisticsType, oneGraph)
+      })
+
+    })
+  }
+  private convertToTableData(): void {
+    this.convertSingleTableDate();
+    this.convertMultiTableDate();
+  }
+  public statisticGraphValueKeys(statisticTypeKey: string): string[] {
     return Object.keys(this.statisticsType[statisticTypeKey].values);
   }
   public formatStatisticDict(list: StatisticsPoint[], name: string): { [key: string]: StatisticsPoint[] } {
@@ -139,6 +198,7 @@ export class StatisticsPagesComponent {
       this.sendTimelineStatistics()
     else
       this.sendPaginationStatistics()
+
   }
 
   public sendPaginationStatistics(): void {
@@ -155,11 +215,14 @@ export class StatisticsPagesComponent {
     this.statisticsPageService.getStatistics(getStatisticsDto).subscribe((result) => { this.statistics = result; this.loadGraphs(); })
   }
   public sendTimelineStatistics(): void {
-
     if (this.startTimeLineDate == null || this.endTimeLineDate == null)
       return
+
     let getStatisticsDto: GetFullStatisticsDto = new GetFullStatisticsDto(this.startTimeLineDate, this.endTimeLineDate);
-    this.statisticsPageService.getFullStatistics(getStatisticsDto).subscribe((result) => { this.statistics = result; this.loadGraphs(); })
+    this.statisticsPageService.getFullStatistics(getStatisticsDto).subscribe((result) => {
+      this.statistics = result; this.loadGraphs(); if (this.isTable)
+        this.convertToTableData()
+    })
   }
   public onPageChange(event: any): void {
     this.pageStart = event.pageIndex * event.pageSize

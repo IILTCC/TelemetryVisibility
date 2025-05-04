@@ -64,7 +64,6 @@ export class GraphComponent {
       runnignPacketTime = runnignPacketTime + new Date(this.graphData[i].packetTime).getTime() - prevPacketTime;
       prevPacketTime = runnignPacketTime;
       dates.push([runnignPacketTime, this.graphData[i].value]);
-
       if (this.graphData[i].isFaulty && this.annotations.points != undefined) {
         this.annotations.points.push({
           x: runnignPacketTime,
@@ -157,10 +156,16 @@ export class GraphComponent {
         style: {
           colors: "#e2cfea"
         },
-        format: 'yyyy-MM-dd HH:mm:ss'
+        datetimeFormatter: {
+          year: 'yyyy',
+          month: 'MMM \'yy',
+          day: 'dd MMM',
+          hour: 'HH:mm'
+        }
       },
       type: "datetime"
     };
+
     this.tooltip = {
       x: {
         formatter: function (value: number) {

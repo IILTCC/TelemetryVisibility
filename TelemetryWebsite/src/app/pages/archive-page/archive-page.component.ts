@@ -107,8 +107,22 @@ export class ArchivePageComponent {
       this.sendPaginationRequest(restartFilter);
     }
   }
+  private convertLocalToUtcPreserveTime(localDate: Date): Date {
+    return new Date(
+      Date.UTC(
+        localDate.getFullYear(),
+        localDate.getMonth(),
+        localDate.getDate(),
+        localDate.getHours(),
+        localDate.getMinutes(),
+        localDate.getSeconds(),
+        localDate.getMilliseconds()
+      )
+    );
+  }
   public sendTimelineRequest(restartFilter: boolean): void {
-    let request: GetFullFramesDto = new GetFullFramesDto(this.packetTypeToNumber(), this.startTimeLineDate, this.endTimeLineDate);
+
+    let request: GetFullFramesDto = new GetFullFramesDto(this.packetTypeToNumber(), this.convertLocalToUtcPreserveTime(this.startTimeLineDate), this.convertLocalToUtcPreserveTime(this.endTimeLineDate));
     this.archiveService.getFullFrames(request).subscribe((result: any) => {
       this.graphsRequest = new archiveFramesRo(result)
       if (restartFilter) {
@@ -225,6 +239,12 @@ export class ArchivePageComponent {
     if (this.currentTablesStartIndex > 1)
       this.currentTablesStartIndex--;
 
+  }
+  public getMinTime(): string {
+    return new Date(this.minTimeline).toLocaleTimeString();
+  }
+  public getMaxTime(): string {
+    return new Date(this.maxTimeline).toLocaleTimeString();
   }
   public moveTableLeft(): void {
     let counter: number = 0;

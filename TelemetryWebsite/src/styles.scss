@@ -7,10 +7,13 @@ $purssian-blue: #102b3f;
 $royal-pruple: #6247aa;
 $amethyst: #a06cd5;
 $thistle: #e2cfea;
-
+html {
+  height: 100%;
+}
 body {
   background-color: $dark-green;
   margin: 0;
+  height: 100%;
 }
 body > * {
   font-family: "Inter", sans-serif;

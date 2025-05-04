@@ -17,7 +17,6 @@ export class TableGraphComponent<Row> implements AfterViewInit, OnChanges {
   @Input() public tableName: string = "";
   @Input() public displayedColumns: string[] = [];
   @Input() public valueColumns: string[] = [];
-  @Input() public seriesData: [number, number][] = [];
 
   private _liveAnnouncer = inject(LiveAnnouncer);
   public dataSource = new MatTableDataSource<Row>([]);
