@@ -16,6 +16,7 @@ import { CommonConsts } from '../../../common/commonConsts';
 import { Output, EventEmitter } from '@angular/core';
 import { StatisticsUpdate } from './statisticsUpdate';
 import { PointHelper } from './pointHelper';
+import { Sevirity } from '../../../dtos/sevirityEnum';
 
 
 @Component({
@@ -38,11 +39,7 @@ export class StatisticGraphComponent {
   public tooltip!: ApexTooltip;
   public legend!: ApexLegend;
   public colors: string[] = ["#9478de"]; // Custom color for the series
-  public annotations: ApexAnnotations = {
-    points: [
-
-    ]
-  };
+  public annotations!: ApexAnnotations;
   @Output() newLableValues = new EventEmitter<StatisticsUpdate>();
   @Input() public graphName = "testing";
   @Input() public graphData: { [key: string]: StatisticsPoint[] } = {};
@@ -61,13 +58,20 @@ export class StatisticGraphComponent {
   }
   public initChartData(): void {
     let graphDataPoints: { [key: string]: number[][] } = {};
+    this.annotations = {
+      points: [
+      ]
+    };
+
+
+
     this.series = [
     ];
     let colorIndex: number = 0
     Object.keys(this.graphData).forEach((graph) => {
 
       this.graphData[graph].forEach((point) => {
-        if (point.sevirity == 2) {
+        if (point.sevirity == Sevirity.BAD) {
           this.annotations.points?.push({
             x: point.x,
             y: point.y,
@@ -159,15 +163,13 @@ export class StatisticGraphComponent {
     };
     this.tooltip = {
       x: {
-        formatter: (value: number, opts) => {
-          console.log(value)
+        formatter: (value: number) => {
           this._graphSevirity.forEach((dictValue, key) => {
-            const pointHelper = this._graphSevirity.get(key)?.get(value);
+            const pointHelper: PointHelper | undefined = this._graphSevirity.get(key)?.get(value);
             if (pointHelper !== undefined)
               this.newLableValues.emit(new StatisticsUpdate(pointHelper.sevirity, pointHelper.y, this.graphName, key));
 
           })
-
           const date = new Date(value);
           return date.toISOString();
         }

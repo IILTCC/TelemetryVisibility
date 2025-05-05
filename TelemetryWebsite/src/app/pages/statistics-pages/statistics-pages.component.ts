@@ -73,9 +73,12 @@ export class StatisticsPagesComponent {
     end: new FormControl<Date | null>(null),
   });
   public statisticsUnits: string[] = ["%", "ms", "ms", "ms", "%"]
+  public singleStatisticsUnits: string[] = ["ms", "%"]
   private graphsToFormat: string[] = ["CorruptedPacket"];
-  public labelValues: Map<string, Map<string, number>> = new Map<string, Map<string, number>>();
-  public labelSevirity: Map<string, Map<string, number>> = new Map<string, Map<string, number>>();
+  public multiLabelValues: Map<string, Map<string, number>> = new Map<string, Map<string, number>>();
+  public multiLabelSevirity: Map<string, Map<string, number>> = new Map<string, Map<string, number>>();
+  public singleLabelValues: Map<string, number> = new Map<string, number>();
+  public singleLabelSevirity: Map<string, number> = new Map<string, number>();
   constructor(private statisticsPageService: StatisticsPagesService, private exportService: ExportService<StatisticsGraphType>, private cdr: ChangeDetectorRef
   ) {
     this.sendStatisticsPage();
@@ -93,7 +96,7 @@ export class StatisticsPagesComponent {
   }
   public statisticTableValueKeys(statisticTypeKey: string): string[][] {
     let ret: string[][] = []
-    const item: Map<string, number> | undefined = this.labelValues.get(statisticTypeKey);
+    const item: Map<string, number> | undefined = this.multiLabelValues.get(statisticTypeKey);
     let values: string[] = []
     if (item != undefined)
       values = Array.from(item.keys())
@@ -103,7 +106,6 @@ export class StatisticsPagesComponent {
   }
 
   private convertSingleTableDate(): void {
-    console.log("im here")
     Object.keys(this.statistics.graphs).forEach((singleGraphKey) => {
       let oneGraph: TableSingleStatisticsData[] = []
       this.statistics.graphs[singleGraphKey].forEach((graphPoint) => {
@@ -143,7 +145,7 @@ export class StatisticsPagesComponent {
     this.convertMultiTableDate();
   }
   public statisticGraphValueKeys(statisticTypeKey: string): string[] {
-    const item: Map<string, number> | undefined = this.labelValues.get(statisticTypeKey);
+    const item: Map<string, number> | undefined = this.multiLabelValues.get(statisticTypeKey);
     if (item != undefined)
       return Array.from(item.keys());
     return []
@@ -161,8 +163,8 @@ export class StatisticsPagesComponent {
         let newKey = keySplit[1]
         if (!this.statisticsType.hasOwnProperty(newKey)) {
           this.statisticsType[newKey] = new StatisticsRo({});
-          this.labelValues.set(newKey, new Map<string, number>());
-          this.labelSevirity.set(newKey, new Map<string, number>());
+          this.multiLabelValues.set(newKey, new Map<string, number>());
+          this.multiLabelSevirity.set(newKey, new Map<string, number>());
         }
 
         this.statisticsType[newKey].graphs[keySplit[0]] = this.statistics.graphs[key]
@@ -170,11 +172,16 @@ export class StatisticsPagesComponent {
       }
     });
     this.formatGraphsUnits();
+    Object.keys(this.statistics.graphs).forEach((graphName) => {
+      const graphLengh: number = this.statistics.graphs[graphName].length;
+      this.singleLabelSevirity.set(graphName, this.statistics.graphs[graphName][graphLengh - 1].sevirity)
+      this.singleLabelValues.set(graphName, this.statistics.graphs[graphName][graphLengh - 1].y)
+    })
     Object.keys(this.statisticsType).forEach((statisticName) => {
       Object.keys(this.statisticsType[statisticName].graphs).forEach((channelName) => {
         const channelLength: number = this.statisticsType[statisticName].graphs[channelName].length;
-        this.labelSevirity.get(statisticName)?.set(channelName, this.statisticsType[statisticName].graphs[channelName][channelLength - 1].sevirity);
-        this.labelValues.get(statisticName)?.set(channelName, this.statisticsType[statisticName].graphs[channelName][channelLength - 1].y);
+        this.multiLabelSevirity.get(statisticName)?.set(channelName, this.statisticsType[statisticName].graphs[channelName][channelLength - 1].sevirity);
+        this.multiLabelValues.get(statisticName)?.set(channelName, this.statisticsType[statisticName].graphs[channelName][channelLength - 1].y);
       })
     })
   }
@@ -190,9 +197,9 @@ export class StatisticsPagesComponent {
             this.statisticsType[key].graphs[graphName][pointIndex] = new StatisticsPoint(oldX, newY, oldSevirity)
           }
         });
-        Object.keys(this.labelValues).forEach((valueName: string) => {
+        Object.keys(this.multiLabelValues).forEach((valueName: string) => {
           const length: number = Object.keys(this.statisticsType[key].graphs).length;
-          this.labelValues.get(key)?.set(valueName, this.statisticsType[key].graphs[valueName][length].y * 100);
+          this.multiLabelValues.get(key)?.set(valueName, this.statisticsType[key].graphs[valueName][length].y * 100);
         })
       }
     })
@@ -296,10 +303,14 @@ export class StatisticsPagesComponent {
     });
     this.exportService.exportAllGraphs(allGraphs, headerNames, fileNames);
   }
-  public onNewLableValues(data: StatisticsUpdate): void {
-    this.labelValues.get(data.statisticsName)?.set(data.channelName, data.value);
-    this.labelSevirity.get(data.statisticsName)?.set(data.channelName, data.sevirityValue);
+  public onNewMultiLableValues(data: StatisticsUpdate): void {
+    this.multiLabelValues.get(data.statisticsName)?.set(data.channelName, data.value);
+    this.multiLabelSevirity.get(data.statisticsName)?.set(data.channelName, data.sevirityValue);
     this.cdr.detectChanges();
   }
-
+  public onNewSingleLableValues(data: StatisticsUpdate): void {
+    this.singleLabelSevirity.set(data.statisticsName, data.sevirityValue);
+    this.singleLabelValues.set(data.statisticsName, data.value);
+    this.cdr.detectChanges();
+  }
 }
