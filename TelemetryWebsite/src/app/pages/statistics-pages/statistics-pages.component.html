@@ -180,10 +180,11 @@
       </table>
       <div>
         <app-statistic-graph
+          (newLableValues)="onNewLableValues($event)"
           [graphData]="this.statisticsType[statisticTypeKey].graphs"
           [lineColor]="chartColors"
           [graphUnits]="this.statisticsUnits[mainGraphIndex]"
-          graphName=""
+          [graphName]="statisticTypeKey"
         />
       </div>
       }@else {

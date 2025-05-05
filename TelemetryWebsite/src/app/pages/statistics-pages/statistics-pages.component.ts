@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -27,7 +27,7 @@ import { StatisticsGraphType } from './statistic-graph/multiStatisticsGraphType'
 import { TableGraphComponent } from "../archive-page/table-graph/table-graph.component";
 import { TableSingleStatisticsData } from './tableSingleStatisticsData';
 import { TableMultipleStatisticsData } from './tableMultipleStatisticsData';
-
+import { StatisticsUpdate } from './statistic-graph/statisticsUpdate';
 
 @Component({
   selector: 'app-statistics-pages',
@@ -74,7 +74,8 @@ export class StatisticsPagesComponent {
   });
   public statisticsUnits: string[] = ["%", "ms", "ms", "ms", "%"]
   private graphsToFormat: string[] = ["CorruptedPacket"];
-  constructor(private statisticsPageService: StatisticsPagesService, private exportService: ExportService<StatisticsGraphType>) {
+  constructor(private statisticsPageService: StatisticsPagesService, private exportService: ExportService<StatisticsGraphType>, private cdr: ChangeDetectorRef
+  ) {
     this.sendStatisticsPage();
     this.initializeTimeLine();
   }
@@ -171,7 +172,8 @@ export class StatisticsPagesComponent {
           for (let pointIndex = 0; pointIndex < this.statisticsType[key].graphs[graphName].length; pointIndex++) {
             let newY: number = this.statisticsType[key].graphs[graphName][pointIndex].y * 100;
             let oldX: number = this.statisticsType[key].graphs[graphName][pointIndex].x;
-            this.statisticsType[key].graphs[graphName][pointIndex] = new StatisticsPoint(oldX, newY)
+            let oldSevirity: number = this.statisticsType[key].graphs[graphName][pointIndex].sevirity;
+            this.statisticsType[key].graphs[graphName][pointIndex] = new StatisticsPoint(oldX, newY, oldSevirity)
           }
         });
         Object.keys(this.statisticsType[key].values).forEach((valueName: string) => {
@@ -277,4 +279,12 @@ export class StatisticsPagesComponent {
     });
     this.exportService.exportAllGraphs(allGraphs, headerNames, fileNames);
   }
+  public onNewLableValues(data: StatisticsUpdate): void {
+    this.statisticsType[data.statisticsName].values[data.channelName] = data.value;
+    this.statisticsType[data.statisticsName].sevirityValues[data.channelName] = data.sevirityValue;
+
+    this.cdr.detectChanges();
+
+  }
+
 }

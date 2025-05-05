@@ -13,6 +13,8 @@ import {
 } from "ng-apexcharts";
 import { StatisticsPoint } from '../../../dtos/statisticsPoint';
 import { CommonConsts } from '../../../common/commonConsts';
+import { Output, EventEmitter } from '@angular/core';
+import { StatisticsUpdate } from './statisticsUpdate';
 
 
 @Component({
@@ -35,8 +37,10 @@ export class StatisticGraphComponent {
   public legend!: ApexLegend;
   public colors: string[] = ["#9478de"]; // Custom color for the series
 
+  @Output() newLableValues = new EventEmitter<StatisticsUpdate>();
   @Input() public graphName = "testing";
   @Input() public graphData: { [key: string]: StatisticsPoint[] } = {};
+  private _graphSevirity: Map<string, Map<number, number>> = new Map<string, Map<number, number>>();
   @Input() public lineColor: string[] = [];
   @Input() public graphUnits: string = "";
 
@@ -59,12 +63,13 @@ export class StatisticGraphComponent {
     Object.keys(this.graphData).forEach((graph) => {
 
       this.graphData[graph].forEach((point) => {
-        if (!graphDataPoints.hasOwnProperty(graph))
+        if (!graphDataPoints.hasOwnProperty(graph)) {
           graphDataPoints[graph] = [];
+          this._graphSevirity.set(graph, new Map<number, number>());
+        }
         graphDataPoints[graph].push([point.x, point.y])
-
+        this._graphSevirity.get(graph)?.set(point.y, point.sevirity);
       });
-
       this.series.push({ name: graph, data: graphDataPoints[graph], color: this.lineColor[colorIndex] });
       colorIndex++;
     });
@@ -144,10 +149,16 @@ export class StatisticGraphComponent {
       },
       shared: true,
       y: {
-        formatter: (val) => {
+        formatter: (val, opts) => {
+          const seriesName = opts?.w?.globals?.seriesNames?.[opts.seriesIndex];
+          const value = this._graphSevirity.get(seriesName)?.get(val);
+          if (value !== undefined)
+            this.newLableValues.emit(new StatisticsUpdate(value, val, this.graphName, seriesName));
+
           return (val).toFixed(CommonConsts.DECIMAL_PRECISION) + this.graphUnits;
         }
       },
+
     };
   }
 }
