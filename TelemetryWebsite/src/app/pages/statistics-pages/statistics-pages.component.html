@@ -166,11 +166,11 @@
           <th>
             <app-statistic-box
               [statisticValue]="
-                this.statisticsType[statisticTypeKey].values[sevirity]
+                this.labelValues.get(statisticTypeKey)?.get(sevirity) ?? 0
               "
               [statisticName]="sevirity"
               [statisticSevirity]="
-                this.statisticsType[statisticTypeKey].sevirityValues[sevirity]
+                this.labelSevirity.get(statisticTypeKey)?.get(sevirity) ?? 0
               "
               [statisticUnit]="this.statisticsUnits[mainGraphIndex]"
             ></app-statistic-box>
@@ -198,13 +198,14 @@
             <th>
               <app-statistic-box
                 [statisticValue]="
-                  this.statisticsType[statisticTypeKey].values[sevirityInner]
+                  this.labelValues.get(statisticTypeKey)?.get(sevirityInner) ??
+                  0
                 "
                 [statisticName]="sevirityInner"
                 [statisticSevirity]="
-                  this.statisticsType[statisticTypeKey].sevirityValues[
-                    sevirityInner
-                  ]
+                  this.labelSevirity
+                    .get(statisticTypeKey)
+                    ?.get(sevirityInner) ?? 0
                 "
                 [statisticUnit]="this.statisticsUnits[mainGraphIndex]"
               ></app-statistic-box>
