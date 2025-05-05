@@ -93,8 +93,6 @@ export class StatisticsPagesComponent {
   }
   public statisticTableValueKeys(statisticTypeKey: string): string[][] {
     let ret: string[][] = []
-    // let values: string[] = Object.keys(this.statisticsType[statisticTypeKey].values);
-    // let values: string[] = Object.keys(this.labelValues.get(statisticTypeKey) ?? {});
     const item: Map<string, number> | undefined = this.labelValues.get(statisticTypeKey);
     let values: string[] = []
     if (item != undefined)
@@ -179,8 +177,6 @@ export class StatisticsPagesComponent {
         this.labelValues.get(statisticName)?.set(channelName, this.statisticsType[statisticName].graphs[channelName][channelLength - 1].y);
       })
     })
-    // this.labelSevirity.get(newKey)?.set(keySplit[0], this.statistics.graphs[key][0].sevirity);
-    // this.labelValues.get(newKey)?.set(keySplit[0], this.statistics.graphs[key][0].y);
   }
 
   private formatGraphsUnits(): void {
@@ -194,11 +190,7 @@ export class StatisticsPagesComponent {
             this.statisticsType[key].graphs[graphName][pointIndex] = new StatisticsPoint(oldX, newY, oldSevirity)
           }
         });
-        // Object.keys(this.statisticsType[key].values).forEach((valueName: string) => {
-        //   this.statisticsType[key].values[valueName] = this.statisticsType[key].values[valueName] * 100;
-        // });
         Object.keys(this.labelValues).forEach((valueName: string) => {
-          // this.statisticsType[key].values[valueName] = this.statisticsType[key].values[valueName] * 100;
           const length: number = Object.keys(this.statisticsType[key].graphs).length;
           this.labelValues.get(key)?.set(valueName, this.statisticsType[key].graphs[valueName][length].y * 100);
         })
@@ -305,13 +297,9 @@ export class StatisticsPagesComponent {
     this.exportService.exportAllGraphs(allGraphs, headerNames, fileNames);
   }
   public onNewLableValues(data: StatisticsUpdate): void {
-    // this.statisticsType[data.statisticsName].values[data.channelName] = data.value;
-    // this.statisticsType[data.statisticsName].sevirityValues[data.channelName] = data.sevirityValue;
     this.labelValues.get(data.statisticsName)?.set(data.channelName, data.value);
     this.labelSevirity.get(data.statisticsName)?.set(data.channelName, data.sevirityValue);
-
     this.cdr.detectChanges();
-
   }
 
 }

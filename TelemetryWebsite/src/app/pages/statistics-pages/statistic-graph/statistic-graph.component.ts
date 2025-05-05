@@ -163,18 +163,11 @@ export class StatisticGraphComponent {
           console.log(value)
           this._graphSevirity.forEach((dictValue, key) => {
             const pointHelper = this._graphSevirity.get(key)?.get(value);
-            if (pointHelper !== undefined) {
-              console.log(new StatisticsUpdate(pointHelper.sevirity, pointHelper.y, this.graphName, key));
+            if (pointHelper !== undefined)
               this.newLableValues.emit(new StatisticsUpdate(pointHelper.sevirity, pointHelper.y, this.graphName, key));
-            }
-          })
-          // const seriesName = opts?.w?.globals?.seriesNames?.[opts.seriesIndex];
-          // const pointHelper = this._graphSevirity.get(seriesName)?.get(value);
-          // if (pointHelper !== undefined) {
-          //   console.log(new StatisticsUpdate(pointHelper.sevirity, pointHelper.y, this.graphName, seriesName));
-          //   this.newLableValues.emit(new StatisticsUpdate(pointHelper.sevirity, pointHelper.y, this.graphName, seriesName));
 
-          // }
+          })
+
           const date = new Date(value);
           return date.toISOString();
         }
@@ -182,12 +175,6 @@ export class StatisticGraphComponent {
       shared: true,
       y: {
         formatter: (val, opts) => {
-          // const seriesName = opts?.w?.globals?.seriesNames?.[opts.seriesIndex];
-          // const value = this._graphSevirity.get(seriesName)?.get(val);
-          // if (value !== undefined) {
-          //   this.newLableValues.emit(new StatisticsUpdate(value, val, this.graphName, seriesName));
-          //   console.log(new StatisticsUpdate(value, val, this.graphName, seriesName));
-          // }
           return (val).toFixed(CommonConsts.DECIMAL_PRECISION) + this.graphUnits;
         }
       },
