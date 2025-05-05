@@ -13,6 +13,10 @@ import {
 } from "ng-apexcharts";
 import { StatisticsPoint } from '../../../dtos/statisticsPoint';
 import { CommonConsts } from '../../../common/commonConsts';
+import { Output, EventEmitter } from '@angular/core';
+import { StatisticsUpdate } from './statisticsUpdate';
+import { PointHelper } from './pointHelper';
+import { Sevirity } from '../../../dtos/sevirityEnum';
 
 
 @Component({
@@ -22,6 +26,7 @@ import { CommonConsts } from '../../../common/commonConsts';
   templateUrl: './statistic-graph.component.html',
   styleUrl: './statistic-graph.component.scss'
 })
+
 export class StatisticGraphComponent {
   public series!: ApexAxisChartSeries;
   public chart!: ApexChart;
@@ -34,9 +39,11 @@ export class StatisticGraphComponent {
   public tooltip!: ApexTooltip;
   public legend!: ApexLegend;
   public colors: string[] = ["#9478de"]; // Custom color for the series
-
+  public annotations!: ApexAnnotations;
+  @Output() newLableValues = new EventEmitter<StatisticsUpdate>();
   @Input() public graphName = "testing";
   @Input() public graphData: { [key: string]: StatisticsPoint[] } = {};
+  private _graphSevirity: Map<string, Map<number, PointHelper>> = new Map<string, Map<number, PointHelper>>();
   @Input() public lineColor: string[] = [];
   @Input() public graphUnits: string = "";
 
@@ -51,20 +58,39 @@ export class StatisticGraphComponent {
   }
   public initChartData(): void {
     let graphDataPoints: { [key: string]: number[][] } = {};
+    this.annotations = {
+      points: [
+      ]
+    };
+
+
 
     this.series = [
     ];
-
     let colorIndex: number = 0
     Object.keys(this.graphData).forEach((graph) => {
 
       this.graphData[graph].forEach((point) => {
-        if (!graphDataPoints.hasOwnProperty(graph))
+        if (point.sevirity == Sevirity.BAD) {
+          this.annotations.points?.push({
+            x: point.x,
+            y: point.y,
+            marker: {
+              size: 6,
+              fillColor: "#FF4560", // Marker color
+              strokeColor: "#e2cfea",
+              strokeWidth: 2
+            },
+          });
+
+        }
+        if (!graphDataPoints.hasOwnProperty(graph)) {
           graphDataPoints[graph] = [];
+          this._graphSevirity.set(graph, new Map<number, PointHelper>());
+        }
         graphDataPoints[graph].push([point.x, point.y])
-
+        this._graphSevirity.get(graph)?.set(point.x, new PointHelper(point.y, point.sevirity));
       });
-
       this.series.push({ name: graph, data: graphDataPoints[graph], color: this.lineColor[colorIndex] });
       colorIndex++;
     });
@@ -137,17 +163,24 @@ export class StatisticGraphComponent {
     };
     this.tooltip = {
       x: {
-        formatter: function (value: number) {
+        formatter: (value: number) => {
+          this._graphSevirity.forEach((dictValue, key) => {
+            const pointHelper: PointHelper | undefined = this._graphSevirity.get(key)?.get(value);
+            if (pointHelper !== undefined)
+              this.newLableValues.emit(new StatisticsUpdate(pointHelper.sevirity, pointHelper.y, this.graphName, key));
+
+          })
           const date = new Date(value);
           return date.toISOString();
         }
       },
       shared: true,
       y: {
-        formatter: (val) => {
+        formatter: (val, opts) => {
           return (val).toFixed(CommonConsts.DECIMAL_PRECISION) + this.graphUnits;
         }
       },
+
     };
   }
 }

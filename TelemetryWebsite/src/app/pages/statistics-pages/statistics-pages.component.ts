@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -27,7 +27,7 @@ import { StatisticsGraphType } from './statistic-graph/multiStatisticsGraphType'
 import { TableGraphComponent } from "../archive-page/table-graph/table-graph.component";
 import { TableSingleStatisticsData } from './tableSingleStatisticsData';
 import { TableMultipleStatisticsData } from './tableMultipleStatisticsData';
-
+import { StatisticsUpdate } from './statistic-graph/statisticsUpdate';
 
 @Component({
   selector: 'app-statistics-pages',
@@ -49,7 +49,7 @@ export class StatisticsPagesComponent {
   public tableSingleData: Map<string, TableSingleStatisticsData[]> = new Map<string, TableSingleStatisticsData[]>();
   public tableMultiData: Map<string, TableMultipleStatisticsData[]> = new Map<string, TableMultipleStatisticsData[]>();
 
-  public isTable: boolean = true;
+  public isTable: boolean = false;
   public minTimeline: number = 0;
   public maxTimeline: number = 0;
   public startTimeLine: number = 0;
@@ -67,14 +67,20 @@ export class StatisticsPagesComponent {
   private pageEnd: number = 10;
   public statisticsType: { [key: string]: StatisticsRo } = {};
   public chartColors: string[] = ['#7862b3', '#33b2df', '#f48024', '#2ecc71'];
-  public statistics: StatisticsRo = new StatisticsRo({}, {}, {});
+  public statistics: StatisticsRo = new StatisticsRo({});
   public range: FormGroup = new FormGroup({
     start: new FormControl<Date | null>(null),
     end: new FormControl<Date | null>(null),
   });
   public statisticsUnits: string[] = ["%", "ms", "ms", "ms", "%"]
+  public singleStatisticsUnits: string[] = ["ms", "%"]
   private graphsToFormat: string[] = ["CorruptedPacket"];
-  constructor(private statisticsPageService: StatisticsPagesService, private exportService: ExportService<StatisticsGraphType>) {
+  public multiLabelValues: Map<string, Map<string, number>> = new Map<string, Map<string, number>>();
+  public multiLabelSevirity: Map<string, Map<string, number>> = new Map<string, Map<string, number>>();
+  public singleLabelValues: Map<string, number> = new Map<string, number>();
+  public singleLabelSevirity: Map<string, number> = new Map<string, number>();
+  constructor(private statisticsPageService: StatisticsPagesService, private exportService: ExportService<StatisticsGraphType>, private cdr: ChangeDetectorRef
+  ) {
     this.sendStatisticsPage();
     this.initializeTimeLine();
   }
@@ -90,11 +96,13 @@ export class StatisticsPagesComponent {
   }
   public statisticTableValueKeys(statisticTypeKey: string): string[][] {
     let ret: string[][] = []
-    let values: string[] = Object.keys(this.statisticsType[statisticTypeKey].values);
+    const item: Map<string, number> | undefined = this.multiLabelValues.get(statisticTypeKey);
+    let values: string[] = []
+    if (item != undefined)
+      values = Array.from(item.keys())
     for (let index: number = 0; index < values.length; index += 2)
       ret.push([values[index], values[index + 1]])
     return ret;
-
   }
 
   private convertSingleTableDate(): void {
@@ -107,6 +115,7 @@ export class StatisticsPagesComponent {
     })
   }
   public toggleTable(): void {
+    this.convertToTableData()
     this.isTable = !this.isTable;
   }
   private convertMultiTableDate(): void {
@@ -136,7 +145,10 @@ export class StatisticsPagesComponent {
     this.convertMultiTableDate();
   }
   public statisticGraphValueKeys(statisticTypeKey: string): string[] {
-    return Object.keys(this.statisticsType[statisticTypeKey].values);
+    const item: Map<string, number> | undefined = this.multiLabelValues.get(statisticTypeKey);
+    if (item != undefined)
+      return Array.from(item.keys());
+    return []
   }
   public formatStatisticDict(list: StatisticsPoint[], name: string): { [key: string]: StatisticsPoint[] } {
     let retDict: { [key: string]: StatisticsPoint[] } = {}
@@ -149,19 +161,29 @@ export class StatisticsPagesComponent {
       let keySplit: string[] = key.split(" ");
       if (keySplit.length != 1) {
         let newKey = keySplit[1]
-        if (!this.statisticsType.hasOwnProperty(newKey))
-          this.statisticsType[newKey] = new StatisticsRo({}, {}, {});
+        if (!this.statisticsType.hasOwnProperty(newKey)) {
+          this.statisticsType[newKey] = new StatisticsRo({});
+          this.multiLabelValues.set(newKey, new Map<string, number>());
+          this.multiLabelSevirity.set(newKey, new Map<string, number>());
+        }
 
         this.statisticsType[newKey].graphs[keySplit[0]] = this.statistics.graphs[key]
-        this.statisticsType[newKey].sevirityValues[keySplit[0]] = this.statistics.sevirityValues[key]
-        this.statisticsType[newKey].values[keySplit[0]] = this.statistics.values[key]
-
         delete this.statistics.graphs[key];
-        delete this.statistics.sevirityValues[key];
-        delete this.statistics.values[key];
       }
     });
     this.formatGraphsUnits();
+    Object.keys(this.statistics.graphs).forEach((graphName) => {
+      const graphLengh: number = this.statistics.graphs[graphName].length;
+      this.singleLabelSevirity.set(graphName, this.statistics.graphs[graphName][graphLengh - 1].sevirity)
+      this.singleLabelValues.set(graphName, this.statistics.graphs[graphName][graphLengh - 1].y)
+    })
+    Object.keys(this.statisticsType).forEach((statisticName) => {
+      Object.keys(this.statisticsType[statisticName].graphs).forEach((channelName) => {
+        const channelLength: number = this.statisticsType[statisticName].graphs[channelName].length;
+        this.multiLabelSevirity.get(statisticName)?.set(channelName, this.statisticsType[statisticName].graphs[channelName][channelLength - 1].sevirity);
+        this.multiLabelValues.get(statisticName)?.set(channelName, this.statisticsType[statisticName].graphs[channelName][channelLength - 1].y);
+      })
+    })
   }
 
   private formatGraphsUnits(): void {
@@ -171,12 +193,14 @@ export class StatisticsPagesComponent {
           for (let pointIndex = 0; pointIndex < this.statisticsType[key].graphs[graphName].length; pointIndex++) {
             let newY: number = this.statisticsType[key].graphs[graphName][pointIndex].y * 100;
             let oldX: number = this.statisticsType[key].graphs[graphName][pointIndex].x;
-            this.statisticsType[key].graphs[graphName][pointIndex] = new StatisticsPoint(oldX, newY)
+            let oldSevirity: number = this.statisticsType[key].graphs[graphName][pointIndex].sevirity;
+            this.statisticsType[key].graphs[graphName][pointIndex] = new StatisticsPoint(oldX, newY, oldSevirity)
           }
         });
-        Object.keys(this.statisticsType[key].values).forEach((valueName: string) => {
-          this.statisticsType[key].values[valueName] = this.statisticsType[key].values[valueName] * 100;
-        });
+        Object.keys(this.multiLabelValues).forEach((valueName: string) => {
+          const length: number = Object.keys(this.statisticsType[key].graphs).length;
+          this.multiLabelValues.get(key)?.set(valueName, this.statisticsType[key].graphs[valueName][length].y * 100);
+        })
       }
     })
   }
@@ -213,6 +237,8 @@ export class StatisticsPagesComponent {
 
     let getStatisticsDto: GetStatisticsDto = new GetStatisticsDto(startDate, endDate, this.pageStart, this.pageEnd);
     this.statisticsPageService.getStatistics(getStatisticsDto).subscribe((result) => { this.statistics = result; this.loadGraphs(); })
+    if (this.isTable)
+      this.convertToTableData()
   }
   public sendTimelineStatistics(): void {
     if (this.startTimeLineDate == null || this.endTimeLineDate == null)
@@ -276,5 +302,15 @@ export class StatisticsPagesComponent {
 
     });
     this.exportService.exportAllGraphs(allGraphs, headerNames, fileNames);
+  }
+  public onNewMultiLableValues(data: StatisticsUpdate): void {
+    this.multiLabelValues.get(data.statisticsName)?.set(data.channelName, data.value);
+    this.multiLabelSevirity.get(data.statisticsName)?.set(data.channelName, data.sevirityValue);
+    this.cdr.detectChanges();
+  }
+  public onNewSingleLableValues(data: StatisticsUpdate): void {
+    this.singleLabelSevirity.set(data.statisticsName, data.sevirityValue);
+    this.singleLabelValues.set(data.statisticsName, data.value);
+    this.cdr.detectChanges();
   }
 }

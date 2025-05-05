@@ -166,11 +166,12 @@
           <th>
             <app-statistic-box
               [statisticValue]="
-                this.statisticsType[statisticTypeKey].values[sevirity]
+                this.multiLabelValues.get(statisticTypeKey)?.get(sevirity) ?? 0
               "
               [statisticName]="sevirity"
               [statisticSevirity]="
-                this.statisticsType[statisticTypeKey].sevirityValues[sevirity]
+                this.multiLabelSevirity.get(statisticTypeKey)?.get(sevirity) ??
+                0
               "
               [statisticUnit]="this.statisticsUnits[mainGraphIndex]"
             ></app-statistic-box>
@@ -180,10 +181,11 @@
       </table>
       <div>
         <app-statistic-graph
+          (newLableValues)="onNewMultiLableValues($event)"
           [graphData]="this.statisticsType[statisticTypeKey].graphs"
           [lineColor]="chartColors"
           [graphUnits]="this.statisticsUnits[mainGraphIndex]"
-          graphName=""
+          [graphName]="statisticTypeKey"
         />
       </div>
       }@else {
@@ -197,13 +199,15 @@
             <th>
               <app-statistic-box
                 [statisticValue]="
-                  this.statisticsType[statisticTypeKey].values[sevirityInner]
+                  this.multiLabelValues
+                    .get(statisticTypeKey)
+                    ?.get(sevirityInner) ?? 0
                 "
                 [statisticName]="sevirityInner"
                 [statisticSevirity]="
-                  this.statisticsType[statisticTypeKey].sevirityValues[
-                    sevirityInner
-                  ]
+                  this.multiLabelSevirity
+                    .get(statisticTypeKey)
+                    ?.get(sevirityInner) ?? 0
                 "
                 [statisticUnit]="this.statisticsUnits[mainGraphIndex]"
               ></app-statistic-box>
@@ -230,16 +234,27 @@
     <div class="all-single-graphs-container">
       @for(statisticKey of statisticsKeys(); track $index;let graphIndex =
       $index) {
-      <div class="single-graph-container">
+      <div class="single-graph-container-outer">
         <div class="statistic-title">{{ statisticKey }}</div>
-        <app-statistic-graph
-          [graphData]="{ statisticKey: this.statistics.graphs[statisticKey] }"
-          [lineColor]="chartColors"
-          [graphUnits]="
-            this.statisticsUnits[graphIndex + statisticsTypeKeys().length]
-          "
-          graphName=""
-        />
+        <app-statistic-box
+          class="single-graph-label"
+          [statisticName]="statisticKey"
+          [statisticSevirity]="this.singleLabelSevirity.get(statisticKey)!"
+          [statisticValue]="this.singleLabelValues.get(statisticKey)!"
+          [statisticUnit]="this.singleStatisticsUnits[graphIndex]"
+        >
+        </app-statistic-box>
+        <div class="single-graph-container">
+          <app-statistic-graph
+            (newLableValues)="onNewSingleLableValues($event)"
+            [graphData]="{ statisticKey: this.statistics.graphs[statisticKey] }"
+            [lineColor]="chartColors"
+            [graphUnits]="
+              this.statisticsUnits[graphIndex + statisticsTypeKeys().length]
+            "
+            [graphName]="statisticKey"
+          />
+        </div>
       </div>
       }
     </div>
@@ -247,9 +262,15 @@
     <div class="all-single-graphs-container">
       @for(statisticKey of statisticsKeys(); track $index;let graphIndex =
       $index) {
-      <div>
+      <div class="single-graph-outer">
         <p class="statistic-title">{{ statisticKey }}</p>
-
+        <app-statistic-box
+          [statisticName]="statisticKey"
+          [statisticSevirity]="this.singleLabelSevirity.get(statisticKey)!"
+          [statisticValue]="this.singleLabelValues.get(statisticKey)!"
+          [statisticUnit]="this.singleStatisticsUnits[graphIndex]"
+        >
+        </app-statistic-box>
         <div class="table-multi-scroll-single">
           <app-table-graph
             class="table-data"
