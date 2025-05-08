@@ -18,7 +18,6 @@ export class StatisticBoxComponent {
   @Input() public statisticSevirity: Sevirity = 0;
   @Input() public statisticUnit: string = "";
   ngOnChanges() {
-
   }
   get formattedStatisticValue(): string {
     return parseFloat(this.statisticValue.toFixed(CommonConsts.DECIMAL_PRECISION)).toString();

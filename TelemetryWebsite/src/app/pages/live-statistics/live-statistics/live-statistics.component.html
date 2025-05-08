@@ -1,5 +1,3 @@
-<app-live-graph></app-live-graph>
-<button (click)="test()">herre</button>
 @if(multipleStatisticKeys().length!=0) {
 
 <div class="main-statistic-title">Multiple Statistics Values</div>
@@ -10,18 +8,29 @@ $index) {
   <div class="statistic-boxes">{{ topIndex }}</div>
   @for (finalMultipleItem of multipleStatisticValueKeys(topMultipleKey); track
   $index) {
-  <app-statistic-box
-    [statisticValue]="
-      this.multipleStatistics[topMultipleKey].statisticValues[finalMultipleItem]
-        .value
-    "
-    [statisticName]="finalMultipleItem"
-    [statisticSevirity]="
-      this.multipleStatistics[topMultipleKey].statisticValues[finalMultipleItem]
-        .sevirity
-    "
-    [statisticUnit]="this.statisticsUnits[topIndex]"
-  ></app-statistic-box>
+  <div>
+    <app-statistic-box
+      [statisticValue]="
+        this.multipleStatistics[topMultipleKey].statisticValues[
+          finalMultipleItem
+        ].value
+      "
+      [statisticName]="finalMultipleItem"
+      [statisticSevirity]="
+        this.multipleStatistics[topMultipleKey].statisticValues[
+          finalMultipleItem
+        ].sevirity
+      "
+      [statisticUnit]="this.statisticsUnits[topIndex]"
+    ></app-statistic-box>
+    <app-live-graph
+      [graphName]="topMultipleKey"
+      [seriesName]="finalMultipleItem"
+      [graphSeries]="
+        this.multiGraphData.get(topMultipleKey)!.get(finalMultipleItem)!
+      "
+    ></app-live-graph>
+  </div>
   }
 </div>
 }
@@ -29,19 +38,25 @@ $index) {
 
 <div class="statistic-boxes">
   @for (singleStatisticKey of singleStatisticValueKeys(); track $index) {
-
-  <app-statistic-box
-    [statisticValue]="
-      this.singleStatistics.statisticValues[singleStatisticKey].value
-    "
-    [statisticName]="singleStatisticKey"
-    [statisticSevirity]="
-      this.singleStatistics.statisticValues[singleStatisticKey].sevirity
-    "
-    [statisticUnit]="
-      this.statisticsUnits[$index + multipleStatisticKeys().length]
-    "
-  ></app-statistic-box>
+  <div>
+    <app-statistic-box
+      [statisticValue]="
+        this.singleStatistics.statisticValues[singleStatisticKey].value
+      "
+      [statisticName]="singleStatisticKey"
+      [statisticSevirity]="
+        this.singleStatistics.statisticValues[singleStatisticKey].sevirity
+      "
+      [statisticUnit]="
+        this.statisticsUnits[$index + multipleStatisticKeys().length]
+      "
+    ></app-statistic-box>
+    <app-live-graph
+      [graphName]="singleStatisticKey"
+      seriesName="data"
+      [graphSeries]="this.singleGraphData.get(singleStatisticKey)!"
+    ></app-live-graph>
+  </div>
   }
 </div>
 } @if(multipleStatisticKeys().length==0) {
