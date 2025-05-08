@@ -37,7 +37,12 @@ export class LiveGraphComponent {
           color: "#ffffff"
         }
       },
+      credits: { enabled: false },
 
+      tooltip: {
+        xDateFormat: '%Y-%m-%d %H:%M:%S', // Custom time format
+        shared: true,
+      },
       legend: {
         itemStyle: {
           color: '#ffffff',
@@ -45,6 +50,7 @@ export class LiveGraphComponent {
         }
       },
       chart: {
+        width: null,
         type: 'line',
         backgroundColor: '#262626',
       },
@@ -52,7 +58,9 @@ export class LiveGraphComponent {
         type: 'datetime',
         lineColor: '#d6d6d6',
         labels: {
-
+          formatter: function () {
+            return Highcharts.dateFormat('%H:%M:%S', Number(this.value));
+          },
           style: {
             color: "#d6d6d6"
           }

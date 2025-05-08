@@ -5,7 +5,6 @@
 $index) {
 <div class="statistic-title">{{ topMultipleKey }}</div>
 <div class="statistic-boxes">
-  <div class="statistic-boxes">{{ topIndex }}</div>
   @for (finalMultipleItem of multipleStatisticValueKeys(topMultipleKey); track
   $index) {
   <div>
@@ -24,7 +23,6 @@ $index) {
       [statisticUnit]="this.statisticsUnits[topIndex]"
     ></app-statistic-box>
     <app-live-graph
-      [graphName]="topMultipleKey"
       [seriesName]="finalMultipleItem"
       [graphSeries]="
         this.multiGraphData.get(topMultipleKey)!.get(finalMultipleItem)!
@@ -52,7 +50,6 @@ $index) {
       "
     ></app-statistic-box>
     <app-live-graph
-      [graphName]="singleStatisticKey"
       seriesName="data"
       [graphSeries]="this.singleGraphData.get(singleStatisticKey)!"
     ></app-live-graph>
