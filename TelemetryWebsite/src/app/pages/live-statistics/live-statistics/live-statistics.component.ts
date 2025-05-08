@@ -72,14 +72,13 @@ export class LiveStatisticsComponent {
     });
   }
   public loadSubjects(): void {
-
     this.isLoaded = true;
     Object.keys(this.singleStatistics.statisticValues).forEach((key) => {
       let newKey: string[] = key.split(" ")
       if (newKey.length != 1) {
-        if (!this.multiGraphData.has(newKey[1])) {
-          this.multiGraphData.set(newKey[1], new Map<string, Subject<DataPoint>>())
-        }
+        if (!this.multiGraphData.has(newKey[1]))
+          this.multiGraphData.set(newKey[1], new Map<string, Subject<DataPoint>>());
+
         (this.multiGraphData.get(newKey[1])!).set(newKey[0], new Subject<DataPoint>())
       }
     })
@@ -92,16 +91,14 @@ export class LiveStatisticsComponent {
     Object.keys(this.singleStatistics.statisticValues).forEach((key) => {
       let newKey: string[] = key.split(" ")
       if (newKey.length != 1) {
-        if (!this.multipleStatistics.hasOwnProperty(newKey[1])) {
+        if (!this.multipleStatistics.hasOwnProperty(newKey[1]))
           this.multipleStatistics[newKey[1]] = new ReceiveStatisticsDto({});
-        }
+
         this.multipleStatistics[newKey[1]].statisticValues[newKey[0]] = (this.singleStatistics.statisticValues[key]);
         this.multiGraphData.get(newKey[1])!.get(newKey[0])?.next(new DataPoint(this.singleStatistics.statisticValues[key].value, new Date(), this.singleStatistics.statisticValues[key].sevirity))
         delete this.singleStatistics.statisticValues[key];
-      } else {
-        // this.singleGraphData.set(key, new Subject<DataPoint>())
+      } else
         this.singleGraphData.get(key)?.next(new DataPoint(this.singleStatistics.statisticValues[key].value, new Date(), this.singleStatistics.statisticValues[key].sevirity))
-      }
     });
     Object.keys(this.singleStatistics.statisticValues).forEach((key) => {
       if (this.graphsToFormat.includes(key)) {
