@@ -20,36 +20,49 @@ export class LiveGraphComponent {
   public chartRef!: Highcharts.Chart;
   public Highcharts: typeof Highcharts = Highcharts;
   public chartOptions!: Highcharts.Options;
-  public formatGraphs(): Highcharts.SeriesOptionsType[] {
-    let index: number = 0;
-    let retGraphs: Highcharts.SeriesOptionsType[] = []
-    this.graphSeries.forEach((val, key) => {
-      retGraphs.push(
-        {
-          type: 'line',
-          lineWidth: 4,
-          name: key,
-          color: this.colors[index++],
-          data: []
-        })
-    })
-    return retGraphs;
-  }
+
   ngOnInit() {
     this.initOptions()
     let index: number = 0;
     this.graphSeries.forEach((val, key) => {
       const currentIndex = index;
       val.subscribe((point) => {
-        if (this.chartRef.series[currentIndex].points.length > CommonConsts.MAX_POINTS_LIVE_GRAPH)
-          this.chartRef.series[currentIndex].removePoint(0, false, false);
-        this.chartRef.series[currentIndex].addPoint([point.time!.getTime(), point.value!])
+        if (currentIndex == this.graphSeries.size - 1)
+          this.chartRef.series[currentIndex].addPoint([point.time!.getTime(), point.value!], true, this.chartRef.series[currentIndex].points.length > CommonConsts.MAX_POINTS_LIVE_GRAPH)
+        else this.chartRef.series[currentIndex].addPoint([point.time!.getTime(), point.value!], false, this.chartRef.series[currentIndex].points.length > CommonConsts.MAX_POINTS_LIVE_GRAPH)
+
       });
       index++;
     })
+  }
+  public formatGraphs(): Highcharts.SeriesOptionsType[] {
+    let index: number = 0;
+    let retGraphs: Highcharts.SeriesOptionsType[] = []
+    this.graphSeries.forEach((val, key) => {
+      retGraphs.push(
+        {
+          marker: {
+            enabled: true,
+            radius: 1
+          },
+          type: 'line',
+          lineWidth: 4,
+          name: key,
+          color: this.colors[index++],
+          data: [],
+          events: {
+            show: function () {
+              setTimeout(() => {
+                while (this.points.length > CommonConsts.MAX_POINTS_LIVE_GRAPH) {
+                  this.removePoint(0, false, false);
+                }
+              }, 0);
+            }
+          }
 
-
-
+        })
+    })
+    return retGraphs;
   }
   public initOptions() {
     this.chartOptions = {
@@ -72,18 +85,44 @@ export class LiveGraphComponent {
         shared: true,
       },
       legend: {
-        itemStyle: { color: "#ffffff" }
-
+        itemStyle: { color: "#ffffff" },
+        itemHoverStyle: {
+          color: "#cb9ef7",
+        },
+        itemHiddenStyle: {
+          color: '#888888',
+          textDecoration: ""
+        }
       },
+
       chart: {
         width: null,
         type: 'line',
         backgroundColor: '#262626',
         zooming: {
           type: "x"
+        },
+        resetZoomButton: {
+          theme: {
+            fill: '#a06cd5',
+            stroke: '#888',
+            style: {
+              color: '#fff',
+              fontWeight: 'bold',
+              fontSize: '12px'
+            },
+            r: 4,
+            states: {
+              hover: {
+                style: {
+                  color: '#5e5e5e'
+                }
+              }
+            }
+          }
         }
-
       },
+
       xAxis: {
         type: 'datetime',
         lineColor: '#d6d6d6',
@@ -108,7 +147,8 @@ export class LiveGraphComponent {
           style: {
             color: "#d6d6d6"
           }
-        }
+        },
+        gridLineWidth: 0
       },
       series: this.formatGraphs()
 
