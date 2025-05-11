@@ -23,6 +23,15 @@
   padding: 0.5rem;
   color: white;
 }
+.single-graphs-outer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.single-graph-graph-inner {
+  width: 100%;
+}
 .main-statistic-title {
   margin-top: 3vh;
   margin-bottom: 2rem;

@@ -22,22 +22,19 @@ $index) {
       "
       [statisticUnit]="this.statisticsUnits[topIndex]"
     ></app-statistic-box>
-    <app-live-graph
-      [graphUnit]="this.statisticsUnits[topIndex]"
-      [seriesName]="finalMultipleItem"
-      [graphSeries]="
-        this.multiGraphData.get(topMultipleKey)!.get(finalMultipleItem)!
-      "
-    ></app-live-graph>
   </div>
   }
 </div>
+<app-live-graph
+  [graphUnit]="this.statisticsUnits[topIndex]"
+  [graphSeries]="this.multiGraphData.get(topMultipleKey)!"
+></app-live-graph>
 }
 <div class="main-statistic-title">Single Statistics Values</div>
 
 <div class="statistic-boxes">
   @for (singleStatisticKey of singleStatisticValueKeys(); track $index) {
-  <div>
+  <div class="single-graphs-outer">
     <app-statistic-box
       [statisticValue]="
         this.singleStatistics.statisticValues[singleStatisticKey].value
@@ -50,13 +47,15 @@ $index) {
         this.statisticsUnits[$index + multipleStatisticKeys().length]
       "
     ></app-statistic-box>
-    <app-live-graph
-      seriesName="data"
-      [graphUnit]="
-        this.statisticsUnits[$index + multipleStatisticKeys().length]
-      "
-      [graphSeries]="this.singleGraphData.get(singleStatisticKey)!"
-    ></app-live-graph>
+    <div class="single-graph-graph-inner">
+      <app-live-graph
+        seriesName="data"
+        [graphUnit]="
+          this.statisticsUnits[$index + multipleStatisticKeys().length]
+        "
+        [graphSeries]="formatSingle(singleStatisticKey)"
+      ></app-live-graph>
+    </div>
   </div>
   }
 </div>

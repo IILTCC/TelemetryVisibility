@@ -14,22 +14,44 @@ import { CommonConsts } from '../../../common/commonConsts';
 })
 export class LiveGraphComponent {
   @Input() public graphName = "";
-  @Input() public seriesName: string = "data";
-  @Input() public graphSeries: Subject<DataPoint> = new Subject<DataPoint>();
+  @Input() public graphSeries: Map<string, Subject<DataPoint>> = new Map<string, Subject<DataPoint>>();
   @Input() public graphUnit: string = "";
-  private graphData: [number, number][] = [];
+  private colors: string[] = ['#a06cd5', '#ff6b6b', '#1dd1a1', '#54a0ff', '#feca57'];
   public chartRef!: Highcharts.Chart;
   public Highcharts: typeof Highcharts = Highcharts;
   public chartOptions!: Highcharts.Options;
+  public formatGraphs(): Highcharts.SeriesOptionsType[] {
+    let index: number = 0;
+    let retGraphs: Highcharts.SeriesOptionsType[] = []
+    this.graphSeries.forEach((val, key) => {
+      retGraphs.push(
+        {
+          type: 'line',
+          lineWidth: 4,
+          name: key,
+          color: this.colors[index++],
+          data: []
+        })
+    })
+    return retGraphs;
+  }
   ngOnInit() {
-    this.graphSeries.subscribe((point) => {
-      this.graphData.push([point.time!.getTime(), point.value!])
-      if (this.graphData.length > CommonConsts.MAX_POINTS_LIVE_GRAPH)
-        this.graphData.shift()
-      this.chartRef.series[0].setData(this.graphData)
+    this.initOptions()
+    let index: number = 0;
+    this.graphSeries.forEach((val, key) => {
+      const currentIndex = index;
+      val.subscribe((point) => {
+        if (this.chartRef.series[currentIndex].points.length > CommonConsts.MAX_POINTS_LIVE_GRAPH)
+          this.chartRef.series[currentIndex].removePoint(0, false, false);
+        this.chartRef.series[currentIndex].addPoint([point.time!.getTime(), point.value!])
+      });
+      index++;
+    })
 
-    });
 
+
+  }
+  public initOptions() {
     this.chartOptions = {
       title: {
         text: this.graphName,
@@ -43,12 +65,15 @@ export class LiveGraphComponent {
         xDateFormat: '%Y-%m-%d %H:%M:%S',
         valueDecimals: 3,
         valueSuffix: this.graphUnit,
-        backgroundColor: '#c7c7c7',
-
+        backgroundColor: '#4a4848',
+        style: {
+          color: "#e0dede"
+        },
         shared: true,
       },
       legend: {
-        enabled: false
+        itemStyle: { color: "#ffffff" }
+
       },
       chart: {
         width: null,
@@ -85,13 +110,7 @@ export class LiveGraphComponent {
           }
         }
       },
-      series: [{
-        lineWidth: 4,
-        type: 'line',
-        name: this.seriesName,
-        color: '#a06cd5',
-        data: []
-      }]
+      series: this.formatGraphs()
 
     }
   }

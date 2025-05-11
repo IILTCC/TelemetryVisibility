@@ -38,7 +38,9 @@ export class LiveStatisticsComponent {
   ngOnDestroy() {
     this.webSocketService.disconnect();
   }
-
+  public liveGraphKeyName(key: string): string[] {
+    return Array.from(this.multiGraphData.get(key)!.keys());
+  }
   private tryShowToast(key: string, message: string): void {
     if (!this.activeToast.has(key)) {
 
@@ -126,6 +128,11 @@ export class LiveStatisticsComponent {
   }
   public singleStatisticValueKeys(): string[] {
     return Object.keys(this.singleStatistics.statisticValues);
+  }
+  public formatSingle(key: string) {
+    let ret: Map<string, Subject<DataPoint>> = new Map<string, Subject<DataPoint>>();
+    ret.set(key, this.singleGraphData.get(key)!)
+    return ret;
   }
   public updateStatistics(): void {
     this.webSocketService.updateStatistics().subscribe(statisticsUpdate => {
