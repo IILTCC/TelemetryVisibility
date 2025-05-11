@@ -23,6 +23,7 @@ $index) {
       [statisticUnit]="this.statisticsUnits[topIndex]"
     ></app-statistic-box>
     <app-live-graph
+      [graphUnit]="this.statisticsUnits[topIndex]"
       [seriesName]="finalMultipleItem"
       [graphSeries]="
         this.multiGraphData.get(topMultipleKey)!.get(finalMultipleItem)!
@@ -51,6 +52,9 @@ $index) {
     ></app-statistic-box>
     <app-live-graph
       seriesName="data"
+      [graphUnit]="
+        this.statisticsUnits[$index + multipleStatisticKeys().length]
+      "
       [graphSeries]="this.singleGraphData.get(singleStatisticKey)!"
     ></app-live-graph>
   </div>

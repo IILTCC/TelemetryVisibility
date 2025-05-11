@@ -16,11 +16,11 @@ export class LiveGraphComponent {
   @Input() public graphName = "";
   @Input() public seriesName: string = "data";
   @Input() public graphSeries: Subject<DataPoint> = new Subject<DataPoint>();
+  @Input() public graphUnit: string = "";
   private graphData: [number, number][] = [];
   public chartRef!: Highcharts.Chart;
   public Highcharts: typeof Highcharts = Highcharts;
   public chartOptions!: Highcharts.Options;
-
   ngOnInit() {
     this.graphSeries.subscribe((point) => {
       this.graphData.push([point.time!.getTime(), point.value!])
@@ -40,19 +40,24 @@ export class LiveGraphComponent {
       credits: { enabled: false },
 
       tooltip: {
-        xDateFormat: '%Y-%m-%d %H:%M:%S', // Custom time format
+        xDateFormat: '%Y-%m-%d %H:%M:%S',
+        valueDecimals: 3,
+        valueSuffix: this.graphUnit,
+        backgroundColor: '#c7c7c7',
+
         shared: true,
       },
       legend: {
-        itemStyle: {
-          color: '#ffffff',
-          fontWeight: 'normal'
-        }
+        enabled: false
       },
       chart: {
         width: null,
         type: 'line',
         backgroundColor: '#262626',
+        zooming: {
+          type: "x"
+        }
+
       },
       xAxis: {
         type: 'datetime',
@@ -68,7 +73,7 @@ export class LiveGraphComponent {
       },
       yAxis: {
         title: {
-          text: 'Value',
+          text: '',
           style: {
             color: '#ffffff',
           }

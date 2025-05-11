@@ -95,7 +95,10 @@ export class LiveStatisticsComponent {
           this.multipleStatistics[newKey[1]] = new ReceiveStatisticsDto({});
 
         this.multipleStatistics[newKey[1]].statisticValues[newKey[0]] = (this.singleStatistics.statisticValues[key]);
-        this.multiGraphData.get(newKey[1])!.get(newKey[0])?.next(new DataPoint(this.singleStatistics.statisticValues[key].value, new Date(), this.singleStatistics.statisticValues[key].sevirity))
+
+        if (!this.graphsToFormat.includes(newKey[1]))
+          this.multiGraphData.get(newKey[1])!.get(newKey[0])?.next(new DataPoint(this.singleStatistics.statisticValues[key].value, new Date(), this.singleStatistics.statisticValues[key].sevirity))
+
         delete this.singleStatistics.statisticValues[key];
       } else
         this.singleGraphData.get(key)?.next(new DataPoint(this.singleStatistics.statisticValues[key].value, new Date(), this.singleStatistics.statisticValues[key].sevirity))
@@ -109,6 +112,7 @@ export class LiveStatisticsComponent {
       if (this.graphsToFormat.includes(key)) {
         Object.keys(this.multipleStatistics[key].statisticValues).forEach((innerKey) => {
           this.multipleStatistics[key].statisticValues[innerKey].value = this.multipleStatistics[key].statisticValues[innerKey].value * 100;
+          this.multiGraphData.get(key)!.get(innerKey)?.next(new DataPoint(this.multipleStatistics[key].statisticValues[innerKey].value, new Date(), this.multipleStatistics[key].statisticValues[innerKey].sevirity))
         })
       }
     })
