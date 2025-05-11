@@ -17,6 +17,7 @@ export class StatisticBoxComponent {
   @Input() public statisticValue: number = 0;
   @Input() public statisticSevirity: Sevirity = 0;
   @Input() public statisticUnit: string = "";
+
   get formattedStatisticValue(): string {
     return parseFloat(this.statisticValue.toFixed(CommonConsts.DECIMAL_PRECISION)).toString();
   }
