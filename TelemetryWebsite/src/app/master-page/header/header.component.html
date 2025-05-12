@@ -11,13 +11,13 @@
         </th>
         <th>
           <button mat-button class="header-button" (click)="goToArchive()">
-            Archive
+            Packet Archive
           </button>
         </th>
         <th>
           <div class="drop-down-container">
             <button mat-button class="header-button drop-down-button">
-              System info
+              ELK
             </button>
             <div class="drop-down-content">
               <a (click)="goToSystemInfo('telemetry')">Telemetry Dashboard</a>
@@ -27,12 +27,13 @@
               <a (click)="goToSystemInfo('archive')">Archive Dashboard</a>
               <a (click)="goToSystemInfo('kafka')">Kafka</a>
               <a (click)="goToSystemInfo('all')">All Dashboards</a>
+              <a (click)="goToSystemInfo('statistics')">Statistics</a>
             </div>
           </div>
         </th>
         <th>
           <button mat-button class="header-button" (click)="goToStatistics()">
-            Statistics
+            Statistics Archive
           </button>
         </th>
         <th>
