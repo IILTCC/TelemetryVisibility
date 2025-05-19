@@ -57,7 +57,7 @@
             (click)="swithcTimelinePagination()"
             class="mode-button"
           >
-            @if(isTimeLine){ timeline } @else { pagination }
+            @if(isTimeLine){ pagination } @else { timeline }
           </button>
         </div>
         @if(!isTimeLine){
@@ -138,7 +138,10 @@
         }
         <mat-form-field class="packet-type-selector">
           <mat-label>Packet Type</mat-label>
-          <mat-select [(value)]="packetTypeSelected">
+          <mat-select
+            [(value)]="packetTypeSelected"
+            (selectionChange)="onPacketTypeChange()"
+          >
             @for(packet of packetTypes; track packet) {
 
             <mat-option [value]="packet">{{ packet }}</mat-option>
@@ -158,6 +161,7 @@
         <div class="param-type-selector">
           @for(paramType of frameKeys(); track $index) {
           <mat-checkbox
+            [checked]="true"
             [value]="paramType"
             (change)="onCheckboxChange($event)"
             >{{ paramType }}</mat-checkbox
